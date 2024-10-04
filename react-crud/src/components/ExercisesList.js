@@ -47,6 +47,18 @@ const ExercisesList = () => {
       });
   };
 
+  const deleteExercise = (id) => {
+    ExerciseDataService.delete(id)
+      .then(response => {
+        console.log(response.data);
+        refreshList();
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+
   return (
     <div className="list row">
       <div className="col-md-8">
@@ -139,6 +151,12 @@ const ExercisesList = () => {
             >
               Edit
             </Link>
+            <button
+              className="badge badge-danger mr-2"
+              onClick={() => deleteExercise(currentExercise.id)}
+            >
+              Remove
+            </button>
           </div>
         ) : (
           <div>
