@@ -1,0 +1,86 @@
+/* Exercise List Component */
+.exercise-list {
+    margin-top: 20px;
+  }
+  
+  .exercise-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .exercise-list li {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  /* Add Exercise Component */
+  .add-exercise-form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .add-exercise-form input,
+  .add-exercise-form textarea,
+  .add-exercise-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .add-exercise-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-exercise-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Individual Exercise Component */
+  .exercise-details {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .exercise-details h2 {
+    color: #007bff;
+    margin-bottom: 15px;
+  }
+  
+  .exercise-details p {
+    margin-bottom: 10px;
+  }
+  
+  .exercise-actions {
+    margin-top: 20px;
+  }
+  
+  .exercise-actions button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .delete-button {
+    background-color: #dc3545;
+    color: white;
+  }
