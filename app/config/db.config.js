@@ -2,12 +2,5 @@ module.exports = {
     HOST: "us-cluster-east-01.k8s.cleardb.net",
     USER: "b4c42cb403eb0a",
     PASSWORD: "d3934b54",
-    DB: "heroku_28b8dc682c0181a",
-    dialect: "mysql",
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
+    DB: "heroku_28b8dc682c0181a"
   };
