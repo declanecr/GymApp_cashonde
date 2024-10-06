@@ -4,6 +4,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import AddExercise from "./components/AddExercise";
+import CurrentWorkout from "./components/CurrentWorkout";
 import Exercise from "./components/Exercise";
 import ExercisesList from "./components/ExercisesList";
 
@@ -25,6 +26,13 @@ function App() {
               Add
             </Link>
           </li>
+
+          
+          <li className="nav-item"> 
+              <Link to={"/current-workout"} className="nav-link">
+                Current Workout
+              </Link>
+            </li>
         </div>
       </nav>
 
@@ -34,6 +42,7 @@ function App() {
           <Route path="/exercises" element={<ExercisesList/>} />
           <Route path="/add" element={<AddExercise/>} />
           <Route path="/exercises/:id" element={<Exercise/>} />
+          <Route path="/current-workout" element={<CurrentWorkout />}/>
         </Routes>
       </div>
     </div>

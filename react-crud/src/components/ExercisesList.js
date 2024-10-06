@@ -13,6 +13,8 @@ const ExercisesList = () => {
     retrieveExercises();
   }, []);
 
+
+  
   const retrieveExercises = () => {
     ExerciseDataService.getAll()
       .then(response => {
@@ -58,6 +60,13 @@ const ExercisesList = () => {
       });
   };
 
+  const addToWorkout = (exercise) => {
+    ExerciseDataService.addToWorkout(exercise);
+    // Implement the logic to add the exercise to the workout
+    // This could involve storing the exercise in local storage or making an API call
+    console.log("Adding exercise to workout:", exercise);
+    // For now, we'll just log the action. You'll need to implement the actual functionality.
+  };
 
   return (
     <div className="list row">
@@ -151,6 +160,12 @@ const ExercisesList = () => {
             >
               Edit
             </Link>
+            <button
+                className="badge badge-success"
+                onClick={() => addToWorkout(currentExercise)}
+            >
+                Add to Workout
+            </button>
             <button
               className="badge badge-danger mr-2"
               onClick={() => deleteExercise(currentExercise.id)}
