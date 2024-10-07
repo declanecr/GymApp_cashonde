@@ -120,3 +120,37 @@ exports.deleteAll = (req, res) => {
     else res.send({ message: `All Exercises were deleted successfully!` });
   });
 };
+
+// Get unique muscle groups
+exports.getMuscleGroups = (req, res) => {
+  console.log ("export")
+  Exercise.getUniqueMuscleGroups((err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving muscle groups."
+      });
+    else res.send(data);
+  });
+};
+
+// Get unique equipment
+exports.getEquipment = (req, res) => {
+  Exercise.getUniqueEquipment((err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving equipment."
+      });
+    else res.send(data);
+  });
+};
+
+// Get unique levels
+exports.getLevels = (req, res) => {
+  Exercise.getUniqueLevels((err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving levels."
+      });
+    else res.send(data);
+  });
+};

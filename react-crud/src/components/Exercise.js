@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import '../Exercise.css';
-import ExerciseDataService from "../services/ExerciseDataService";
+import ExerciseDataService from "../services/ExerciseDataService.js";
 
 const Exercise = props => {
   const { id } = useParams();

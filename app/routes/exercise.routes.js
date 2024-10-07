@@ -20,6 +20,12 @@ module.exports = app => {
   
     // Delete all Exercises
     router.delete("/", exercises.deleteAll);
+
+    // New routes for filters
+    console.log("getting routes");
+    router.get("/muscle-groups", exercises.getMuscleGroups);
+    router.get("/equipment", exercises.getEquipment);
+    router.get("/levels", exercises.getLevels);
   
     app.use('/api/exercises', router);
   };

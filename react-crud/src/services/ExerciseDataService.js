@@ -1,9 +1,23 @@
-import http from "../http-common";
+import http from "../http-common.js";
 
 const ExerciseDataService = {
   getAll: () => {
     return http.get("/exercises");
   },
+
+  // New methods for fetching filter values
+  getMuscleGroups() {
+    return http.get("/exercises/muscle-groups");
+  },
+
+  getEquipment() {
+    return http.get("/exercises/equipment");
+  },
+
+  getLevels() {
+    return http.get("/exercises/levels");
+  },
+  // End of filter methods
 
   get: id => {
     return http.get(`/exercises/${id}`);

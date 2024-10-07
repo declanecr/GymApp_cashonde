@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import '../Exercise.css';
-import ExerciseDataService from "../services/ExerciseDataService";
+import ExerciseDataService from "../services/ExerciseDataService.js";
 
 const AddExercise = () => {
   const initialExerciseState = {

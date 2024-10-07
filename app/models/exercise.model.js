@@ -117,4 +117,41 @@ Exercise.removeAll = result => {
   });
 };
 
+Exercise.getUniqueMuscleGroups = result => {
+  sql.query("SELECT DISTINCT `main_muscle` FROM exercises", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    console.log("muscle groups found: ", res.map(row => row.main_muscle));
+    result(null, res.map(row => row.main_muscle));
+  });
+};
+
+Exercise.getUniqueEquipment = result => {
+  sql.query("SELECT DISTINCT `equipment FROM exercises", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    console.log("equipment found: ", res.map(row => row.equipment));
+    result(null, res.map(row => row.equipment));
+  });
+};
+
+Exercise.getUniqueLevels = result => {
+  sql.query("SELECT DISTINCT `level` FROM exercises", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    console.log("levels found: ", res.map(row => row.level));
+    result(null, res.map(row => row.level));
+  });
+};
+
+
 module.exports = Exercise;

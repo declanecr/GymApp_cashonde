@@ -1,19 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import '../Exercise.css';
-import ExerciseDataService from "../services/ExerciseDataService";
+import ExerciseDataService from "../services/ExerciseDataService.js";
+import "./ExerciseList.css";
 
 const ExercisesList = () => {
-  const [exercises, setExercises] = useState([]);
-  const [currentExercise, setCurrentExercise] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(-1);
-  const [searchName, setSearchName] = useState("");
+    const [exercises, setExercises] = useState([]);
+    const [currentExercise, setCurrentExercise] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(-1);
+    const [searchName, setSearchName] = useState("");
+    const [muscleGroupFilter, setMuscleGroupFilter] = useState([]);
+    const [equipmentFilter, setEquipmentFilter] = useState([]);
+    const [levelFilter, setLevelFilter] = useState([]);
 
   useEffect(() => {
     retrieveExercises();
+    retrieveFilterValues();
   }, []);
 
+  const retrieveFilterValues = () => {
+    ExerciseDataService.getMuscleGroups()
+      .then(response => {
+        setMuscleGroupFilter(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
 
+    ExerciseDataService.getEquipment()
+      .then(response => {
+        setEquipmentFilter(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
+    ExerciseDataService.getLevels()
+      .then(response => {
+        setLevelFilter(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  const filterExercises = () => {
+    return exercises.filter(exercise => 
+      (muscleGroupFilter === "" || exercise.main_muscle === muscleGroupFilter) &&
+      (equipmentFilter === "" || exercise.equipment === equipmentFilter) &&
+      (levelFilter === "" || exercise.level === levelFilter)
+    );
+  };
   
   const retrieveExercises = () => {
     ExerciseDataService.getAll()
@@ -62,11 +99,10 @@ const ExercisesList = () => {
 
   const addToWorkout = (exercise) => {
     ExerciseDataService.addToWorkout(exercise);
-    // Implement the logic to add the exercise to the workout
-    // This could involve storing the exercise in local storage or making an API call
     console.log("Adding exercise to workout:", exercise);
-    // For now, we'll just log the action. You'll need to implement the actual functionality.
   };
+
+  
 
   return (
     <div className="list row">
@@ -92,6 +128,31 @@ const ExercisesList = () => {
       </div>
       <div className="col-md-6">
         <h4>Exercises List</h4>
+        <div>
+            <select className="filter-select" onChange={e => setMuscleGroupFilter(e.target.value)}>
+                <option value="">All Muscle Groups</option>
+                {muscleGroupFilter.map((group, index) => (
+                    <option key={index} value={group}>{group}</option>
+                ))}
+            </select>
+            <select className="filter-select"onChange={e => setEquipmentFilter(e.target.value)}>
+                <option value="">All Equipment</option>
+                {equipmentFilter.map((item, index) => (
+                    <option key={index} value={item}>{item}</option>
+                ))}
+            </select>
+            <select className="filter-select" onChange={e => setLevelFilter(e.target.value)}>
+                <option value="">All Levels</option>
+                {levelFilter.map((level, index) => (
+                    <option key={index} value={level}>{level}</option>
+                ))}
+            </select>
+        </div>
+        <ul className="exercise-list">
+            {filterExercises().map((exercise, index) => (
+            <li key={index}>{exercise.name}</li>
+            ))}
+        </ul>
         <ul className="list-group">
           {exercises &&
             exercises.map((exercise, index) => (
