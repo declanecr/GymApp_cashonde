@@ -1,7 +1,8 @@
-module.exports = app => {
-    const exercises = require("../controllers/exercise.controller.js");
-  
-    var router = require("express").Router();
+
+import { Router } from "express";
+import exercises from "../controllers/exercise.controller.js";
+const router =Router();
+export default app => {
   
     // Create a new Exercise
     router.post("/", exercises.create);

@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "the server for my gym app",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha 'test/**/*.js' --recursive --exit"
   },
   "author": "Declan",
   "license": "ISC",
@@ -14,5 +15,10 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
     "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "sinon": "^19.0.2"
   }
 }

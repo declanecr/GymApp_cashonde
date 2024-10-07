@@ -1,3 +1,5 @@
+//DELETE WHEN MUSCLE GROUPS HAVE BEEN SOLVED
+
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService";
 

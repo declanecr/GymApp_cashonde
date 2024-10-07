@@ -1,4 +1,4 @@
-const sql = require("./db.js");
+import sql from "./db.js";
 
 // constructor
 const Exercise = function(exercise) {
@@ -117,6 +117,7 @@ Exercise.removeAll = result => {
   });
 };
 
+//THESE ARE THE PROBLEMS
 Exercise.getUniqueMuscleGroups = result => {
   sql.query("SELECT DISTINCT `main_muscle` FROM exercises", (err, res) => {
     if (err) {
@@ -154,4 +155,4 @@ Exercise.getUniqueLevels = result => {
 };
 
 
-module.exports = Exercise;
+export default Exercise

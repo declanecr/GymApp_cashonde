@@ -19,6 +19,7 @@ function App() {
         <h1>My Gym App</h1>
         <MuscleGroups />
       </div>
+
       
       
       <Navbar bg="dark" variant="dark" expand="lg">

@@ -1,4 +1,4 @@
-const Exercise = require("../models/exercise.model.js");
+import Exercise from "../models/exercise.model.js";
 
 // Create and Save a new Exercise
 exports.create = (req, res) => {
