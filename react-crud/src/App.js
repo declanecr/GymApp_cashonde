@@ -10,10 +10,17 @@ import AddExercise from "./components/AddExercise.js";
 import CurrentWorkout from "./components/CurrentWorkout.js";
 import Exercise from "./components/Exercise.js";
 import ExercisesList from "./components/ExercisesList.js";
+import MuscleGroups from "./components/MuscleGroups.js";
 
 function App() {
   return (
     <div>
+      <div>
+        <h1>My Gym App</h1>
+        <MuscleGroups />
+      </div>
+      
+      
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand href="/exercises">GYM APP</Navbar.Brand>

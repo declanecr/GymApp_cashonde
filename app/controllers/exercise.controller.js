@@ -129,7 +129,9 @@ exports.getMuscleGroups = (req, res) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving muscle groups."
       });
-    else res.send(data);
+    else 
+      console.log("Unique muscle groups:", data);
+      res.send(data);
   });
 };
 
