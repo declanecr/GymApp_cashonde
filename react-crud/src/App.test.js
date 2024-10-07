@@ -44,8 +44,7 @@ describe('App Component',()=>{
       </BrowserRouter>
     );
     await act( async() => {
-      expect(screen.getByText(/GYM APP/i)).toBeInTheDocument();
-    });
+      expect(screen.getByRole('link', { name: /GYM APP/i })).toBeInTheDocument();    });
   });
 
   test('renders Exercises link', async () => {
@@ -67,8 +66,7 @@ describe('App Component',()=>{
       </BrowserRouter>
     );
     await act(async()=>{
-      expect(screen.getByText(/Add/i)).toBeInTheDocument();
-    })
+      expect(screen.getByRole('link', { name: /ADD/i })).toBeInTheDocument();    })
   });
  test('renders Current Workout link', async () => {
     render(
