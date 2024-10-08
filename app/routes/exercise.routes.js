@@ -17,7 +17,7 @@ export default function(app) {
 
     // Retrieve filtered data
     console.log ("getting routes");
-    router.get("/muscle_group", exercises.getMuscleGroups);
+    router.get("/main_muscle", exercises.getMuscleGroups);
     router.get("/equipment", exercises.getEquipment);
     router.get("/level", exercises.getLevels);
 
