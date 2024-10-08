@@ -7,7 +7,7 @@ const ExerciseDataService = {
 
   // New methods for fetching filter values
   getMuscleGroups() {
-    return http.get("/exercises/main_muscle");
+    return http.get("/exercises/muscle_group");
   },
 
   getEquipment() {
