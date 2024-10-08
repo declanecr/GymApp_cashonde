@@ -11,6 +11,7 @@ import '../Exercise.css';
 import ExerciseDataService from "../services/ExerciseDataService.js";
 import "./ExerciseList.css";
 
+
 const ExercisesList = () => {
     // State declarations for managing exercises and filters
     const [exercises, setExercises] = useState([]);
