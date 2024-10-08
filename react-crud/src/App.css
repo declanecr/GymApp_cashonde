@@ -1,18 +1,29 @@
+/**
+ * App.css
+ * 
+ * This file contains the main styles for the Gym App.
+ * It defines the layout, animations, and basic styling for various components.
+ */
+
+/* Center align the main app content */
 .App {
   text-align: center;
 }
 
+/* Styling for the app logo */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
+/* Logo spinning animation, only if user hasn't set reduced motion preference */
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
+/* Styles for the main header of the app */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,28 +35,31 @@
   color: white;
 }
 
+/* Styling for links within the app */
 .App-link {
   color: #61dafb;
 }
 
+/* Styles for list components */
 .list {
   text-align: left;
   max-width: 750px;
   margin: auto;
 }
 
+/* Styles for form submission components */
 .submit-form {
   max-width: 300px;
   margin: auto;
 }
 
+/* Styles for form editing components */
 .edit-form {
   max-width: 300px;
   margin: auto;
 }
 
-
-
+/* Keyframes for the logo spinning animation */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

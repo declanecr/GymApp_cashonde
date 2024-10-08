@@ -1,38 +1,38 @@
+/**
+ * This file defines the routes for the Exercise API.
+ * It sets up endpoints for CRUD operations and data retrieval.
+ */
 
 import { Router } from "express";
 import * as exercises from "../controllers/exercise.controller.js";
-const router =Router();
+const router = Router();
 
 export default function(app) {
   
     // Create a new Exercise
     router.post("/", exercises.create);
   
-    // Retrieve all Exercises
+    // Retrieve all Exercises (with optional name filter)
     router.get("/", exercises.findAll);
 
-  // New routes for filters
-  //NOTE: MUST BE ABOVE THE .get("/:id")
-  //statements below because it uses the page names as the id
-  console.log("getting routes");
-  router.get("/muscle_group", exercises.getMuscleGroups);
-  router.get("/equipment", exercises.getEquipment);
-  router.get("/level", exercises.getLevels);
+    // Retrieve filtered data
+    console.log ("getting routes");
+    router.get("/muscle_group", exercises.getMuscleGroups);
+    router.get("/equipment", exercises.getEquipment);
+    router.get("/level", exercises.getLevels);
 
-  
-    // Retrieve a single Exercise with id
+    // Retrieve a single Exercise by id
     router.get("/:id", exercises.findOne);
   
-    // Update an Exercise with id
+    // Update an Exercise by id
     router.put("/:id", exercises.update);
   
-    // Delete an Exercise with id
+    // Delete an Exercise by id
     router.delete("/:id", exercises.deleteExercise);
   
     // Delete all Exercises
     router.delete("/", exercises.deleteAll);
 
-   
-  
+    // Mount the router on the app
     app.use('/api/exercises', router);
-  };
+};

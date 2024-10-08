@@ -1,8 +1,16 @@
+/**
+ * AddExercise Component
+ * 
+ * This component provides a form for adding new exercises to the database.
+ * It handles user input, form submission, and displays a success message upon submission.
+ */
+
 import React, { useState } from "react";
 import '../Exercise.css';
-import ExerciseDataService from "../services/ExerciseDataService.js";
+import ExerciseDataService from "../services/ExerciseDataService";
 
 const AddExercise = () => {
+  // Initial state for a new exercise
   const initialExerciseState = {
     id: null,
     name: "",
@@ -16,11 +24,22 @@ const AddExercise = () => {
   const [exercise, setExercise] = useState(initialExerciseState);
   const [submitted, setSubmitted] = useState(false);
 
+  /**
+   * Handles input changes in the form
+   * @param {Event} event - The input change event
+   */
   const handleInputChange = event => {
     const { name, value } = event.target;
     setExercise({ ...exercise, [name]: value });
   };
 
+  /**
+   * Saves the new exercise to the database
+   * Purpose: Submit the new exercise data to the server
+   * Inputs: None (uses the current state of 'exercise')
+   * Outputs: None directly, but updates component state based on the response
+   * Sends: POST request to the server via ExerciseDataService
+   */
   const saveExercise = () => {
     var data = {
       name: exercise.name,
@@ -34,6 +53,7 @@ const AddExercise = () => {
 
     ExerciseDataService.create(data)
       .then(response => {
+        // Update the exercise state with the response data
         setExercise({
           id: response.data.id,
           name: response.data.name,
@@ -52,6 +72,12 @@ const AddExercise = () => {
       });
   };
 
+  /**
+   * Resets the form to add another exercise
+   * Purpose: Clear the form and allow adding a new exercise
+   * Inputs: None
+   * Outputs: None directly, but resets component state
+   */
   const newExercise = () => {
     setExercise(initialExerciseState);
     setSubmitted(false);
@@ -68,6 +94,7 @@ const AddExercise = () => {
         </div>
       ) : (
         <div>
+          {/* Form inputs for each exercise property */}
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input

@@ -1,3 +1,10 @@
+/**
+ * ExercisesList Component
+ * 
+ * This component manages the display and interaction with a list of exercises.
+ * It includes functionality for filtering, searching, and managing individual exercises.
+ */
+
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import '../Exercise.css';
@@ -5,6 +12,7 @@ import ExerciseDataService from "../services/ExerciseDataService.js";
 import "./ExerciseList.css";
 
 const ExercisesList = () => {
+    // State declarations for managing exercises and filters
     const [exercises, setExercises] = useState([]);
     const [currentExercise, setCurrentExercise] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
@@ -14,10 +22,18 @@ const ExercisesList = () => {
     const [levelFilter, setLevelFilter] = useState([]);
 
   useEffect(() => {
+    // Fetch exercises and filter values when component mounts
     retrieveExercises();
     retrieveFilterValues();
   }, []);
 
+  /**
+   * Retrieves filter values for muscle groups, equipment, and levels
+   * Purpose: Populate filter dropdowns
+   * Inputs: None
+   * Outputs: Updates state with filter values
+   * API Calls: ExerciseDataService.getMuscleGroups, getEquipment, getLevels
+   */
   const retrieveFilterValues = () => {
     ExerciseDataService.getMuscleGroups()
       .then(response => {
@@ -44,6 +60,12 @@ const ExercisesList = () => {
       });
   };
 
+  /**
+   * Filters exercises based on selected criteria
+   * Purpose: Apply filters to the exercise list
+   * Inputs: None (uses state values)
+   * Outputs: Filtered array of exercises
+   */
   const filterExercises = () => {
     return exercises.filter(exercise => 
       (muscleGroupFilter === "" || exercise.main_muscle === muscleGroupFilter) &&
@@ -52,6 +74,13 @@ const ExercisesList = () => {
     );
   };
   
+  /**
+   * Retrieves all exercises from the server
+   * Purpose: Populate the exercise list
+   * Inputs: None
+   * Outputs: Updates exercises state
+   * API Calls: ExerciseDataService.getAll
+   */
   const retrieveExercises = () => {
     ExerciseDataService.getAll()
       .then(response => {
@@ -64,17 +93,36 @@ const ExercisesList = () => {
   };
 
   // eslint-disable-next-line
+  /**
+   * Refreshes the exercise list
+   * Purpose: Update the list after changes
+   * Inputs: None
+   * Outputs: Resets current exercise and updates list
+   */
   const refreshList = () => {
     retrieveExercises();
     setCurrentExercise(null);
     setCurrentIndex(-1);
   };
 
+  /**
+   * Sets the active exercise
+   * Purpose: Display details of selected exercise
+   * Inputs: exercise - The selected exercise object, index - The index in the list
+   * Outputs: Updates currentExercise and currentIndex states
+   */
   const setActiveExercise = (exercise, index) => {
     setCurrentExercise(exercise);
     setCurrentIndex(index);
   };
 
+  /**
+   * Searches for exercises by name
+   * Purpose: Filter exercises based on search input
+   * Inputs: None (uses searchName state)
+   * Outputs: Updates exercises state with search results
+   * API Calls: ExerciseDataService.findByName
+   */
   const searchExercise = () => {
     ExerciseDataService.findByName(searchName)
       .then(response => {
@@ -86,6 +134,13 @@ const ExercisesList = () => {
       });
   };
 
+  /**
+   * Deletes an exercise
+   * Purpose: Remove an exercise from the database
+   * Inputs: id - The ID of the exercise to delete
+   * Outputs: Refreshes the exercise list on success
+   * API Calls: ExerciseDataService.delete
+   */
   const deleteExercise = (id) => {
     ExerciseDataService.delete(id)
       .then(response => {
@@ -97,13 +152,19 @@ const ExercisesList = () => {
       });
   };
 
+  /**
+   * Adds an exercise to the workout
+   * Purpose: Include selected exercise in the current workout
+   * Inputs: exercise - The exercise object to add
+   * Outputs: Logs addition to console (actual addition handled in service)
+   * Service Call: ExerciseDataService.addToWorkout
+   */
   const addToWorkout = (exercise) => {
     ExerciseDataService.addToWorkout(exercise);
     console.log("Adding exercise to workout:", exercise);
   };
 
-  
-
+  // Component's JSX return statement
   return (
     <div className="list row">
       <div className="col-md-8">

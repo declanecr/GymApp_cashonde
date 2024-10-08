@@ -1,3 +1,11 @@
+/**
+ * index.js
+ * 
+ * This is the entry point for the React application. It sets up the root component,
+ * wraps it in a BrowserRouter for routing, and renders it to the DOM.
+ * It also includes setup for performance measurement using reportWebVitals.
+ */
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
