@@ -9,11 +9,14 @@ import React from "react";
 import "./App.css";
 
 // Import react-bootstrap for UI components
+
 import 'react-bootstrap/dist/react-bootstrap.min.js';
 
+
 // Import custom components
-import ExercisesList from "./components/ExercisesList";
-import NavBar from "./components/NavBar";
+import TestExerciseList from "./components/testExerciseList.js";
+import NavBar from "./components/testNavBar.js";
+
 
 /**
  * App Component
@@ -28,9 +31,9 @@ function App() {
     <div>
       <h1>Gym App</h1>
       <NavBar />
-      
-      <ExercisesList />
+      <TestExerciseList />
 
+      
       
     </div>
   );

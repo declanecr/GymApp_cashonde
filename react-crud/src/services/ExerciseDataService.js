@@ -16,8 +16,19 @@ const ExerciseDataService = {
    * Outputs: Promise resolving to an array of exercise objects
    * API Call: GET /exercises
    */
-  getAll: () => {
-    return http.get("/exercises");
+  getAll: (filters = {}) => {
+    let url = "/exercises";
+    const params = new URLSearchParams();
+
+    if (filters.muscle) params.append("muscle", filters.muscle);
+    if (filters.equipment) params.append("equipment", filters.equipment);
+    if (filters.level) params.append("level", filters.level);
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    return http.get(url);
   },
 
   /**

@@ -168,69 +168,7 @@ const ExercisesList = () => {
   // Component's JSX return statement
   return (
     <div className="list row">
-      <div className="col-md-8">
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by name"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-          />
-          <div className="input-group-append">
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              onClick={searchExercise}
-            >
-              Search
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-6">
-        <h4>Exercises List</h4>
-        <div>
-            <select className="filter-select" onChange={e => setMuscleGroupFilter(e.target.value)}>
-                <option value="">All Muscle Groups</option>
-                {muscleGroupFilter.map((group, index) => (
-                    <option key={index} value={group}>{group}</option>
-                ))}
-            </select>
-            <select className="filter-select"onChange={e => setEquipmentFilter(e.target.value)}>
-                <option value="">All Equipment</option>
-                {equipmentFilter.map((item, index) => (
-                    <option key={index} value={item}>{item}</option>
-                ))}
-            </select>
-            <select className="filter-select" onChange={e => setLevelFilter(e.target.value)}>
-                <option value="">All Levels</option>
-                {levelFilter.map((level, index) => (
-                    <option key={index} value={level}>{level}</option>
-                ))}
-            </select>
-        </div>
-        <ul className="exercise-list">
-            {filterExercises().map((exercise, index) => (
-            <li key={index}>{exercise.name}</li>
-            ))}
-        </ul>
-        <ul className="list-group">
-          {exercises &&
-            exercises.map((exercise, index) => (
-              <li
-                className={
-                  "list-group-item " +
-                  (index === currentIndex ? "active" : "")
-                }
-                onClick={() => setActiveExercise(exercise, index)}
-                key={index}
-              >
-                {exercise.name}
-              </li>
-            ))}
-        </ul>
-      </div>
+      {/* main data display */}
       <div className="col-md-6">
         {currentExercise ? (
           <div>
@@ -303,6 +241,70 @@ const ExercisesList = () => {
           </div>
         )}
       </div>
+      <div className="col-md-8">
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={searchExercise}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-6">
+        <h4>Exercises List</h4>
+        <div>
+            <select className="filter-select" onChange={e => setMuscleGroupFilter(e.target.value)}>
+                <option value="">All Muscle Groups</option>
+                {muscleGroupFilter.map((group, index) => (
+                    <option key={index} value={group}>{group}</option>
+                ))}
+            </select>
+            <select className="filter-select"onChange={e => setEquipmentFilter(e.target.value)}>
+                <option value="">All Equipment</option>
+                {equipmentFilter.map((item, index) => (
+                    <option key={index} value={item}>{item}</option>
+                ))}
+            </select>
+            <select className="filter-select" onChange={e => setLevelFilter(e.target.value)}>
+                <option value="">All Levels</option>
+                {levelFilter.map((level, index) => (
+                    <option key={index} value={level}>{level}</option>
+                ))}
+            </select>
+        </div>
+        <ul className="exercise-list">
+            {filterExercises().map((exercise, index) => (
+            <li key={index}>{exercise.name}</li>
+            ))}
+        </ul>
+        <ul className="list-group">
+          {exercises &&
+            exercises.map((exercise, index) => (
+              <li
+                className={
+                  "list-group-item " +
+                  (index === currentIndex ? "active" : "")
+                }
+                onClick={() => setActiveExercise(exercise, index)}
+                key={index}
+              >
+                {exercise.name}
+              </li>
+            ))}
+        </ul>
+      </div>
+      
     </div>
   );
 };
