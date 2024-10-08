@@ -1,9 +1,10 @@
-const express = require("express");
-const cors = require("cors");
+import cors from "cors";
+import express from "express";
+import exerciseRoutes from "./app/routes/exercise.routes.js";
 
 const app = express();
 
-var corsOptions = {
+const corsOptions = {
   origin: "http://localhost:3001"
 };
 
@@ -21,8 +22,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Declan application." });
 });
 
-//require("./app/routes/tutorial.routes.js")(app);
-require("./app/routes/exercise.routes.js")(app);
+//Use the imported routes
+exerciseRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

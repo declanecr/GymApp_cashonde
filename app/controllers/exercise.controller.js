@@ -1,7 +1,7 @@
 import Exercise from "../models/exercise.model.js";
 
 // Create and Save a new Exercise
-exports.create = (req, res) => {
+export const create = (req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -32,7 +32,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Exercises from the database (with condition).
-exports.findAll = (req, res) => {
+export const findAll = (req, res) => {
   const name = req.query.name;
 
   Exercise.getAll(name, (err, data) => {
@@ -46,24 +46,31 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Exercise with a id
-exports.findOne = (req, res) => {
+export const findOne = (req, res) => {
+  console.log("findOne called with id:", req.params.id);
   Exercise.findById(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
+        console.log("Exercise not found with id:", req.params.id);
         res.status(404).send({
           message: `Not found Exercise with id ${req.params.id}.`
         });
       } else {
+        console.log("Error retrieving Exercise with id:", req.params.id, "Error:", err);
         res.status(500).send({
           message: "Error retrieving Exercise with id " + req.params.id
         });
       }
-    } else res.send(data);
+    } else {
+      console.log("Exercise found:", data);
+      res.send(data);
+    }
   });
 };
 
+
 // Update an Exercise identified by the id in the request
-exports.update = (req, res) => {
+export const update = (req, res) => {
   // Validate Request
   if (!req.body) {
     res.status(400).send({
@@ -93,7 +100,7 @@ exports.update = (req, res) => {
 };
 
 // Delete an Exercise with the specified id in the request
-exports.delete = (req, res) => {
+export const deleteExercise = (req, res) => {
   Exercise.remove(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
@@ -110,7 +117,7 @@ exports.delete = (req, res) => {
 };
 
 // Delete all Exercises from the database.
-exports.deleteAll = (req, res) => {
+export const deleteAll = (req, res) => {
   Exercise.removeAll((err, data) => {
     if (err)
       res.status(500).send({
@@ -122,7 +129,7 @@ exports.deleteAll = (req, res) => {
 };
 
 // Get unique muscle groups
-exports.getMuscleGroups = (req, res) => {
+export const getMuscleGroups = (req, res) => {
   console.log ("export")
   Exercise.getUniqueMuscleGroups((err, data) => {
     if (err)
@@ -136,7 +143,7 @@ exports.getMuscleGroups = (req, res) => {
 };
 
 // Get unique equipment
-exports.getEquipment = (req, res) => {
+export const getEquipment = (req, res) => {
   Exercise.getUniqueEquipment((err, data) => {
     if (err)
       res.status(500).send({
@@ -147,7 +154,7 @@ exports.getEquipment = (req, res) => {
 };
 
 // Get unique levels
-exports.getLevels = (req, res) => {
+export const getLevels = (req, res) => {
   Exercise.getUniqueLevels((err, data) => {
     if (err)
       res.status(500).send({

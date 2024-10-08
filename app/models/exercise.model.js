@@ -57,7 +57,8 @@ Exercise.getAll = (name, result) => {
       return;
     }
 
-    console.log("exercises: ", res);
+    //prints all the exercises that it obtains
+    //console.log("exercises: ", res);
     result(null, res);
   });
 };
@@ -119,19 +120,19 @@ Exercise.removeAll = result => {
 
 //THESE ARE THE PROBLEMS
 Exercise.getUniqueMuscleGroups = result => {
-  sql.query("SELECT DISTINCT `main_muscle` FROM exercises", (err, res) => {
+  sql.query("SELECT DISTINCT main_muscle FROM exercises", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
-    console.log("muscle groups found: ", res.map(row => row.main_muscle));
+    console.log("muscle groups: ", res);
     result(null, res.map(row => row.main_muscle));
   });
 };
 
 Exercise.getUniqueEquipment = result => {
-  sql.query("SELECT DISTINCT `equipment FROM exercises", (err, res) => {
+  sql.query("SELECT DISTINCT equipment FROM exercises", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -143,7 +144,7 @@ Exercise.getUniqueEquipment = result => {
 };
 
 Exercise.getUniqueLevels = result => {
-  sql.query("SELECT DISTINCT `level` FROM exercises", (err, res) => {
+  sql.query("SELECT DISTINCT level FROM exercises", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
