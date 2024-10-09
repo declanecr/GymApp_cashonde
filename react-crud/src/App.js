@@ -14,6 +14,7 @@ import 'react-bootstrap/dist/react-bootstrap.min.js';
 
 
 // Import custom components
+import TestDataGrid from "./components/testDataGrid.js";
 import TestExerciseList from "./components/testExerciseList.js";
 import NavBar from "./components/testNavBar.js";
 
@@ -31,6 +32,7 @@ function App() {
     <div>
       <h1>Gym App</h1>
       <NavBar />
+      <TestDataGrid />
       <TestExerciseList />
 
       
