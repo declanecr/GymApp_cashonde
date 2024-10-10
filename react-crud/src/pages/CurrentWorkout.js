@@ -4,6 +4,7 @@
  * This component manages and displays the current workout session.
  * It allows users to view their selected exercises and remove them if needed.
  */
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const CurrentWorkout = ({ workout }) => {
@@ -22,5 +23,15 @@ const CurrentWorkout = ({ workout }) => {
     </div>
   );
 };
+
+CurrentWorkout.propTypes = {
+  workout: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      main_muscle: PropTypes.string.isRequired
+    })
+  ).isRequired
+};
+
 
 export default CurrentWorkout;

@@ -10,7 +10,7 @@ import { Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
-import ExercisesList from './pages/ExercisesPage ';
+import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 
 const App = () => {
