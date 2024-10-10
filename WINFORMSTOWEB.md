@@ -1,25 +1,3 @@
-1. clone
-2. open in IDE
-3. open 2 terminals
-    3.a. one should be in root (server/backend)
-    3.b. 'cd react-crud' (react/frontend)
-4. run 'npm install' in both temrinals
-5. run 'npm start' in the backend terminal
-    5.a. should print:
-     'getting routes'
-     'server is running on port 3000'
-     'successfully connected to the database'
-6. run 'npm start' in the frontend terminal
-    6.a. should print:
-    1.starting the development server
-    2.Compiled successfully
-    3.You can now view react-crud in your browser.
-            ...
-            ...
-    webpack compiled successfully
-
-
-
 ## Applying Data Storage Structure from ORIGINAL WINFORMS GYM APP to GYM APP .4
 
 Yes, it's possible to apply the data storage structure demonstrated in the 'Data Storage for Workout, Exercise, and Set Classes' from the ORIGINAL WINFORMS GYM APP to your GYM APP .4. Here's how you can adapt it:
@@ -63,4 +41,3 @@ Modify your frontend to display and manage Workouts, Exercises, and Sets:
 - Implement forms for creating and editing Workouts and Sets
 
 By adapting these concepts, you can create a more structured and feature-rich application that closely mirrors the functionality of the ORIGINAL WINFORMS GYM APP while maintaining the web-based architecture of your GYM APP .4.
-    
