@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
 
-const TestExerciseFilters = ({onFiltersChange}) => {
+const ExerciseFilters = ({onFiltersChange}) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [levels, setLevels] = useState([]);
@@ -97,8 +97,8 @@ const TestExerciseFilters = ({onFiltersChange}) => {
   );
 };
 
-TestExerciseFilters.propTypes={
+ExerciseFilters.propTypes={
     onFiltersChange: PropTypes.func.isRequired
 };
 
-export default TestExerciseFilters;
+export default ExerciseFilters;

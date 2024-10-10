@@ -1,44 +1,40 @@
 /**
  * App.js
  * 
- * This is the main component of the Gym App. It sets up the routing and
- * navigation structure for the entire application.
+ * This is the main component of the Gym App. It sets up the routing structure
+ * and manages the global state for the current workout.
  */
 
-import React from "react";
-import "./App.css";
+import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import NavBar from './components/NavBar';
+import AddExercise from './pages/AddExercisePage';
+import CurrentWorkout from './pages/CurrentWorkout';
+import ExercisesList from './pages/ExercisesPage ';
+import Home from './pages/Home';
 
-// Import react-bootstrap for UI components
+const App = () => {
+  const [currentWorkout, setCurrentWorkout] = useState([]);
 
-import 'react-bootstrap/dist/react-bootstrap.min.js';
+  /**
+   * Adds an exercise to the current workout
+   * @param {Object} exercise - The exercise to be added
+   */
+  const addToWorkout = (exercise) => {
+    setCurrentWorkout(prevWorkout => [...prevWorkout, exercise]);
+  };
 
-
-// Import custom components
-import TestDataGrid from "./components/testDataGrid.js";
-import TestExerciseList from "./components/testExerciseList.js";
-import NavBar from "./components/testNavBar.js";
-
-
-/**
- * App Component
- * 
- * Purpose: Renders the main structure of the application, including navigation and routing
- * Inputs: None
- * Outputs: Rendered React component
- * Routing: Sets up routes for different pages of the application
- */
-function App() {
   return (
-    <div>
-      <h1>Gym App</h1>
+    <>
       <NavBar />
-      <TestDataGrid />
-      <TestExerciseList />
-
-      
-      
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
+        <Route path="/add" element={<AddExercise />} />
+        <Route path="/current-workout" element={<CurrentWorkout workout={currentWorkout} />} />
+      </Routes>
+    </>
   );
-}
+};
 
 export default App;

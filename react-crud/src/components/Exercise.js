@@ -11,10 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../Exercise.css';
 import ExerciseDataService from "../services/ExerciseDataService";
 
-
-
-
-const Exercise = () => {
+const Exercise = props => {
   const { id } = useParams();
   let navigate = useNavigate();
 
