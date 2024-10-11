@@ -96,7 +96,7 @@ const AddExercise = () => {
         <div>
           {/* Form inputs for each exercise property */}
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Test</label>
             <input
               type="text"
               className="form-control"
