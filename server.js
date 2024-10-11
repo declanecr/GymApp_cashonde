@@ -8,6 +8,8 @@
 import cors from "cors";
 import express from "express";
 import exerciseRoutes from "./app/routes/exercise.routes.js";
+import homeRoutes from "./app/routes/home.routes.js";
+import workoutRoutes from "./app/routes/workout.routes.js";
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.get("/", (req, res) => {
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
+homeRoutes(app);
+workoutRoutes(app);
 
 // Set up server to listen on specified port
 const PORT = process.env.PORT || 3000;
