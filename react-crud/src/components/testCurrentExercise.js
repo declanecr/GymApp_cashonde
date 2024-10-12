@@ -11,46 +11,62 @@ const TestCurrentExercise = ({ exercise }) => {
     );
   }
 
-  // TODO: Fix the text wrapping for the description grid.
   return (
     <Card elevation={4} sx={{ borderRadius: '10px', overflow: 'hidden', backgroundColor: '#f5f5f5', mt: 2 }}>
-      <CardContent sx={{fontFamily: 'Consolas, monospace'}}>
-        <Typography variant="h3" align="center" color="primary" gutterBottom sx={{fontFamily: 'Consolas, monospace'}}>
+      <CardContent sx={{ fontFamily: 'Consolas, monospace' }}>
+        <Typography variant="h3" align="center" color="primary" gutterBottom sx={{ fontFamily: 'Consolas, monospace' }}>
           {exercise.name}
         </Typography>
 
         <Grid container spacing={2}>
-           <Box sx={{ padding: 2, borderRadius: '8px' }}>
-              <Typography variant="subtitle1"><strong>Description:</strong></Typography>
-              <Typography variant="body1">{exercise.description}</Typography>
-            </Box>
+          {exercise.description && exercise.description !== 'n/a' && (
+            <Grid item xs={12}>
+              <Box sx={{borderRadius: '8px'}}>
+                <Typography variant="subtitle1">
+                  <strong>Description:</strong>
+                </Typography>
+                <Typography variant="body1">{exercise.description}</Typography>
+              </Box>
+            </Grid>
+          )}
+
           <Grid item xs={12} sm={6}>
             <Box>
-              <Typography variant="subtitle1"><strong>Type:</strong></Typography>
+              <Typography variant="subtitle1">
+                <strong>Type:</strong>
+              </Typography>
               <Typography variant="body1">{exercise.type}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box>
-              <Typography variant="subtitle1"><strong>Main Muscle:</strong></Typography>
+              <Typography variant="subtitle1">
+                <strong>Main Muscle:</strong>
+              </Typography>
               <Typography variant="body1">{exercise.main_muscle}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box>
-              <Typography variant="subtitle1"><strong>Equipment:</strong></Typography>
+              <Typography variant="subtitle1">
+                <strong>Equipment:</strong>
+              </Typography>
               <Typography variant="body1">{exercise.equipment}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box>
-              <Typography variant="subtitle1"><strong>Level:</strong></Typography>
+              <Typography variant="subtitle1">
+                <strong>Level:</strong>
+              </Typography>
               <Typography variant="body1">{exercise.level}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box>
-              <Typography variant="subtitle1"><strong>Rating:</strong></Typography>
+              <Typography variant="subtitle1">
+                <strong>Rating:</strong>
+              </Typography>
               <Typography variant="body1">{exercise.rating}</Typography>
             </Box>
           </Grid>
@@ -59,6 +75,7 @@ const TestCurrentExercise = ({ exercise }) => {
     </Card>
   );
 };
+
 
 TestCurrentExercise.propTypes = {
   exercise: PropTypes.shape({

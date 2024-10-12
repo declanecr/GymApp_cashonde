@@ -7,14 +7,17 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Container, Typography } from '@mui/material'; // Import necessary MUI components
 import ExerciseGrid from '../components/ExerciseGrid';
 
 const ExercisePage = ({ addToWorkout }) => {
     return (
-      <div>
-        <h1>Exercises</h1>
+      <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 2 }}> {/* Center alignment with margin on top */}
+        <Typography variant="h3" component="h1" gutterBottom>
+          Exercises
+        </Typography>
         <ExerciseGrid addToWorkout={addToWorkout} />
-      </div>
+      </Container>
     );
 };
 
