@@ -6,13 +6,13 @@ import ExerciseDataService from "../services/ExerciseDataService";
 import AddToWorkoutButton from './AddToWorkoutButton';
 import ExerciseFilters from './ExerciseFilters';
 import TestCurrentExercise from './testCurrentExercise';
+import { Container, Typography, Box } from '@mui/material';
 
-const ExerciseGrid = ({addToWorkout}) => {
+const ExerciseGrid = ({ addToWorkout }) => {
   const [exercises, setExercises] = useState([]);
   const [allExercises, setAllExercises] = useState([]);
   const [filters, setFilters] = useState({});
-  const [currentExercise, setCurrentExercise]=useState(null);
-  
+  const [currentExercise, setCurrentExercise] = useState(null);
 
   useEffect(() => {
     retrieveAllExercises();
@@ -37,19 +37,19 @@ const ExerciseGrid = ({addToWorkout}) => {
     let filteredExercises = allExercises;
 
     if (filters.muscle) {
-      filteredExercises = filteredExercises.filter(exercise => 
+      filteredExercises = filteredExercises.filter(exercise =>
         exercise.main_muscle === filters.muscle
       );
     }
 
     if (filters.equipment) {
-      filteredExercises = filteredExercises.filter(exercise => 
+      filteredExercises = filteredExercises.filter(exercise =>
         exercise.equipment === filters.equipment
       );
     }
 
     if (filters.level) {
-      filteredExercises = filteredExercises.filter(exercise => 
+      filteredExercises = filteredExercises.filter(exercise =>
         exercise.level === filters.level
       );
     }
@@ -61,60 +61,55 @@ const ExerciseGrid = ({addToWorkout}) => {
     setFilters(newFilters);
   };
 
-  const columns = [
-    { key: 'name', name: 'Name', sortable: true, width:240 },
-    { key: 'main_muscle', name: 'Main Muscle', width: 120 },
-    { key: 'equipment', name: 'Equipment', width: 120},
-    { key: 'level', name: 'Level' , width: 120},
-    { key: 'rating', name: 'Rating', sortable: true, width:100 }
-  ];
-
-  // Custom styles to make the table background transparent
-  const gridStyle = {
-    background: 'transparent',
-    minWidth: 'auto',
-    maxWidth: 'fit-content'
-  };
-
-  const handleCellClick =(args)=>{
+  const handleCellClick = (args) => {
     const { row } = args;
     const updatedRow = {
       ...row,
-      rating: Number(row.rating)
+      rating: Number(row.rating),
     };
 
     setCurrentExercise(updatedRow);
-    TestCurrentExercise.exercise=currentExercise;
+    TestCurrentExercise.exercise = currentExercise;
     console.log(updatedRow);
-  }
+  };
+
+  const columns = [
+    { key: 'name', name: 'Name', sortable: true, width: 240 },
+    { key: 'main_muscle', name: 'Main Muscle', width: 120 },
+    { key: 'equipment', name: 'Equipment', width: 120 },
+    { key: 'level', name: 'Level', width: 120 },
+    { key: 'rating', name: 'Rating', sortable: true, width: 100 },
+  ];
 
   return (
-    <div>
-      <div>
-        <TestCurrentExercise 
-          exercise={currentExercise}
-          />
-        <AddToWorkoutButton
-          exercise={currentExercise}
-          onAddToWorkout={addToWorkout}
-          />
-      </div>
+    <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
+      <Box mb={3}>
+        <TestCurrentExercise exercise={currentExercise} />
+        <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
+      </Box>
+
       <ExerciseFilters onFiltersChange={handleFiltersChange} />
-      <h2>Exercise List</h2>
-      <div style ={gridStyle}>
-        <DataGrid 
-          columns={columns} 
-          rows={exercises} 
-          defaultColumnOptions={{ sortable: false }} 
-          onCellClick={handleCellClick}
+
+      <Typography variant="h5" gutterBottom>
+        Exercise List
+      </Typography>
+
+      <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
+        <div style={{ background: 'transparent', maxWidth: 'fit-content', margin: 'auto' }}>
+          <DataGrid
+            columns={columns}
+            rows={exercises}
+            defaultColumnOptions={{ sortable: false }}
+            onCellClick={handleCellClick}
           />
-      </div>
-      
-    </div>
+        </div>
+      </Box>
+    </Container>
   );
 };
- ExerciseGrid.propTypes = {
-  addToWorkout: PropTypes.func.isRequired
+
+ExerciseGrid.propTypes = {
+  addToWorkout: PropTypes.func.isRequired,
 };
 
 export default ExerciseGrid;
