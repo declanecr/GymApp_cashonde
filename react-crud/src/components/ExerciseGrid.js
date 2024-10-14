@@ -54,6 +54,7 @@ const ExerciseGrid = ({addToWorkout}) => {
       );
     }
 
+    console.log(filteredExercises);
     setExercises(filteredExercises);
   };
 

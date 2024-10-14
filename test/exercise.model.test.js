@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import sql from "../app/models/db.js";
-import { Exercise } from "../app/models/exercise.model.js";
+import Exercise from "../app/models/exercise.model.js";
 
 describe('Exercise Model', () => {
   describe('getUniqueMuscleGroups', () => {
