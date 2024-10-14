@@ -81,14 +81,20 @@ Exercise.findById = (id, result) => {
     }
 
     if (res.length) {
-      // If exercise found, log and return it
-      console.log("found exercise: ", res[0]);
-      result(null, res[0]);
-      return;
+      const exercise = res[0];
+      // Fetch sets for this exercise
+      Set.findByExerciseId(id, (err, sets) => {
+        if (err) {
+          result(err, null);
+          return;
+        }
+        exercise.sets = sets;
+        console.log("found exercise: ", exercise);
+        result(null, exercise);
+      });
+    } else {
+      result({ kind: "not_found" }, null);
     }
-
-    // If no exercise found, return not found error
-    result({ kind: "not_found" }, null);
   });
 };
 

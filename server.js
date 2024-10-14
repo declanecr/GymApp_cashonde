@@ -9,6 +9,7 @@ import cors from "cors";
 import express from "express";
 import exerciseRoutes from "./app/routes/exercise.routes.js";
 import homeRoutes from "./app/routes/home.routes.js";
+import setRoutes from "./app/routes/set.routes.js";
 import workoutRoutes from "./app/routes/workout.routes.js";
 
 const app = express();
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
+setRoutes(app);
 homeRoutes(app);
 workoutRoutes(app);
 
