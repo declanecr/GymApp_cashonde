@@ -283,4 +283,4 @@ Exercise.getUniqueLevels = result => {
   });
 };
 
-export default Exercise
+export default Exercise;
