@@ -24,6 +24,6 @@ export default function(app){
     router.delete("/", sets.deleteAll);
 
     //Mount the router on the app
-    app.use('/api/sets', router);
+    app.use('/api/exercises/:id/sets', router);
 }
 
