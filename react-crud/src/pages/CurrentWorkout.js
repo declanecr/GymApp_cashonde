@@ -6,21 +6,34 @@
  */
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Container, Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 
 const CurrentWorkout = ({ workout }) => {
   return (
-    <div>
-      <h1>Current Workout</h1>
-      {workout.length === 0 ? (
-        <p>No exercises added to the workout yet.</p>
-      ) : (
-        <ul>
-          {workout.map((exercise, index) => (
-            <li key={index}>{exercise.name} - {exercise.main_muscle}</li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 4, textAlign: 'center' }}>
+        <Typography variant="h4" gutterBottom>
+          Current Workout
+        </Typography>
+        
+        {workout.length === 0 ? (
+          <Typography variant="body1" color="textSecondary">
+            No exercises added to the workout yet.
+          </Typography>
+        ) : (
+          <List>
+            {workout.map((exercise, index) => (
+              <ListItem key={index} divider>
+                <ListItemText
+                  primary={exercise.name}
+                  secondary={`Main Muscle: ${exercise.main_muscle}`}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
+    </Container>
   );
 };
 
@@ -32,6 +45,5 @@ CurrentWorkout.propTypes = {
     })
   ).isRequired
 };
-
 
 export default CurrentWorkout;

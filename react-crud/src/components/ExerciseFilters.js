@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
+import { FormControl, InputLabel, MenuItem, Select, Button, Box, Typography } from '@mui/material';
 
-const ExerciseFilters = ({onFiltersChange}) => {
+const ExerciseFilters = ({ onFiltersChange }) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [levels, setLevels] = useState([]);
@@ -10,18 +11,13 @@ const ExerciseFilters = ({onFiltersChange}) => {
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
 
-    
-
   useEffect(() => {
     retrieveMuscleGroups();
     retrieveEquipment();
     retrieveLevels();
   }, []);
 
-  
-
   const retrieveMuscleGroups = () => {
-    //console.log("retrieving muscle groups");
     ExerciseDataService.getMuscleGroups()
       .then(response => {
         setMuscleGroups(response.data);
@@ -51,54 +47,109 @@ const ExerciseFilters = ({onFiltersChange}) => {
       });
   };
 
-  const getFilters = () => {
-    console.log("getting filters");
+  const handleFilterChange = () => {
     const filters = {
       muscle: selectedMuscle,
       equipment: selectedEquipment,
-      level: selectedLevel
+      level: selectedLevel,
     };
     onFiltersChange(filters);
-    return filters;
   };
 
   return (
-    <div>
-      <h2>Exercise Filters</h2>
-      <div>
-        <label>Muscle Group:</label>
-        <select value={selectedMuscle} onChange={(e) => setSelectedMuscle(e.target.value)}>
-          <option value="">All</option>
-          {muscleGroups.map((muscle, index) => (
-            <option key={index} value={muscle}>{muscle}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>Equipment:</label>
-        <select value={selectedEquipment} onChange={(e) => setSelectedEquipment(e.target.value)}>
-          <option value="">All</option>
-          {equipment.map((item, index) => (
-            <option key={index} value={item}>{item}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>Level:</label>
-        <select value={selectedLevel} onChange={(e) => setSelectedLevel(e.target.value)}>
-          <option value="">All</option>
-          {levels.map((level, index) => (
-            <option key={index} value={level}>{level}</option>
-          ))}
-        </select>
-      </div>
-      <button onClick={() => console.log(getFilters())}>Get Filters</button>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        mt: 4,
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        Exercise Filters
+      </Typography>
+
+      <Box sx={{ display: 'flex', gap: 3, flexDirection: 'column', maxWidth: 400 }}>
+        {/* Muscle Group Filter */}
+        <FormControl fullWidth>
+          <InputLabel id="muscle-group-label">Muscle Group</InputLabel>
+          <Select
+            labelId="muscle-group-label"
+            id="muscle-group-select"
+            value={selectedMuscle}
+            label="Muscle Group"
+            onChange={(e) => setSelectedMuscle(e.target.value)}
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {muscleGroups.map((muscle, index) => (
+              <MenuItem key={index} value={muscle}>
+                {muscle}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Equipment Filter */}
+        <FormControl fullWidth>
+          <InputLabel id="equipment-label">Equipment</InputLabel>
+          <Select
+            labelId="equipment-label"
+            id="equipment-select"
+            value={selectedEquipment}
+            label="Equipment"
+            onChange={(e) => setSelectedEquipment(e.target.value)}
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {equipment.map((item, index) => (
+              <MenuItem key={index} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Level Filter */}
+        <FormControl fullWidth>
+          <InputLabel id="level-label">Level</InputLabel>
+          <Select
+            labelId="level-label"
+            id="level-select"
+            value={selectedLevel}
+            label="Level"
+            onChange={(e) => setSelectedLevel(e.target.value)}
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {levels.map((level, index) => (
+              <MenuItem key={index} value={level}>
+                {level}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Apply Filters Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFilterChange}
+          sx={{ alignSelf: 'flex-start' }}
+        >
+          Apply Filters
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
-ExerciseFilters.propTypes={
-    onFiltersChange: PropTypes.func.isRequired
+ExerciseFilters.propTypes = {
+  onFiltersChange: PropTypes.func.isRequired,
 };
 
 export default ExerciseFilters;

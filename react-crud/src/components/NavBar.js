@@ -7,29 +7,29 @@
  */
 
 import React from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { AppBar, Toolbar, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
-
 
 const NavBar = () => {
   return (
-    <>
-      <Navbar bg="light" expand="lg">
-        <Container>
-          <Navbar.Brand as={Link} to="/">Gym App</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/">Home</Nav.Link>
-              <Nav.Link as={Link} to="/exercises">Exercises</Nav.Link>
-              <Nav.Link as={Link} to="/add">Add Exercise</Nav.Link>
-              <Nav.Link as={Link} to="/current-workout">Current Workout</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
-    </>
+    <AppBar position="static">
+      <Container maxWidth="lg">
+        <Toolbar sx={{ justifyContent: 'space-between' }}> {/* Dispersing items over the space */}
+          <Button component={Link} to="/" color="inherit">
+            Home
+          </Button>
+          <Button component={Link} to="/exercises" color="inherit">
+            Exercises
+          </Button>
+          <Button component={Link} to="/add" color="inherit">
+            Add Exercise
+          </Button>
+          <Button component={Link} to="/current-workout" color="inherit">
+            Current Workout
+          </Button>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 
