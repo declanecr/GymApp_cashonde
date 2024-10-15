@@ -4,11 +4,11 @@
  * This component manages and displays the current workout session.
  * It allows users to view their selected exercises and remove them if needed.
  */
+import { Box, Button, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Container, Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 
-const CurrentWorkout = ({ workout }) => {
+const CurrentWorkout = ({ currentWorkout, removeFromWorkout }) => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, textAlign: 'center' }}>
@@ -16,18 +16,25 @@ const CurrentWorkout = ({ workout }) => {
           Current Workout
         </Typography>
         
-        {workout.length === 0 ? (
+        {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
           </Typography>
         ) : (
           <List>
-            {workout.map((exercise, index) => (
+            {currentWorkout.map((exercise, index) => (
               <ListItem key={index} divider>
                 <ListItemText
                   primary={exercise.name}
                   secondary={`Main Muscle: ${exercise.main_muscle}`}
                 />
+                <Button
+                variant="outlined"
+                color="secondary"
+                onClick={()=>removeFromWorkout(exercise)}
+                >
+                  Remove
+                </Button>
               </ListItem>
             ))}
           </List>
@@ -38,12 +45,13 @@ const CurrentWorkout = ({ workout }) => {
 };
 
 CurrentWorkout.propTypes = {
-  workout: PropTypes.arrayOf(
+  currentWorkout: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       main_muscle: PropTypes.string.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  removeFromWorkout:PropTypes.func.isRequired
 };
 
 export default CurrentWorkout;

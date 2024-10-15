@@ -24,6 +24,10 @@ const App = () => {
     setCurrentWorkout(prevWorkout => [...prevWorkout, exercise]);
   };
 
+  const removeFromWorkout = (exerciseToRemove) => {
+    setCurrentWorkout(currentWorkout.filter(exercise => exercise.id !== exerciseToRemove.id));
+  };
+
   return (
     <>
       <NavBar />
@@ -31,7 +35,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
         <Route path="/add" element={<AddExercise />} />
-        <Route path="/current-workout" element={<CurrentWorkout workout={currentWorkout} />} />
+        <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout}/>} />
       </Routes>
     </>
   );
