@@ -18,6 +18,7 @@
  */
 
 import sql from "./db.js";
+import Set from "./set.model.js";
 
 /**
  * Constructor for the Exercise object
@@ -83,7 +84,7 @@ Exercise.findById = (id, result) => {
     if (res.length) {
       const exercise = res[0];
       // Fetch sets for this exercise
-      Set.findByExerciseId(id, (err, sets) => {
+      Set.getAll(id, (err, sets) => {
         if (err) {
           result(err, null);
           return;
