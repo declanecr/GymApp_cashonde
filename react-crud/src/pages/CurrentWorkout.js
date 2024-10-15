@@ -4,9 +4,10 @@
  * This component manages and displays the current workout session.
  * It allows users to view their selected exercises and remove them if needed.
  */
-import { Box, Button, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
+import RemoveExerciseButton from '../components/RemoveExerciseButton';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout }) => {
   return (
@@ -28,13 +29,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout }) => {
                   primary={exercise.name}
                   secondary={`Main Muscle: ${exercise.main_muscle}`}
                 />
-                <Button
-                variant="outlined"
-                color="secondary"
-                onClick={()=>removeFromWorkout(exercise)}
-                >
-                  Remove
-                </Button>
+                <RemoveExerciseButton exercise={exercise} onRemove={removeFromWorkout}/>
+                
               </ListItem>
             ))}
           </List>
