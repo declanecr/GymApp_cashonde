@@ -4,6 +4,7 @@ when clicked, mark line background as green
 */
 
 import { Checkbox, FormControlLabel } from '@mui/material';
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 const CompleteSetCheckbox = ({ onComplete }) => {
@@ -38,5 +39,9 @@ const CompleteSetCheckbox = ({ onComplete }) => {
     />
   );
 };
+
+CompleteSetCheckbox.propTypes = {
+    onComplete: PropTypes.func.isRequired
+  };
 
 export default CompleteSetCheckbox;
