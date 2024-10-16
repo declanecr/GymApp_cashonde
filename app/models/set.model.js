@@ -108,6 +108,25 @@ class Set {
       result(null, { message: `${res.affectedRows} Sets were deleted successfully!` });
     });
   }
+
+  static findByExerciseId(exerciseId, result) {
+  sql.query(`SELECT * FROM sets WHERE exercise_id = ?`, [exerciseId], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found sets: ", res);
+      result(null, res);
+      return;
+    }
+
+    // not found Sets with the exercise id
+    result({ kind: "not_found" }, null);
+  });
+}
 }
 
 export default Set;

@@ -12,6 +12,7 @@ import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
+import SetsHistory from './pages/SetsHistory';
 
 const App = () => {
   const [currentWorkout, setCurrentWorkout] = useState([]);
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
         <Route path="/add" element={<AddExercise />} />
         <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout}/>} />
+        <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
       </Routes>
     </>
   );
