@@ -198,6 +198,8 @@ const ExerciseDataService = {
   updateSet: (exerciseId, setId, setData) => {
     return http.put(`/exercises/${exerciseId}/sets/${setId}`, setData);
   },
+   
+
 
   /**
    * Deletes a set
