@@ -1,12 +1,6 @@
-/** AddSetButton.js
-will appear before the remove button on CurrentWorkout.js
-onClick -> will add new set to the list of sets
-*/
-
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, IconButton, List, ListItem, TextField } from '@mui/material';
+import { Box, Button, Checkbox, IconButton, List, ListItem, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import CompleteSetCheckbox from './CompleteSetCheckbox';
 
 const AddSetButton = () => {
   const [sets, setSets] = useState([]);
@@ -16,15 +10,19 @@ const AddSetButton = () => {
   };
 
   const handleRemoveSet = (index) => {
-    const newSets = [...sets];
-    newSets.splice(index, 1);
-    setSets(newSets);
+    setSets(sets.filter((_, i) => i !== index));
   };
 
   const handleSetChange = (index, field, value) => {
-    const newSets = [...sets];
-    newSets[index][field] = value;
-    setSets(newSets);
+    setSets(sets.map((set, i) => 
+      i === index ? { ...set, [field]: value } : set
+    ));
+  };
+
+  const handleSetCompletion = (index, isCompleted) => {
+    setSets(sets.map((set, i) => 
+      i === index ? { ...set, isCompleted } : set
+    ));
   };
 
   return (
@@ -34,7 +32,17 @@ const AddSetButton = () => {
       </Button>
       <List>
         {sets.map((set, index) => (
-          <ListItem key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+          <ListItem 
+            key={index} 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              mt: 2,
+              backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
+              padding: '5px',
+              borderRadius: '4px',
+            }}
+          >
             <TextField
               label="Weight"
               type="number"
@@ -49,13 +57,18 @@ const AddSetButton = () => {
               onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
               sx={{ mr: 2 }}
             />
+            <Checkbox
+              checked={set.isCompleted}
+              onChange={(e) => handleSetCompletion(index, e.target.checked)}
+              sx={{
+                '&.Mui-checked': {
+                  color: 'green',
+                },
+              }}
+            />
             <IconButton onClick={() => handleRemoveSet(index)} aria-label="delete">
               <DeleteIcon />
             </IconButton>
-            <CompleteSetCheckbox 
-              isCompleted={set.isCompleted}
-              onComplete={(value) => handleSetChange(index, 'isCompleted', value)}
-            />
           </ListItem>
         ))}
       </List>
