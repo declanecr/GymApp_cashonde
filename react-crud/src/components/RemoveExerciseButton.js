@@ -2,10 +2,10 @@ import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const RemoveExerciseButton = ({ exercise, onRemove }) => {
+const RemoveExerciseButton = ({ exercise, removeFromWorkout }) => {
   return (
     <Button
-      onClick={() => onRemove(exercise)}
+      onClick={() => removeFromWorkout(exercise)}
       variant="contained"
       color="secondary"
       sx={{
@@ -25,7 +25,7 @@ const RemoveExerciseButton = ({ exercise, onRemove }) => {
 
 RemoveExerciseButton.propTypes = {
   exercise: PropTypes.object.isRequired,
-  onRemove: PropTypes.func.isRequired
+  removeFromWorkout: PropTypes.func.isRequired
 };
 
 export default RemoveExerciseButton;

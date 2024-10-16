@@ -4,7 +4,7 @@ import sql from "./db.js";
 class Set {
   constructor(set) {
     this.exercise_id = set.exercise_id;
-    this.date = set.date;
+    this.date = set.date; //this serves as the ExerciseID
     this.reps = set.reps;
     this.weight = set.weight;
   }
