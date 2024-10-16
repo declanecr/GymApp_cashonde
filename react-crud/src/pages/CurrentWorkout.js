@@ -2,11 +2,12 @@
  * CurrentWorkout Component
  * 
  * This component manages and displays the current workout session.
- * It allows users to view their selected exercises and remove them if needed.
+ * It allows users to view their selected exercises, remove them if needed, and add sets.
  */
 import { Box, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
+import AddSetButton from '../components/AddSetButton';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
 
@@ -18,7 +19,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           Current Workout
         </Typography>
         <SaveWorkoutButton currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
-        {' SAVE EXERCISE BUTTON GOES HERE '}
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
@@ -31,14 +31,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
                   primary={exercise.name}
                   secondary={`Main Muscle: ${exercise.main_muscle}`}
                 />
+                <AddSetButton exercise={exercise} />
                 <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
-                
               </ListItem>
             ))}
           </List>
         )}
       </Box>
-      
     </Container>
   );
 };
@@ -50,7 +49,7 @@ CurrentWorkout.propTypes = {
       main_muscle: PropTypes.string.isRequired
     })
   ).isRequired,
-  removeFromWorkout:PropTypes.func.isRequired,
+  removeFromWorkout: PropTypes.func.isRequired,
   deleteWorkout: PropTypes.func.isRequired
 };
 
