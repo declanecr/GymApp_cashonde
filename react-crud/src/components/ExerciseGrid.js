@@ -1,3 +1,4 @@
+import { Box, Container, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import DataGrid from 'react-data-grid';
@@ -6,7 +7,7 @@ import ExerciseDataService from "../services/ExerciseDataService";
 import AddToWorkoutButton from './AddToWorkoutButton';
 import ExerciseFilters from './ExerciseFilters';
 import TestCurrentExercise from './testCurrentExercise';
-import { Container, Typography, Box } from '@mui/material';
+import ViewSetsButton from './ViewSetsButton';
 
 const ExerciseGrid = ({ addToWorkout }) => {
   const [exercises, setExercises] = useState([]);
@@ -87,6 +88,7 @@ const ExerciseGrid = ({ addToWorkout }) => {
       <Box mb={3}>
         <TestCurrentExercise exercise={currentExercise} />
         <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
+        <ViewSetsButton exercise={currentExercise}/>
       </Box>
 
       <ExerciseFilters onFiltersChange={handleFiltersChange} />

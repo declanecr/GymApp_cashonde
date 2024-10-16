@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const SetsGrid = ({ sets }) => {
@@ -21,6 +22,17 @@ const SetsGrid = ({ sets }) => {
       </tbody>
     </table>
   );
+};
+
+SetsGrid.propTypes = {
+  sets: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      date: PropTypes.string.isRequired,
+      reps: PropTypes.number.isRequired,
+      weight: PropTypes.number.isRequired
+    })
+  ).isRequired
 };
 
 export default SetsGrid;

@@ -7,6 +7,7 @@
  */
 
 import Exercise from "../models/exercise.model.js";
+import Set from "../models/set.model.js";
 
 export const addSet = (req, res) => {
   if (!req.body) {
