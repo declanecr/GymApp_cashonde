@@ -307,7 +307,7 @@ Exercise.getWorkouts = (id, result) => {
     JOIN workout_exercises we ON w.id = we.workout_id
     WHERE we.exercise_id = ?
     `,
-    id,
+    [id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

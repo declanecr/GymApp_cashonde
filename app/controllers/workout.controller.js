@@ -27,8 +27,6 @@ export const create = (req, res) => {
   const workout = new Workout({
     name: req.body.name,
     date: req.body.date,
-    duration: req.body.duration,
-    user_id: req.body.user_id
   });
 
   // Save Workout in the database
@@ -66,15 +64,15 @@ export const findAll = (req, res) => {
  * @param {Object} res - The response object
  */
 export const findOne = (req, res) => {
-  Workout.findById(req.params.workoutId, (err, data) => {
+  Workout.findById(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
-          message: `Not found Workout with id ${req.params.workoutId}.`
+          message: `Not found Workout with id ${req.params.id}.`
         });
       } else {
         res.status(500).send({
-          message: "Error retrieving Workout with id " + req.params.workoutId
+          message: "Error retrieving Workout with id " + req.params.id
         });
       }
     } else res.send(data);
@@ -96,7 +94,7 @@ export const update = (req, res) => {
   }
 
   Workout.updateById(
-    req.params.workoutId,
+    req.params.id,
     new Workout(req.body),
     (err, data) => {
       if (err) {
@@ -121,17 +119,38 @@ export const update = (req, res) => {
  * @param {Object} res - The response object
  */
 export const remove = (req, res) => {
-  Workout.remove(req.params.workoutId, (err, data) => {
+  Workout.remove(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
-          message: `Not found Workout with id ${req.params.workoutId}.`
+          message: `Not found Workout with id ${req.params.id}.`
         });
       } else {
         res.status(500).send({
-          message: "Could not delete Workout with id " + req.params.workoutId
+          message: "Could not delete Workout with id " + req.params.id
         });
       }
     } else res.send({ message: `Workout was deleted successfully!` });
+  });
+};
+
+// Get all sets for a specific workout
+export const getWorkoutSets = (req, res) => {
+  const workoutId = req.params.id;
+
+  Workout.getSets(workoutId, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `No sets found for workout with id ${workoutId}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving sets for workout with id " + workoutId
+        });
+      }
+    } else {
+      res.send(data);
+    }
   });
 };
