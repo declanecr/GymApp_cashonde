@@ -328,3 +328,15 @@ export const getLevels = (req, res) => {
       res.send(data);
   });
 };
+
+export const getWorkouts = (req,res)=>{
+  Exercise.getWorkouts(req.params.id, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving workouts."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+}

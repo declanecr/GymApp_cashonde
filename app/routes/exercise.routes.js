@@ -39,6 +39,9 @@ export default function(app) {
     // Get all sets for an exercise
     router.get("/:id/sets", exercises.getSets);
 
+    // Fetch workouts for a specific exercise
+    router.get("/:id/workouts", exercises.getWorkouts)
+
     // Mount the router on the app
     app.use('/api/exercises', router);
 };

@@ -12,6 +12,7 @@
  * - CRUD operations for exercise records
  * - Filtering exercises by name
  * - Retrieving unique values for muscle groups, equipment, and difficulty levels
+ * - Fetching workouts associated with an exercise
  * 
  * This model serves as an intermediary between the application logic and the database,
  * encapsulating the data access logic and providing a clean API for exercise-related operations.
@@ -84,7 +85,7 @@ Exercise.findById = (id, result) => {
     if (res.length) {
       const exercise = res[0];
       // Fetch sets for this exercise
-      Set.findByExerciseId(id, (err, sets) => {
+      Set.getAll(id, (err, sets) => {
         if (err) {
           result(err, null);
           return;
@@ -288,6 +289,35 @@ Exercise.getUniqueLevels = result => {
     console.log("levels found: ", res.map(row => row.level));
     result(null, res.map(row => row.level));
   });
+};
+
+/**
+ * Get workouts associated with an exercise
+ * @param {number} id - The ID of the exercise
+ * @param {Function} result - Callback function
+ * @purpose Retrieve all workouts that include a specific exercise
+ * @input Exercise ID and callback function
+ * @output Array of workout objects or error
+ * @sends SQL query to select workouts associated with the exercise
+ */
+Exercise.getWorkouts = (id, result) => {
+  sql.query(
+    `
+    SELECT w.* FROM workouts w
+    JOIN workout_exercises we ON w.id = we.workout_id
+    WHERE we.exercise_id = ?
+    `,
+    id,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+      console.log("workouts for exercise: ", res);
+      result(null, res);
+    }
+  );
 };
 
 export default Exercise;
