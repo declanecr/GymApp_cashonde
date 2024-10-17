@@ -208,6 +208,18 @@ const ExerciseDataService = {
    */
   deleteSet: (exerciseId, setId) => {
     return http.delete(`/exercises/${exerciseId}/sets/${setId}`);
+  },
+
+  /**
+   * Fetches all workouts for an exercise
+   * Purpose: Get all the workouts a specific
+   * exercise appears in
+   * Inputs: exerciseId - The ID of the exercise
+   * Outputs: Promise resolving to the fetched workouts
+   * API Call: GET /exercises/:exerciseId/workouts
+   */
+  getWorkouts: (exerciseId)=>{
+    return http.get(`/exercises/${exerciseId}/workouts`);
   }
 };
 
