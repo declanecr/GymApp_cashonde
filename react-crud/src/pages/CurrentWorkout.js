@@ -14,8 +14,8 @@ import SaveWorkoutButton from '../components/SaveWorkoutButton';
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
   const [sets, setSets] = useState([]);
 
-  const handleAddSet = () => {
-    setSets([...sets, { weight: '', reps: '', isCompleted: false }]);
+  const handleAddSet = (exerciseId) => {
+    setSets([...sets, { exerciseId, weight: '', reps: '', isCompleted: false }]);
   };
 
   const handleRemoveSet = (index) => {
@@ -34,13 +34,21 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     ));
   };
 
+  const getCompletedSets = () => {
+    return sets.filter(set => set.isCompleted).map(set => ({
+      ...set,
+      exerciseId: set.exerciseId
+    }));
+  };
+
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
           Current Workout
         </Typography>
-        <SaveWorkoutButton currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
+        
+        <SaveWorkoutButton currentWorkout={getCompletedSets()} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
@@ -54,13 +62,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
                   secondary={`Main Muscle: ${exercise.main_muscle}`}
                 />
                 <Box>
-                  <Button onClick={handleAddSet} variant="contained" color="primary">
+                  <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
                     Add Set
                   </Button>
                   <List>
-                    {sets.map((set, index) => (
+                    {sets.filter(set => set.exerciseId === exercise.id).map((set, setIndex) => (
                       <ListItem 
-                        key={index} 
+                        key={setIndex} 
                         sx={{ 
                           display: 'flex', 
                           alignItems: 'center', 
@@ -74,33 +82,33 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
                           label="Weight"
                           type="number"
                           value={set.weight}
-                          onChange={(e) => handleSetChange(index, 'weight', e.target.value)}
+                          onChange={(e) => handleSetChange(setIndex, 'weight', e.target.value)}
                           sx={{ mr: 2 }}
                         />
                         <TextField
                           label="Reps"
                           type="number"
                           value={set.reps}
-                          onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
+                          onChange={(e) => handleSetChange(setIndex, 'reps', e.target.value)}
                           sx={{ mr: 2 }}
                         />
                         <Checkbox
                           checked={set.isCompleted}
-                          onChange={(e) => handleSetCompletion(index, e.target.checked)}
+                          onChange={(e) => handleSetCompletion(setIndex, e.target.checked)}
                           sx={{
                             '&.Mui-checked': {
-                              color: 'green',
-                            },
-                          }}
-                        />
-                        <IconButton onClick={() => handleRemoveSet(index)} aria-label="delete">
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-                <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
+              color: 'green',
+            },
+          }}
+        />
+        <IconButton onClick={() => handleRemoveSet(setIndex)} aria-label="delete">
+          <DeleteIcon />
+        </IconButton>
+      </ListItem>
+    ))}
+  </List>
+</Box>
+<RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
               </ListItem>
             ))}
           </List>
@@ -113,6 +121,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
 CurrentWorkout.propTypes = {
   currentWorkout: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       main_muscle: PropTypes.string.isRequired
     })
