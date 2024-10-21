@@ -222,6 +222,17 @@ const ExerciseDataService = {
    */
   getWorkouts: (exerciseId)=>{
     return http.get(`/exercises/${exerciseId}/workouts`);
+  },
+
+  /**
+   * Fetches all sets for an exercise
+   * Purpose: Get all sets from a specified workout
+   * Inputs: workoutId - The ID of the workout
+   * Outputs: Promise resolving to the fetched sets
+   * API Call: Get /workouts/:workoutId/sets
+   */
+  getWorkoutSets: (workoutId)=>{
+    return http.get(`/workouts/${workoutId}/sets`);
   }
 };
 

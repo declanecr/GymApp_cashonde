@@ -7,8 +7,10 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout }) => {
     const saveWorkout = () => {
         if (currentWorkout && currentWorkout.length > 0) {
             currentWorkout.forEach(exercise => {
-                ExerciseDataService.createSet({
-                    exercise_id: exercise.id,
+                console.log('exerciseID: ',exercise.exerciseId);
+                console.log('reps: ',exercise.reps);
+                console.log('weight: ', exercise.weight);
+                ExerciseDataService.createSet(exercise.exerciseId, {
                     date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
                     reps: exercise.reps || 0, // Default to 0 if not provided
                     weight: exercise.weight || 0 // Default to 0 if not provided
@@ -22,8 +24,6 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout }) => {
             });
         }
         deleteWorkout();
-        
-
     };
     
     return (

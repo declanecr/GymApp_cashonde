@@ -103,4 +103,31 @@ Workout.remove = (id, result) => {
   });
 };
 
+// Fetch sets from a workout
+Workout.getSets = (id, result) => {
+  sql.query(
+    `
+    SELECT s.* FROM sets s
+    JOIN workout_exercises we ON s.exercise_id = we.exercise_id
+    WHERE we.workout_id = ?
+    `, 
+    [id],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("found sets: ", res);
+        result(null, res);
+        return;
+      }
+
+      // If no sets found
+      result({ kind: "not_found" }, null);
+    });
+};
+
 export default Workout;

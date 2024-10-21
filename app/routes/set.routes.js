@@ -23,6 +23,8 @@ export default function(app){
     // Delete all Sets
     router.delete("/", sets.deleteAll);
 
+    
+
     //Mount the router on the app
     app.use('/api/exercises/:id/sets', router);
 }

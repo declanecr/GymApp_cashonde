@@ -12,13 +12,16 @@ export default function (app) {
     router.get('/', workouts.findAll);
 
     // Retrieve a single Workout with workoutId
-    router.get('/:workoutId', workouts.findOne);
+    router.get('/:id', workouts.findOne);
 
     // Update a Workout with workoutId
-    router.put('/:workoutId', workouts.update);
+    router.put('/:id', workouts.update);
 
     // Delete a Workout with workoutId
-    router.delete('/:workoutId', workouts.remove);
+    router.delete('/:id', workouts.remove);
+
+    // Gets Sets from a workout
+    router.get('/:id/sets', workouts.getWorkoutSets);
 
     app.use('/api/workouts', router);
 }
