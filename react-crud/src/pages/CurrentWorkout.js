@@ -62,11 +62,11 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
       return[];
     }
 
-    return sets.filter(set => set.isCompleted).map(set => ({
+    return setSets(sets.filter(set => set.isCompleted).map(set => ({
       ...set,
       exerciseId: set.exerciseId,
       workoutId: workoutId
-    }));
+    })));
   };
 
   return (
@@ -77,7 +77,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
         </Typography>
         
         <SaveWorkoutButton 
-          onClick={onSWBclick} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
+          onClick={onSWBclick} currentWorkout={sets} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
