@@ -35,8 +35,10 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     ));
   };
 
+ 
   
   const onSWBclick = async () => {
+    console.log("onSWBclick");
     const completedSets = sets.filter(set => set.isCompleted);
     if (completedSets.length === 0) {
       console.log("no sets");
@@ -48,11 +50,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
       name: `Workout ${currentDate}`,
       date: currentDate
     };
-    console.log(workoutData);
+    console.log("workoutData: ",workoutData);
+    var workoutId=null;
     try {
 
       const response =await ExerciseDataService.createWorkout(workoutData);
       console.log(response.data.id);
+      workoutId=response.data.id;
     }catch(error){
       console.error('Error creating workout:', error);
       return[];
@@ -60,7 +64,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
 
     return sets.filter(set => set.isCompleted).map(set => ({
       ...set,
-      exerciseId: set.exerciseId
+      exerciseId: set.exerciseId,
+      workoutId: workoutId
     }));
   };
 
@@ -71,7 +76,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           Current Workout
         </Typography>
         
-        <SaveWorkoutButton currentWorkout={onSWBclick()} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
+        <SaveWorkoutButton 
+          onClick={onSWBclick} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
