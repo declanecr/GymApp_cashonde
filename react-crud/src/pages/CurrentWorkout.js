@@ -35,8 +35,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     ));
   };
 
- 
-  
   const onSWBclick = async () => {
     console.log("onSWBclick");
     const completedSets = sets.filter(set => set.isCompleted);
@@ -50,23 +48,25 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
       name: `Workout ${currentDate}`,
       date: currentDate
     };
-    console.log("workoutData: ",workoutData);
-    var workoutId=null;
+    console.log("workoutData: ", workoutData);
+
     try {
+      const response = await ExerciseDataService.createWorkout(workoutData);
+      console.log("Created workout:", response);
+      const workoutId = response.id;
+      console.log("Workout ID:", workoutId);
 
-      const response =await ExerciseDataService.createWorkout(workoutData);
-      console.log(response.data.id);
-      workoutId=response.data.id;
-    }catch(error){
+      const updatedSets = completedSets.map(set => ({
+        ...set,
+        workoutId: workoutId
+      }));
+
+      console.log("Updated sets with workoutId:", updatedSets);
+      return updatedSets;
+    } catch (error) {
       console.error('Error creating workout:', error);
-      return[];
+      return [];
     }
-
-    return setSets(sets.filter(set => set.isCompleted).map(set => ({
-      ...set,
-      exerciseId: set.exerciseId,
-      workoutId: workoutId
-    })));
   };
 
   return (

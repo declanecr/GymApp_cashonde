@@ -140,7 +140,12 @@ const ExerciseDataService = {
    * API Call: POST /workouts/
    */
   createWorkout(workoutData){
-    return http.post(`/workouts/`,workoutData);
+    console.log("createWorkout: ", workoutData);
+    return http.post(`/workouts/`,workoutData)
+      .then(response =>{
+        console.log("ExerciseDataService \nCreated workout:", response.data);
+        return response.data;
+      });
   },
 
   /**
