@@ -6,7 +6,7 @@ const router = express.Router();
 export default function(app){
 
     // Create a new Set
-    router.post("/", sets.create);
+    router.post("/",sets.create);
 
     // Retrieve all Sets
     router.get("/", sets.findAll);
@@ -15,8 +15,9 @@ export default function(app){
     router.get("/:setId", sets.findOne);
 
     // Update a Set with setId
-    router.put("/:setId", sets.update);
-
+    router.put("/:setId", (req, res) => {
+        sets.update(req, res);
+    });
     // Delete a Set with setId
     router.delete("/:setId", sets.deleteSet);
 

@@ -19,19 +19,19 @@ import Set from "../models/set.model.js";
  * @sends New set data to the client
  */
 export const create = (req, res) => {
+  const exerciseId = req.params.id;
+
   // Validate request
-  if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
-    return;
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).send({ message: "Content can not be empty!" });
   }
 
-  const exerciseId = req.params.id;
+
 
   // Create a Set
   const set = new Set({
     exercise_id: exerciseId,
+    workout_id: req.body.workout_id, 
     date: req.body.date,
     reps: req.body.reps,
     weight: req.body.weight
@@ -59,12 +59,12 @@ export const create = (req, res) => {
  */
 export const findAll = (req, res) => {
   const exerciseId = req.params.id;
-  Set.getAllForExercise(exerciseId, (err, data) => {
+  Set.findByExerciseId(exerciseId, (err, data) => {
     if (err)
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving sets."
       });
-    else res.send(data);
+    else res.send(data.map(set => ({...set, workout_id: set.workout_id})));
   });
 };
 
@@ -116,7 +116,10 @@ export const update = (req, res) => {
   Set.updateById(
     req.params.id,
     req.params.setId,
-    new Set(req.body),
+    new Set({
+      ...req.body,
+      workout_id: req.body.workout_id // Ensure workout_id is included
+    }),
     (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
