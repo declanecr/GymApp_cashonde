@@ -19,8 +19,9 @@ import Set from "../models/set.model.js";
  * @sends New set data to the client
  */
 export const create = (req, res) => {
-  console.log("Create function called with params:", req.params);
+  console.log("Request params", req.params);
   console.log("Request body:", req.body);
+  console.log("Request headers:", req.headers);
 
   const exerciseId = parseInt(req.params.id, 10);
 
@@ -28,6 +29,10 @@ export const create = (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     //console.log("Empty request body");
     return res.status(400).send({ message: "Content can not be empty!" });
+  }
+
+  if (!req.body.workout_id || !req.body.date || !req.body.reps || !req.body.weight) {
+    return res.status(400).send({ message: "Missing required fields in request body." });
   }
 
   // Create a Set
@@ -51,7 +56,7 @@ export const create = (req, res) => {
       });
     } else {
       console.log("Set created successfully:", data);
-      res.status(201).send({...data, exercise_id: exerciseId});
+      res.status(201).send({...data, exercise_id: exerciseId, workout_id:req.body.workout_id});
     }
   });
 };

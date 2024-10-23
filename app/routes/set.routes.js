@@ -1,6 +1,7 @@
 import express from 'express';
+import * as setController from '../controllers/set.controller.js';
 
-export default function(app, setController) {
+export default function(app) {
     const router = express.Router();
     
     // Create a new Set
