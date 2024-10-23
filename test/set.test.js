@@ -58,6 +58,46 @@ describe('Set Module Tests', () => {
         });
         });
 
+        it('should find sets by workout id', (done) => {
+            const expectedSets = [
+                { id: 1, exercise_id: 1, workout_id: 1, reps: 10, weight: 50 },
+                { id: 2, exercise_id: 2, workout_id: 1, reps: 12, weight: 45 }
+                ];
+            
+                sqlStub.yields(null, expectedSets);
+            
+                Set.findByWorkoutId(1, (err, result) => {
+                expect(err).to.be.null;
+                expect(result).to.deep.equal(expectedSets);
+                done();
+                });
+            });
+            
+            it('should get all sets', (done) => {
+                const expectedSets = [
+                { id: 1, exercise_id: 1, workout_id: 1, reps: 10, weight: 50 },
+                { id: 2, exercise_id: 2, workout_id: 2, reps: 12, weight: 45 }
+                ];
+            
+                sqlStub.yields(null, expectedSets);
+            
+                Set.getAll((err, result) => {
+                expect(err).to.be.null;
+                expect(result).to.deep.equal(expectedSets);
+                done();
+                });
+            });
+            
+            it('should remove all sets', (done) => {
+                sqlStub.yields(null, { affectedRows: 2 });
+            
+                Set.removeAll((err, result) => {
+                expect(err).to.be.null;
+                expect(result.message).to.equal('2 Sets were deleted successfully!');
+                done();
+                });
+            });
+
         // Add more model tests here...
     });
 
@@ -94,14 +134,14 @@ describe('Set Module Tests', () => {
         };
 
         const createStub = sinon.stub(Set, 'create').callsFake((set, callback) => {
-            callback(null, expectedSet);
+            callback(null, { id: 1, ...set});
         });
 
         SetController.create(req, res);
 
         sinon.assert.calledOnce(createStub);
         sinon.assert.calledWith(res.status, 201);
-        sinon.assert.calledWith(res.status().send, expectedSet);
+        sinon.assert.calledWith(res.status().send, { id: 1, exercise_id: 1, ...req.body });
 
         createStub.restore();
         done();

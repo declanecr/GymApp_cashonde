@@ -388,6 +388,79 @@ describe('Exercise Module Tests', () => {
       expect(mockExerciseController.getEquipment.calledOnce).to.be.true;
     });
 
+    it('should get exercise levels', async () => {
+      const expectedLevels = ['Beginner', 'Intermediate', 'Advanced'];
+    
+      mockExerciseController.getLevels.callsFake((req, res) => {
+        res.json(expectedLevels);
+      });
+    
+      const response = await request(app)
+        .get('/api/exercises/level')
+        .expect(200);
+    
+      expect(response.body).to.deep.equal(expectedLevels);
+      expect(mockExerciseController.getLevels.calledOnce).to.be.true;
+    });
+
+    it('should add a set to an exercise', async () => {
+      const exerciseId = 1;
+      const newSet = {
+        reps: 10,
+        weight: 50,
+        date: '2024-10-23'
+      };
+    
+      mockExerciseController.addSet.callsFake((req, res) => {
+        res.status(201).json({ id: 1, exercise_id: exerciseId, ...newSet });
+      });
+    
+      const response = await request(app)
+        .post(`/api/exercises/${exerciseId}/sets`)
+        .send(newSet)
+        .expect(201);
+    
+      expect(response.body).to.deep.equal({ id: 1, exercise_id: exerciseId, ...newSet });
+      expect(mockExerciseController.addSet.calledOnce).to.be.true;
+    });
+
+    it('should get sets for an exercise', async () => {
+      const exerciseId = 1;
+      const expectedSets = [
+        { id: 1, exercise_id: exerciseId, reps: 10, weight: 50, date: '2024-10-23' },
+        { id: 2, exercise_id: exerciseId, reps: 12, weight: 45, date: '2024-10-24' }
+      ];
+    
+      mockExerciseController.getSets.callsFake((req, res) => {
+        res.json(expectedSets);
+      });
+    
+      const response = await request(app)
+        .get(`/api/exercises/${exerciseId}/sets`)
+        .expect(200);
+    
+      expect(response.body).to.deep.equal(expectedSets);
+      expect(mockExerciseController.getSets.calledOnce).to.be.true;
+    });
+
+    it('should get workouts for an exercise', async () => {
+      const exerciseId = 1;
+      const expectedWorkouts = [
+        { id: 1, name: 'Chest Day', date: '2024-10-23' },
+        { id: 2, name: 'Full Body', date: '2024-10-25' }
+      ];
+    
+      mockExerciseController.getWorkouts.callsFake((req, res) => {
+        res.json(expectedWorkouts);
+      });
+    
+      const response = await request(app)
+        .get(`/api/exercises/${exerciseId}/workouts`)
+        .expect(200);
+    
+      expect(response.body).to.deep.equal(expectedWorkouts);
+      expect(mockExerciseController.getWorkouts.calledOnce).to.be.true;
+    });
     // Add more route tests for other endpoints...
   });
 });

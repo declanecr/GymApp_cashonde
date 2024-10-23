@@ -26,10 +26,7 @@ export const create = (req, res) => {
   const exerciseId = parseInt(req.params.id, 10);
 
   // Validate request
-  if (!req.body || Object.keys(req.body).length === 0) {
-    //console.log("Empty request body");
-    return res.status(400).send({ message: "Content can not be empty!" });
-  }
+  
 
   if (!req.body.workout_id || !req.body.date || !req.body.reps || !req.body.weight) {
     return res.status(400).send({ message: "Missing required fields in request body." });
@@ -56,7 +53,8 @@ export const create = (req, res) => {
       });
     } else {
       console.log("Set created successfully:", data);
-      res.status(201).send({...data, exercise_id: exerciseId, workout_id:req.body.workout_id});
+      
+      res.status(201).send(data);
     }
   });
 };
