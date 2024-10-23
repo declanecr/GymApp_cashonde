@@ -102,6 +102,10 @@ export const create = (req, res) => {
  * @sends Array of exercises to the client
  */
 export const findAll = (req, res) => {
+  // Log only necessary parts of the request object
+  console.log('Request query:', req.query);
+  console.log('Request params:', req.params);
+
   const name = req.query.name;
 
   // Retrieve exercises from the database

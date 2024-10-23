@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "mocha 'test/**/*.js' --recursive --exit"
+    "test": "mocha 'test/**/*.js' --recursive --exit --experimental-modules --es-module-specifier-resolution=node"
   },
   "author": "Declan",
   "license": "ISC",
@@ -19,6 +19,9 @@
   "devDependencies": {
     "chai": "^5.1.1",
     "mocha": "^10.7.3",
-    "sinon": "^19.0.2"
+    "proxyquire": "^2.1.3",
+    "sinon": "^19.0.2",
+    "sinon-chai": "^4.0.0",
+    "supertest": "^7.0.0"
   }
 }

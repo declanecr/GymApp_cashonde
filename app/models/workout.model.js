@@ -11,7 +11,6 @@ import sql from "./db.js";
 const Workout = function(workout) {
   this.name = workout.name;
   this.date = workout.date;
-  this.exercises = workout.exercises;
 };
 
 // Create a new Workout

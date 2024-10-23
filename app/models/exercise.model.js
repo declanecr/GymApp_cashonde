@@ -85,7 +85,7 @@ Exercise.findById = (id, result) => {
     if (res.length) {
       const exercise = res[0];
       // Fetch sets for this exercise
-      Set.getAll(id, (err, sets) => {
+      Set.findByExerciseId(id, (err, sets) => {
         if (err) {
           result(err, null);
           return;

@@ -3,27 +3,45 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ExerciseDataService from '../services/ExerciseDataService';
 
-const SaveWorkoutButton = ({ currentWorkout, deleteWorkout }) => {
-    const saveWorkout = () => {
+const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
+    
+    console.log("currentWorkout: ",currentWorkout);
+    const saveWorkout = async () => {
+        console.log("saveWorkout function called");
         if (currentWorkout && currentWorkout.length > 0) {
-            currentWorkout.forEach(exercise => {
-                console.log('exerciseID: ',exercise.exerciseId);
-                console.log('reps: ',exercise.reps);
-                console.log('weight: ', exercise.weight);
-                ExerciseDataService.createSet(exercise.exerciseId, {
-                    date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
-                    reps: exercise.reps || 0, // Default to 0 if not provided
-                    weight: exercise.weight || 0 // Default to 0 if not provided
-                })
-                .then(response => {
-                    console.log('Set saved:', response.data);
-                })
-                .catch(error => {
-                    console.error('Error saving set:', error);
-                });
-            });
+            try {
+                const workoutData = {
+                    name: `Workout ${new Date().toISOString().split('T')[0]}`,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                const workoutResponse = await ExerciseDataService.createWorkout(workoutData);
+                const workoutId = workoutResponse.id;
+                console.log("Created workout with ID:", workoutId);
+
+                for (const exercise of currentWorkout) {
+                    console.log('exerciseID: ', exercise.exerciseId);
+                    console.log('reps: ', exercise.reps);
+                    console.log('weight: ', exercise.weight);
+                    console.log('workoutID: ', workoutId);
+                    
+                    await ExerciseDataService.createSet(exercise.exerciseId, {
+                        workout_id: workoutId,
+                        date: new Date().toISOString().split('T')[0],
+                        reps: exercise.reps || 0,
+                        weight: exercise.weight || 0
+                        
+
+                    });
+                    console.log('Set saved for exercise:', exercise.exerciseId);
+                }
+                console.log('All sets saved successfully');
+                deleteWorkout();
+            } catch (error) {
+                console.error('Error saving workout:', error);
+            }
+        } else {
+            console.log('No exercises to save');
         }
-        deleteWorkout();
     };
     
     return (

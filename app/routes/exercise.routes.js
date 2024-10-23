@@ -34,7 +34,7 @@ export default function(app) {
     router.delete("/", exercises.deleteAll);
 
     // Add a new set to an exercise
-    router.post("/:id/sets", exercises.addSet);
+    //router.post("/:id/sets", exercises.addSet);
 
     // Get all sets for an exercise
     router.get("/:id/sets", exercises.getSets);

@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
+import ExerciseDataService from '../services/ExerciseDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
   const [sets, setSets] = useState([]);
@@ -34,11 +35,38 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     ));
   };
 
-  const getCompletedSets = () => {
-    return sets.filter(set => set.isCompleted).map(set => ({
-      ...set,
-      exerciseId: set.exerciseId
-    }));
+  const onSWBclick = async () => {
+    console.log("onSWBclick");
+    const completedSets = sets.filter(set => set.isCompleted);
+    if (completedSets.length === 0) {
+      console.log("no sets");
+      return [];
+    }
+
+    const currentDate = new Date().toISOString().split('T')[0];
+    const workoutData = {
+      name: `Workout ${currentDate}`,
+      date: currentDate
+    };
+    console.log("workoutData: ", workoutData);
+
+    try {
+      const response = await ExerciseDataService.createWorkout(workoutData);
+      console.log("Created workout:", response);
+      const workoutId = response.id;
+      console.log("Workout ID:", workoutId);
+
+      const updatedSets = completedSets.map(set => ({
+        ...set,
+        workoutId: workoutId
+      }));
+
+      console.log("Updated sets with workoutId:", updatedSets);
+      return updatedSets;
+    } catch (error) {
+      console.error('Error creating workout:', error);
+      return [];
+    }
   };
 
   return (
@@ -48,7 +76,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           Current Workout
         </Typography>
         
-        <SaveWorkoutButton currentWorkout={getCompletedSets()} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
+        <SaveWorkoutButton 
+          onClick={onSWBclick} currentWorkout={sets} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.

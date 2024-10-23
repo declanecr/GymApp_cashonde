@@ -130,6 +130,24 @@ const ExerciseDataService = {
     return http.get(`/exercises?name=${name}`);
   },
 
+
+  /**
+   * Creates a workout
+   * Purpose: Create a workout
+   * Inputs: workoutData - Object containing Name and Data 
+   * (name and date can be same)
+   * Outputs: None (creates a new workout)
+   * API Call: POST /workouts/
+   */
+  createWorkout(workoutData){
+    console.log("createWorkout: ", workoutData);
+    return http.post(`/workouts/`,workoutData)
+      .then(response =>{
+        console.log("ExerciseDataService \nCreated workout:", response.data);
+        return response.data;
+      });
+  },
+
   /**
    * Adds an exercise to the current workout
    * Purpose: Include an exercise in the user's workout
