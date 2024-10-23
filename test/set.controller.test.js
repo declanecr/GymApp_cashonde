@@ -29,15 +29,18 @@ describe('Set Controller', () => {
       };
       req.params.id = '1';
 
-      const expectedSet = { id: 1, ...req.body, exercise_id: '1' };
+      const expectedSet = { id: 1, ...req.body, exercise_id: 1 }; 
 
       const createStub = sinon.stub(Set, 'create').yields(null, expectedSet);
 
       setController.create(req, res);
 
+      console.log("res.status called with:", res.status.args);
+      console.log("res.send called with:", res.status().send.args);
+
       expect(createStub.calledOnce).to.be.true;
-      expect(res.send.calledOnce).to.be.true;
-      expect(res.send.calledWith(expectedSet)).to.be.true;
+      expect(res.status.calledWith(201)).to.be.true;
+      expect(res.status().send.calledWith(expectedSet)).to.be.true;
 
       createStub.restore();
     });

@@ -11,6 +11,7 @@ class Set {
   }
 
   static create(newSet, result) {
+    console.log("Creating new set with exercise_id:", newSet.exercise_id);
     sql.query("INSERT INTO sets SET ?", newSet, (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -18,8 +19,9 @@ class Set {
         return;
       }
 
-      console.log("created set: ", { id: res.insertId, ...newSet });
-      result(null, { id: res.insertId, ...newSet });
+      const createdSet={id:res.insertId, ...newSet };
+      console.log("created set: ", createdSet);
+      result(null, createdSet);
     });
   }
 

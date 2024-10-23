@@ -1,32 +1,26 @@
 import express from 'express';
-import * as sets from "../controllers/set.controller.js";
 
-const router = express.Router();
-
-export default function(app){
-
+export default function(app, setController) {
+    const router = express.Router();
+    
     // Create a new Set
-    router.post("/",sets.create);
+    router.post("/:id/sets", setController.create);
 
     // Retrieve all Sets
-    router.get("/", sets.findAll);
+    router.get("/:id/sets", setController.findAll);
 
     // Retrieve a single Set with setId
-    router.get("/:setId", sets.findOne);
+    router.get("/:id/sets/:setId", setController.findOne);
 
     // Update a Set with setId
-    router.put("/:setId", (req, res) => {
-        sets.update(req, res);
-    });
+    router.put("/:id/sets/:setId", setController.update);
+
     // Delete a Set with setId
-    router.delete("/:setId", sets.deleteSet);
+    router.delete("/:id/sets/:setId", setController.deleteSet);
 
     // Delete all Sets
-    router.delete("/", sets.deleteAll);
-
-    
+    router.delete("/:id/sets", setController.deleteAll);
 
     //Mount the router on the app
-    app.use('/api/exercises/:id/sets', router);
+    app.use('/api/exercises', router);
 }
-

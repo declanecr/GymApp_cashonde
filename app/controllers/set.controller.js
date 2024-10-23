@@ -19,31 +19,40 @@ import Set from "../models/set.model.js";
  * @sends New set data to the client
  */
 export const create = (req, res) => {
-  const exerciseId = req.params.id;
+  console.log("Create function called with params:", req.params);
+  console.log("Request body:", req.body);
+
+  const exerciseId = parseInt(req.params.id, 10);
 
   // Validate request
   if (!req.body || Object.keys(req.body).length === 0) {
+    //console.log("Empty request body");
     return res.status(400).send({ message: "Content can not be empty!" });
   }
-
-
 
   // Create a Set
   const set = new Set({
     exercise_id: exerciseId,
-    workout_id: req.body.workout_id, 
+    workout_id: req.body.workout_id,
     date: req.body.date,
     reps: req.body.reps,
     weight: req.body.weight
   });
 
+  console.log("Set object created:", set);
+
   // Save Set in the database
   Set.create(set, (err, data) => {
-    if (err)
+    if (err) {
+      console.error("Error creating set:", err);
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Set."
+        message: err.message || "An error occurred while creating the Set.",
+        error: err
       });
-    else res.send(data);
+    } else {
+      console.log("Set created successfully:", data);
+      res.status(201).send({...data, exercise_id: exerciseId});
+    }
   });
 };
 
