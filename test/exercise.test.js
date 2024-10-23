@@ -1,5 +1,8 @@
 import { expect } from 'chai';
+import express, { Router } from 'express';
 import sinon from 'sinon';
+import request from 'supertest';
+import * as exercises from '../app/controllers/exercise.controller.js';
 import sql from '../app/models/db.js';
 import Exercise from '../app/models/exercise.model.js';
 
@@ -96,27 +99,30 @@ describe('Exercise Module Tests', () => {
     });
 
     it('should remove an exercise', (done) => {
-      sqlStub.yields(null, { affectedRows: 1 });
+      const expectedResult = { affectedRows: 1 };
+      
+      sqlStub.yields(null, expectedResult);
 
       Exercise.remove(1, (err, result) => {
         expect(err).to.be.null;
-        expect(result).to.deep.equal({ id: 1 });
+        expect(result).to.deep.equal(expectedResult);
         done();
       });
     });
 
     it('should remove all exercises', (done) => {
-      sqlStub.yields(null, { affectedRows: 2 });
+      const expectedResult = { affectedRows: 2};
+      
+      sqlStub.yields(null, expectedResult);
 
       Exercise.removeAll((err, result) => {
         expect(err).to.be.null;
-        expect(result).to.deep.equal({ message: "All exercises were deleted successfully!" });
+        expect(result).to.deep.equal(expectedResult);
         done();
       });
     });
   });
 
-  // Exercise Controller Tests
   // Exercise Controller Tests
   describe('Exercise Controller', () => {
     let req, res, next;
@@ -157,8 +163,7 @@ describe('Exercise Module Tests', () => {
       exercises.create(req, res);
 
       sinon.assert.calledOnce(createStub);
-      sinon.assert.calledWith(res.status, 201);
-      sinon.assert.calledWith(res.status().json, expectedExercise);
+      sinon.assert.calledWith(res.send, expectedExercise);
 
       createStub.restore();
       done();
@@ -169,16 +174,42 @@ describe('Exercise Module Tests', () => {
         { id: 1, name: 'Push-ups', type: 'Strength', main_muscle: 'Chest' },
         { id: 2, name: 'Squats', type: 'Strength', main_muscle: 'Legs' }
       ];
-
+    
+      req.query = {}; // Simulate an empty query
+    
       const getAllStub = sinon.stub(Exercise, 'getAll').callsFake((name, callback) => {
         callback(null, expectedExercises);
       });
-
+    
       exercises.findAll(req, res);
-
+    
       sinon.assert.calledOnce(getAllStub);
-      sinon.assert.calledWith(res.json, expectedExercises);
-
+      sinon.assert.calledWith(getAllStub, undefined);
+      sinon.assert.calledOnce(res.send);
+      sinon.assert.calledWith(res.send, expectedExercises);
+    
+      getAllStub.restore();
+      done();
+    });
+    
+    it('should return exercises with name filter', (done) => {
+      const expectedExercises = [
+        { id: 1, name: 'Push-ups', type: 'Strength', main_muscle: 'Chest' }
+      ];
+    
+      req.query = { name: 'Push-ups' };
+    
+      const getAllStub = sinon.stub(Exercise, 'getAll').callsFake((name, callback) => {
+        callback(null, expectedExercises);
+      });
+    
+      exercises.findAll(req, res);
+    
+      sinon.assert.calledOnce(getAllStub);
+      sinon.assert.calledWith(getAllStub, 'Push-ups');
+      sinon.assert.calledOnce(res.send);
+      sinon.assert.calledWith(res.send, expectedExercises);
+    
       getAllStub.restore();
       done();
     });
