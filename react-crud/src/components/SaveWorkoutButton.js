@@ -1,7 +1,8 @@
 import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ExerciseDataService from '../services/ExerciseDataService';
+import SetDataService from '../services/SetDataService';
+import WorkoutDataService from '../services/WorkoutDataService';
 
 const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
     
@@ -14,7 +15,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
                     name: `Workout ${new Date().toISOString().split('T')[0]}`,
                     date: new Date().toISOString().split('T')[0]
                 };
-                const workoutResponse = await ExerciseDataService.createWorkout(workoutData);
+                const workoutResponse = await WorkoutDataService.createWorkout(workoutData);
                 const workoutId = workoutResponse.id;
                 console.log("Created workout with ID:", workoutId);
 
@@ -24,7 +25,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
                     console.log('weight: ', exercise.weight);
                     console.log('workoutID: ', workoutId);
                     
-                    await ExerciseDataService.createSet(exercise.exerciseId, {
+                    await SetDataService.createSet(exercise.exerciseId, {
                         workout_id: workoutId,
                         date: new Date().toISOString().split('T')[0],
                         reps: exercise.reps || 0,

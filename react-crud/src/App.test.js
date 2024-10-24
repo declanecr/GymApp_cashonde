@@ -60,7 +60,7 @@ describe('App Component', () => {
     );
     await act(async () => {
       // Check if the GYM APP link is present in the document
-      expect(screen.getByRole('link', { name: /GYM APP/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Home/i })).toBeInTheDocument(); 
     });
   });
 

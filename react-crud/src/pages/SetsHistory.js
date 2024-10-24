@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SetsGrid from '../components/SetsGrid';
 import ExerciseDataService from "../services/ExerciseDataService";
+import SetDataService from '../services/SetDataService';
 
 function SetsHistory () {
   const [sets, setSets] = useState([]);
@@ -28,7 +29,7 @@ function SetsHistory () {
   };
 
   const fetchSets = () => {
-    ExerciseDataService.getSetsForExercise(id)
+    SetDataService.getSetsForExercise(id)
       .then(response => {
         setSets(response.data);
       })

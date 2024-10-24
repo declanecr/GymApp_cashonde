@@ -2,7 +2,8 @@ import { Box, Container, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import DataGrid from 'react-data-grid';
-import 'react-data-grid/lib/styles.css';
+import 'react-data-grid/lib/styles.css'; //removing this removes  the css for the data grid
+
 import ExerciseDataService from "../services/ExerciseDataService";
 import AddToWorkoutButton from './AddToWorkoutButton';
 import ExerciseFilters from './ExerciseFilters';
