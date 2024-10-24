@@ -10,4 +10,4 @@ CREATE TABLE `sets` (
   KEY `workout_id` (`workout_id`),
   CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`exercise_id`) REFERENCES `exercises` (`id`),
   CONSTRAINT `sets_ibfk_2` FOREIGN KEY (`workout_id`) REFERENCES `workouts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4

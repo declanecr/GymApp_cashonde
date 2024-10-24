@@ -1,21 +1,5 @@
-CREATE TABLE IF NOT EXISTS exercises (
-            id INTEGER PRIMARY KEY AUTO_INCREMENT,
-            name TEXT,
-            description TEXT,
-            type TEXT,
-            main_muscle TEXT,
-            equipment TEXT,
-            level TEXT,
-            rating TEXT
-        );
-        
-        INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('3/4 sit-up', 'The 3/4 sit-up is a bodyweight exercise focused on the muscles of the core. It is similar to a sit-up, but stops short of the top position. This keeps constant tension on the abs, making it more difficult than traditional sit-ups. It can be performed for time or for reps, with the feet anchored or free, as part of the ab-focused portion of any workout.', 'Strength', 
-    'Abdominals', 'Body Only', 'Intermediate', '8.8');
-    
-INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('90-degree jump squat', 'The 90-degree jump squat is an explosive bodyweight exercise that targets the muscles of the lower body, including the quads, glutes, and hamstrings, as well as the cardiovascular system. It can be performed for time or reps, usually in a fat-loss or athleticism-focused circuit workout.', 'Plyometrics', 
-    'Quadriceps', 'Body Only', 'Intermediate', '7');
+INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating) VALUES ('3/4 sit-up', 'The 3/4 sit-up is a bodyweight exercise focused on the muscles of the core. It is similar to a sit-up, but stops short of the top position. This keeps constant tension on the abs, making it more difficult than traditional sit-ups. It can be performed for time or for reps, with the feet anchored or free, as part of the ab-focused portion of any workout.', 'Strength', 'Abdominals', 'Body Only', 'Intermediate', '8.8');
+INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating) VALUES ('90-degree jump squat', 'The 90-degree jump squat is an explosive bodyweight exercise that targets the muscles of the lower body, including the quads, glutes, and hamstrings, as well as the cardiovascular system. It can be performed for time or reps, usually in a fat-loss or athleticism-focused circuit workout.', 'Plyometrics',  'Quadriceps', 'Body Only', 'Intermediate', '7');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
     VALUES ('90/90 Hamstring', 'n/a', 'Stretching', 
@@ -38,7 +22,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Adductors', 'None', 'Beginner', '3.6');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Adductor SMR', 'Adductor self-myofascial release (SMR) is a self-administered soft-tissue treatment for the lower body, usually using a foam roller, lacrosse ball, or other "trigger point" massage tool. By applying pressure strategically to the adductor muscles in the inner thigh region, some people find they can cause this often painful and tight muscle to relax or "release." Adductor SMR is often accompanied by SMR on the iliotibial (IT) band or glutes (TFL muscles), or by stretches that target the adductors.', 'Stretching', 
+    VALUES ('Adductor SMR', 'Adductor self-myofascial release (SMR) is a self-administered soft-tissue treatment for the lower body, usually using a foam roller, lacrosse ball, or other "trigger point" massage tool. By applying pressure strategically to the adductor muscles in the inner thigh region, some people find they can cause this often painful and tight muscle to relax or "release." Adductor SMR is often accompanied by SMR on the iliotibial (IT) band or glutes (TFL muscles); or by stretches that target the adductors.', 'Stretching', 
     'Adductors', 'Foam Roll', 'Beginner', '4');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -1082,7 +1066,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Chest', 'Dumbbell', 'Intermediate', '9.2');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Dumbbell bent-over row', 'The dumbbell bent-over row is a popular exercise to develop and strengthen the muscles of the upper and middle back, like the latissimus (lat), lower trapezius, and rear deltoids. It can work equally well in strength, muscle-building, or circuit-style fat-loss workouts.', 'Strength', 
+    VALUES ('Dumbbell bent-over row', 'The dumbbell bent-over row is a popular exercise to develop and strengthen the muscles of the upper and middle back, like the latissimus (lat); lower trapezius, and rear deltoids. It can work equally well in strength, muscle-building, or circuit-style fat-loss workouts.', 'Strength', 
     'Middle Back', 'Dumbbell', 'Intermediate', '8.3');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -1286,7 +1270,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Abdominals', 'Body Only', 'Intermediate', '9.3');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Elevated Cable Rows', 'The cable seated row is a popular exercise to train the muscles of the upper back, including the lats (latissimus dorsi), traps, rhomboids, and rear deltoids, using a cable stack. It also targets the biceps to a lesser degree. The cable row can work well in a variety of rep-ranges, but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
+    VALUES ('Elevated Cable Rows', 'The cable seated row is a popular exercise to train the muscles of the upper back, including the lats (latissimus dorsi); traps, rhomboids, and rear deltoids, using a cable stack. It also targets the biceps to a lesser degree. The cable row can work well in a variety of rep-ranges, but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
     'Lats', 'Cable', 'Beginner', '8.3');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2266,7 +2250,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Biceps', 'Machine', 'Beginner', '9');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Machine chest press', 'The machine chest press is a machine-based exercise targeting the chest. It approximates the motion of a bench press but is usually performed facing forward and seated upright. Many machines offer multiple grip options, such as overhand, neutral (palms facing), or underhand. The chest press is often performed for moderate to high reps, such as 8-12 reps per set or more, as part of a pre-exhaust or muscle-building upper-body workout.', 'Strength', 
+    VALUES ('Machine chest press', 'The machine chest press is a machine-based exercise targeting the chest. It approximates the motion of a bench press but is usually performed facing forward and seated upright. Many machines offer multiple grip options, such as overhand, neutral (palms facing); or underhand. The chest press is often performed for moderate to high reps, such as 8-12 reps per set or more, as part of a pre-exhaust or muscle-building upper-body workout.', 'Strength', 
     'Chest', 'Machine', 'Intermediate', '8.2');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2278,7 +2262,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Biceps', 'Machine', 'Beginner', '8.3');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Machine seated row', 'The machine seated row is a popular exercise targeting the back muscles, particularly the lats (latissimus dorsi), rhomboids, and middle and lower trapezius. There is a wide variety of seated row machines, but most of them approximate the motion of a free-weight row, but in an upright, forward-facing position. Machine row variations are often performed for moderate to high reps, such as 8-12 reps per set or more, as part of an upper-body or back-focused portion of a workout.', 'Strength', 
+    VALUES ('Machine seated row', 'The machine seated row is a popular exercise targeting the back muscles, particularly the lats (latissimus dorsi); rhomboids, and middle and lower trapezius. There is a wide variety of seated row machines, but most of them approximate the motion of a free-weight row, but in an upright, forward-facing position. Machine row variations are often performed for moderate to high reps, such as 8-12 reps per set or more, as part of an upper-body or back-focused portion of a workout.', 'Strength', 
     'Lats', 'Machine', 'Beginner', '8.4');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2514,7 +2498,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Abdominals', 'Other', 'Intermediate', '8.8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Overhead bar front raise', 'The overhead bar front raise is an exercise targeting the muscles of the traps (trapezius), especially the upper traps, as well as the front or anterior shoulders. It can also be performed with a weight plate or dumbbell, providing a neutral grip that may be more shoulder-friendly for some lifters. Overhead raises are most common for high reps (at least 8-12 reps per set or higher) on a shoulder, trap, or other upper-body-focused muscle-building day.', 'Strength', 
+    VALUES ('Overhead bar front raise', 'The overhead bar front raise is an exercise targeting the muscles of the traps (trapezius); especially the upper traps, as well as the front or anterior shoulders. It can also be performed with a weight plate or dumbbell, providing a neutral grip that may be more shoulder-friendly for some lifters. Overhead raises are most common for high reps (at least 8-12 reps per set or higher) on a shoulder, trap, or other upper-body-focused muscle-building day.', 'Strength', 
     'Shoulders', 'Barbell', 'Intermediate', '7.2');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2590,7 +2574,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Forearms', 'Dumbbell', 'Beginner', '5.3');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Partner Flat-Bench Back Extension', 'The partner bench back extensionis a clever way to perform this exercise, which works the spinal erectors in the lower back. There are machines and angled apparatus that allow this exercise to performed solo; but, lacking those, all you need is a bench and a workout partner.', 'Strength', 
+    VALUES ('Partner Flat-Bench Back Extension', 'The partner bench back extensionis a clever way to perform this exercise, which works the spinal erectors in the lower back. There are machines and angled apparatus that allow this exercise to performed solo, but, lacking those, all you need is a bench and a workout partner.', 'Strength', 
     'Lower Back', 'Other', 'Beginner', '0');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2662,7 +2646,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Triceps', 'Barbell', 'Beginner', '7');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Piriformis SMR', 'Piriformis self-myofascial release (SMR) is a self-administered soft-tissue treatment for the lower body, usually using a foam roller, lacrosse ball, or other "trigger point" massage tool. By applying pressure strategically to the piriformis muscles in the upper gluteal region, some people find they can cause this often painful and tight muscle to relax or "release." Piriformis SMR is often accompanied by SMR on the iliotibial (IT) band or tensor fascia lata (TFL muscles), or by stretches that target the glutes and hips.', 'Stretching', 
+    VALUES ('Piriformis SMR', 'Piriformis self-myofascial release (SMR) is a self-administered soft-tissue treatment for the lower body, usually using a foam roller, lacrosse ball, or other "trigger point" massage tool. By applying pressure strategically to the piriformis muscles in the upper gluteal region, some people find they can cause this often painful and tight muscle to relax or "release." Piriformis SMR is often accompanied by SMR on the iliotibial (IT) band or tensor fascia lata (TFL muscles); or by stretches that target the glutes and hips.', 'Stretching', 
     'Glutes', 'Foam Roll', 'Intermediate', '6.6');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -2934,7 +2918,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Hamstrings', 'Kettlebells', 'Beginner', '8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Rope climb', 'The rope climb is an exercise that is used commonly in CrossFit workouts and as a test of upper-body strength. It was even contested at the Olympics in the early 20th century. It targets a wide range of upper-body musculature, including the hands and forearms, shoulders, biceps, lats (latissimus dorsi), and core.', 'Strength', 
+    VALUES ('Rope climb', 'The rope climb is an exercise that is used commonly in CrossFit workouts and as a test of upper-body strength. It was even contested at the Olympics in the early 20th century. It targets a wide range of upper-body musculature, including the hands and forearms, shoulders, biceps, lats (latissimus dorsi); and core.', 'Strength', 
     'Lats', 'Body Only', 'Intermediate', '8.7');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -3006,7 +2990,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Biceps', 'Body Only', 'Beginner', '5');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Seated Cable Rows', 'The cable seated row is a popular exercise to train the muscles of the upper back, including the lats (latissimus dorsi), traps, rhomboids, and rear deltoids, using a cable stack. It also targets the biceps to a lesser degree. The cable row can work well in a variety of rep-ranges, but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
+    VALUES ('Seated Cable Rows', 'The cable seated row is a popular exercise to train the muscles of the upper back, including the lats (latissimus dorsi); traps, rhomboids, and rear deltoids, using a cable stack. It also targets the biceps to a lesser degree. The cable row can work well in a variety of rep-ranges, but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
     'Middle Back', 'Cable', 'Intermediate', '8.8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -3242,7 +3226,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Shoulders', 'Cable', 'Intermediate', '8.7');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Single-arm cable seated row', 'The single-arm cable seated row is a version of the cable row movement that trains the muscles of the upper back one side at a time. It targets a wide range of muscles including the lats (latissimus dorsi), traps, rhomboids, and rear deltoids. It also targets the biceps to a lesser degree. The single-arm row can work well in a variety of rep ranges but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
+    VALUES ('Single-arm cable seated row', 'The single-arm cable seated row is a version of the cable row movement that trains the muscles of the upper back one side at a time. It targets a wide range of muscles including the lats (latissimus dorsi); traps, rhomboids, and rear deltoids. It also targets the biceps to a lesser degree. The single-arm row can work well in a variety of rep ranges but is most popular in muscle-building workouts or as an accessory movement for strength workouts.', 'Strength', 
     'Middle Back', 'Cable', 'Intermediate', '8.5');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -3818,7 +3802,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Forearms', 'Other', 'Beginner', '8.6');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Standing One-Arm Cable Curl', 'The single-arm cable biceps curl is a single-joint isolation exercise for building the biceps. This move is intended to be strict and deliberate; this is not an exercise for using momentum or otherwise cheating.', 'Strength', 
+    VALUES ('Standing One-Arm Cable Curl', 'The single-arm cable biceps curl is a single-joint isolation exercise for building the biceps. This move is intended to be strict and deliberate, this is not an exercise for using momentum or otherwise cheating.', 'Strength', 
     'Biceps', 'Cable', 'Beginner', '8.8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
@@ -4134,7 +4118,7 @@ INSERT INTO exercises (name, description, type, main_muscle, equipment, level, r
     'Traps', 'Bands', 'Beginner', '7.8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
-    VALUES ('Upside-down pull-up', 'The upside-down pull-up is an advanced bodyweight exercise that is normally performed on a pair of gymnastic rings. It involves pulling the body toward the ceiling in an inverted position. It targets the same muscles as traditional pull-ups, including the lats (latissimus dorsi), biceps, and core. However, the pulling angle is more akin to a bent-over row or upright row, depending on the angle of your hips.', 'Strength', 
+    VALUES ('Upside-down pull-up', 'The upside-down pull-up is an advanced bodyweight exercise that is normally performed on a pair of gymnastic rings. It involves pulling the body toward the ceiling in an inverted position. It targets the same muscles as traditional pull-ups, including the lats (latissimus dorsi); biceps, and core. However, the pulling angle is more akin to a bent-over row or upright row, depending on the angle of your hips.', 'Strength', 
     'Middle Back', 'Other', 'Intermediate', '8.8');
     
 INSERT INTO exercises (name, description, type, main_muscle, equipment, level, rating)
