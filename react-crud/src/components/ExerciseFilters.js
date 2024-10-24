@@ -1,7 +1,7 @@
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
-import { FormControl, InputLabel, MenuItem, Select, Button, Box, Typography } from '@mui/material';
 
 const ExerciseFilters = ({ onFiltersChange }) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
@@ -70,7 +70,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
         Exercise Filters
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 3, flexDirection: 'column', maxWidth: 400 }}>
+      <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
         {/* Muscle Group Filter */}
         <FormControl fullWidth>
           <InputLabel id="muscle-group-label">Muscle Group</InputLabel>
@@ -139,7 +139,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
           variant="contained"
           color="primary"
           onClick={handleFilterChange}
-          sx={{ alignSelf: 'flex-start' }}
+          sx={{ alignSelf: 'flex-start', minWidth: '120px' }}          
         >
           Apply Filters
         </Button>
