@@ -9,7 +9,7 @@ import sql from "./db.js";
  */
 const User = function(user) {
   this.name = user.user_name;
-  this.id = user.user_id
+  this.id = user.id
 };
 
 /**

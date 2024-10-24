@@ -8,6 +8,8 @@ CREATE TABLE `sets` (
   PRIMARY KEY (`id`),
   KEY `exercise_id` (`exercise_id`),
   KEY `workout_id` (`workout_id`),
+  KEY 'user_id' ('user_id')
   CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`exercise_id`) REFERENCES `exercises` (`id`),
   CONSTRAINT `sets_ibfk_2` FOREIGN KEY (`workout_id`) REFERENCES `workouts` (`id`)
+  CONSTRAINT 'sets_ibfk_3' FOREIGN KEY ('user_id') REFERENCES 'users' ('id')
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4
