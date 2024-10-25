@@ -13,31 +13,44 @@ import SaveWorkoutButton from '../components/SaveWorkoutButton';
 import ExerciseDataService from '../services/ExerciseDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
-  const [sets, setSets] = useState([]);
+  const [sets, setSets] = useState({});
 
   const handleAddSet = (exerciseId) => {
-    setSets([...sets, { exerciseId, weight: '', reps: '', isCompleted: false }]);
+    setSets(prevSets => ({
+      ...prevSets,
+      [exerciseId]: [...(prevSets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
+    }));
   };
 
-  const handleRemoveSet = (index) => {
-    setSets(sets.filter((_, i) => i !== index));
+  const handleRemoveSet = (exerciseId, index) => {
+    setSets(prevSets => ({
+      ...prevSets,
+      [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
+    }));
   };
 
-  const handleSetChange = (index, field, value) => {
-    setSets(sets.map((set, i) => 
-      i === index ? { ...set, [field]: value } : set
-    ));
+  const handleSetChange = (exerciseId, setIndex, field, value) => {
+    setSets(prevSets => ({
+      ...prevSets,
+      [exerciseId]: prevSets[exerciseId].map((set, i) =>
+        i === setIndex ? { ...set, [field]: value } : set
+      )
+    }));
   };
 
-  const handleSetCompletion = (index, isCompleted) => {
-    setSets(sets.map((set, i) => 
-      i === index ? { ...set, isCompleted } : set
-    ));
-  };
+  const handleSetCompletion = (exerciseId, index, isCompleted) => {
+    setSets(prevSets => ({
+      ...prevSets,
+      [exerciseId]: prevSets[exerciseId].map((set, i) =>
+        i === index ? { ...set, isCompleted } : set
+      )
+    }));
+  }; 
 
   const onSWBclick = async () => {
     console.log("onSWBclick");
-    const completedSets = sets.filter(set => set.isCompleted);
+    const allSets = Object.values(sets).flat();
+    const completedSets = allSets.filter(set => set.isCompleted);
     if (completedSets.length === 0) {
       console.log("no sets");
       return [];
@@ -77,15 +90,21 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
         </Typography>
         
         <SaveWorkoutButton 
-          onClick={onSWBclick} currentWorkout={sets} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>
+          onClick={onSWBclick} 
+          currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
+            setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+          )} //TODO currentWorkout is not passing exerciseID here
+          removeFromWorkout={removeFromWorkout} 
+          deleteWorkout={deleteWorkout}
+          />
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
           </Typography>
         ) : (
           <List>
-            {currentWorkout.map((exercise, index) => (
-              <ListItem key={index} divider>
+            {currentWorkout.map((exercise) => (
+              <ListItem key={exercise.id} divider>
                 <ListItemText
                   primary={exercise.name}
                   secondary={`Main Muscle: ${exercise.main_muscle}`}
@@ -95,9 +114,9 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
                     Add Set
                   </Button>
                   <List>
-                    {sets.filter(set => set.exerciseId === exercise.id).map((set, setIndex) => (
+                  {(sets[exercise.id] || []).map((set, setIndex) => (
                       <ListItem 
-                        key={setIndex} 
+                        key={`${exercise.id}-${setIndex}`}
                         sx={{ 
                           display: 'flex', 
                           alignItems: 'center', 
@@ -111,26 +130,26 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
                           label="Weight"
                           type="number"
                           value={set.weight}
-                          onChange={(e) => handleSetChange(setIndex, 'weight', e.target.value)}
+                          onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
                           sx={{ mr: 2 }}
                         />
                         <TextField
                           label="Reps"
                           type="number"
                           value={set.reps}
-                          onChange={(e) => handleSetChange(setIndex, 'reps', e.target.value)}
+                          onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
                           sx={{ mr: 2 }}
                         />
                         <Checkbox
                           checked={set.isCompleted}
-                          onChange={(e) => handleSetCompletion(setIndex, e.target.checked)}
+                          onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
                           sx={{
                             '&.Mui-checked': {
               color: 'green',
             },
           }}
         />
-        <IconButton onClick={() => handleRemoveSet(setIndex)} aria-label="delete">
+        <IconButton onClick={() => handleRemoveSet(exercise.id, setIndex)} aria-label="delete">
           <DeleteIcon />
         </IconButton>
       </ListItem>

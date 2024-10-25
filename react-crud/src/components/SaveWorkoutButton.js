@@ -9,6 +9,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
     console.log("currentWorkout: ",currentWorkout);
     const saveWorkout = async () => {
         console.log("saveWorkout function called");
+        //good here
         if (currentWorkout && currentWorkout.length > 0) {
             try {
                 const workoutData = {
