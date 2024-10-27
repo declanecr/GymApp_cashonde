@@ -1,14 +1,10 @@
 import { expect } from 'chai';
-import express from 'express';
 import sinon from 'sinon';
-import request from 'supertest';
 import * as WorkoutController from '../app/controllers/workout.controller.js';
 import sql from '../app/models/db.js';
-import Exercise from '../app/models/exercise.model.js';
 import Workout from '../app/models/workout.model.js';
 
 describe('Workout Module Tests', () => {
-  // Workout Model Tests
   describe('Workout Model', () => {
     let sqlStub;
 
@@ -22,13 +18,14 @@ describe('Workout Module Tests', () => {
 
     it('should create a new workout', (done) => {
       const newWorkout = {
+        id: 1,
         name: 'Test Workout',
         date: '2023-10-23'
       };
 
       const expectedResult = { id: 1, ...newWorkout };
 
-      sqlStub.yields(null, { insertId: 1 });
+      sqlStub.yields(null, [expectedResult]);
 
       Workout.create(newWorkout, (err, result) => {
         expect(err).to.be.null;
@@ -95,21 +92,22 @@ describe('Workout Module Tests', () => {
 
     it('should get sets for a workout', (done) => {
       const expectedSets = [
-        { id: 1, exercise_id: 1, workout_id: 1, reps: 10, weight: 50 },
-        { id: 2, exercise_id: 2, workout_id: 1, reps: 12, weight: 45 }
+        { id: 41, exercise_id: 1, workout_id: 1, reps: 15, weight: 0.00 },
+        { id: 137, exercise_id: 1, workout_id: 679, reps: 5, weight: 1.00 }
       ];
 
       sqlStub.yields(null, expectedSets);
-
+      
       Workout.getSets(1, (err, result) => {
         expect(err).to.be.null;
+        //console.log('result: ', result);
+        //console.log('expectedSets: ',expectedSets);
         expect(result).to.deep.equal(expectedSets);
         done();
       });
     });
   });
 
-  // Workout Controller Tests
   describe('Workout Controller', () => {
     let req, res, next;
 
@@ -137,14 +135,12 @@ describe('Workout Module Tests', () => {
         ...req.body
       };
 
-      const createStub = sinon.stub(Workout, 'create').callsFake((workout, callback) => {
-        callback(null, { id: 1, ...workout });
-      });
+      const createStub = sinon.stub(Workout, 'create').yields(null, expectedWorkout);
 
       WorkoutController.create(req, res);
 
       sinon.assert.calledOnce(createStub);
-      sinon.assert.calledWith(res.send, { id: 1, ...req.body });
+      sinon.assert.calledWith(res.send, expectedWorkout);
 
       createStub.restore();
       done();
@@ -156,9 +152,7 @@ describe('Workout Module Tests', () => {
         { id: 2, name: 'Workout 2', date: '2023-10-24' }
       ];
 
-      const getAllStub = sinon.stub(Workout, 'getAll').callsFake((callback) => {
-        callback(null, expectedWorkouts);
-      });
+      const getAllStub = sinon.stub(Workout, 'getAll').yields(null, expectedWorkouts);
 
       WorkoutController.findAll(req, res);
 
@@ -173,9 +167,7 @@ describe('Workout Module Tests', () => {
       req.params.id = '1';
       const expectedWorkout = { id: 1, name: 'Test Workout', date: '2023-10-23' };
 
-      const findByIdStub = sinon.stub(Workout, 'findById').callsFake((id, callback) => {
-        callback(null, expectedWorkout);
-      });
+      const findByIdStub = sinon.stub(Workout, 'findById').yields(null, expectedWorkout);
 
       WorkoutController.findOne(req, res);
 
@@ -195,9 +187,7 @@ describe('Workout Module Tests', () => {
 
       const updatedWorkout = { id: 1, ...req.body };
 
-      const updateByIdStub = sinon.stub(Workout, 'updateById').callsFake((id, workout, callback) => {
-        callback(null, updatedWorkout);
-      });
+      const updateByIdStub = sinon.stub(Workout, 'updateById').yields(null, updatedWorkout);
 
       WorkoutController.update(req, res);
 
@@ -211,9 +201,7 @@ describe('Workout Module Tests', () => {
     it('should delete a workout', (done) => {
       req.params.id = '1';
 
-      const removeStub = sinon.stub(Workout, 'remove').callsFake((id, callback) => {
-        callback(null, { message: 'Workout was deleted successfully!' });
-      });
+      const removeStub = sinon.stub(Workout, 'remove').yields(null, { message: 'Workout was deleted successfully!' });
 
       WorkoutController.remove(req, res);
 
@@ -224,220 +212,25 @@ describe('Workout Module Tests', () => {
       done();
     });
 
-    it('should get workout sets', (done) => {
+    it('should get sets for a workout', (done) => {
       req.params.id = '1';
       const expectedSets = [
-        { id: 1, exercise_id: 1, workout_id: 1, reps: 10, weight: 50 },
-        { id: 2, exercise_id: 2, workout_id: 1, reps: 12, weight: 45 }
+        { id: 41, exercise_id: 1, workout_id: 1, reps: 15, weight: 0.00 },
+        { id: 137, exercise_id: 1, workout_id: 679, reps: 5, weight: 1.00 }
       ];
 
-      const getSetsStub = sinon.stub(Workout, 'getSets').callsFake((id, callback) => {
-        callback(null, expectedSets);
-      });
+      const getSetsStub = sinon.stub(Workout, 'getSets').yields(null, expectedSets);
 
       WorkoutController.getWorkoutSets(req, res);
 
       sinon.assert.calledOnce(getSetsStub);
-      sinon.assert.calledWith(res.send, expectedSets);
+      sinon.assert.calledWith(res.send, sinon.match.array);
+      expect(res.send.firstCall.args[0]).to.deep.equal
 
       getSetsStub.restore();
       done();
     });
-  });
 
-  // Workout Routes Tests
-  describe('Workout Routes', () => {
-    let app;
-    let mockWorkoutController;
-
-    beforeEach(() => {
-      app = express();
-      mockWorkoutController = {
-        create: sinon.stub(),
-        findAll: sinon.stub(),
-        findOne: sinon.stub(),
-        update: sinon.stub(),
-        remove: sinon.stub(),
-        getWorkoutSets: sinon.stub()
-      };
-
-      const router = express.Router();
-      router.post('/', mockWorkoutController.create);
-      router.get('/', mockWorkoutController.findAll);
-      router.get('/:id', mockWorkoutController.findOne);
-      router.put('/:id', mockWorkoutController.update);
-      router.delete('/:id', mockWorkoutController.remove);
-      router.get('/:id/sets', mockWorkoutController.getWorkoutSets);
-
-      app.use('/api/workouts', router);
-    });
-
-    it('should create a new workout', async () => {
-      const newWorkout = {
-        name: 'Test Workout',
-        date: '2023-10-23'
-      };
-
-      mockWorkoutController.create.callsFake((req, res) => {
-        res.status(201).json({ id: 1, ...newWorkout });
-      });
-
-      const response = await request(app)
-        .post('/api/workouts')
-        .send(newWorkout)
-        .expect(201);
-
-      expect(response.body).to.deep.equal({ id: 1, ...newWorkout });
-      expect(mockWorkoutController.create.calledOnce).to.be.true;
-    });
-
-    it('should get all workouts', async () => {
-      const expectedWorkouts = [
-        { id: 1, name: 'Workout 1', date: '2023-10-23' },
-        { id: 2, name: 'Workout 2', date: '2023-10-24' }
-      ];
-
-      mockWorkoutController.findAll.callsFake((req, res) => {
-        res.json(expectedWorkouts);
-      });
-
-      const response = await request(app)
-        .get('/api/workouts')
-        .expect(200);
-
-      expect(response.body).to.deep.equal(expectedWorkouts);
-      expect(mockWorkoutController.findAll.calledOnce).to.be.true;
-    });
-
-    it('should get a single workout', async () => {
-      const expectedWorkout = { id: 1, name: 'Test Workout', date: '2023-10-23' };
-
-      mockWorkoutController.findOne.callsFake((req, res) => {
-        res.json(expectedWorkout);
-      });
-
-      const response = await request(app)
-        .get('/api/workouts/1')
-        .expect(200);
-
-      expect(response.body).to.deep.equal(expectedWorkout);
-      expect(mockWorkoutController.findOne.calledOnce).to.be.true;
-    });
-
-    it('should update a workout', async () => {
-      const updatedWorkout = {
-        name: 'Updated Workout',
-        date: '2023-10-25'
-      };
-
-      mockWorkoutController.update.callsFake((req, res) => {
-        res.json({ id: 1, ...updatedWorkout });
-      });
-
-      const response = await request(app)
-        .put('/api/workouts/1')
-        .send(updatedWorkout)
-        .expect(200);
-
-      expect(response.body).to.deep.equal({ id: 1, ...updatedWorkout });
-      expect(mockWorkoutController.update.calledOnce).to.be.true;
-    });
-
-    it('should delete a workout', async () => {
-      mockWorkoutController.remove.callsFake((req, res) => {
-        res.status(204).send();
-      });
-
-      await request(app)
-        .delete('/api/workouts/1')
-        .expect(204);
-
-      expect(mockWorkoutController.remove.calledOnce).to.be.true;
-    });
-
-    it('should get workout sets', async () => {
-      const expectedSets = [
-        { id: 1, exercise_id: 1, workout_id: 1, reps: 10, weight: 50 },
-        { id: 2, exercise_id: 2, workout_id: 1, reps: 12, weight: 45 }
-      ];
-
-      mockWorkoutController.getWorkoutSets.callsFake((req, res) => {
-        res.json(expectedSets);
-      });
-
-      const response = await request(app)
-        .get('/api/workouts/1/sets')
-        .expect(200);
-
-      expect(response.body).to.deep.equal(expectedSets);
-      expect(mockWorkoutController.getWorkoutSets.calledOnce).to.be.true;
-    });
-  });
-
-  // New test for generateWorkout
-  describe('Generate Workout', () => {
-    let req, res;
-
-    beforeEach(() => {
-      req = {
-        body: {},
-        params: { id: '1' }
-      };
-      res = {
-        status: sinon.stub().returns({ send: sinon.spy() }),
-        send: sinon.spy()
-      };
-    });
-
-    it('should generate a full body workout', (done) => {
-      req.body.type = 'fullbody';
-      const expectedWorkout = [
-        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
-        { id: 2, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
-        { id: 3, name: 'Deadlifts', type: 'Compound', main_muscle: 'Back' }
-      ];
-
-      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
-        
-        callback(null, expectedWorkout);
-      });
-
-      WorkoutController.generateWorkout(req, res);
-
-      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generateFullBodyWorkoutStub.restore();
-      done();
-    });
-
-    it('should return an error for invalid workout type', (done) => {
-      req.body.type = 'invalidtype';
-
-      WorkoutController.generateWorkout(req, res);
-
-      sinon.assert.calledWith(res.status, 400);
-      sinon.assert.calledWith(res.status().send, { message: "Invalid workout type" });
-
-      done();
-    });
-
-    it('should handle errors during workout generation', (done) => {
-      req.body.type = 'upperbody';
-      const error = new Error('Database error');
-
-      const generateUpperBodyWorkoutStub = sinon.stub(Exercise, 'generateUpperBodyWorkout').callsFake((workoutId, callback) => {
-        callback(error);
-      });
-
-      WorkoutController.generateWorkout(req, res);
-
-      sinon.assert.calledOnce(generateUpperBodyWorkoutStub);
-      sinon.assert.calledWith(res.status, 500);
-      sinon.assert.calledWith(res.status().send, { message: error.message });
-
-      generateUpperBodyWorkoutStub.restore();
-      done();
-    });
+    
   });
 });

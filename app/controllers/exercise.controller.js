@@ -350,9 +350,8 @@ export const getWorkouts = (req,res)=>{
  * @param {Object} req - The request object
  * @param {Object} res - The response object
  */
-export const generateFullBodyWorkout = (req, res) => {
-  const workoutId = req.params.workoutId;
-  Exercise.generateFullBodyWorkout(workoutId, (err, data) => {
+export const generateFullBodyWorkout = ( req, res) => {
+  Exercise.generateFullBodyWorkout((err, data) => {
     if (err) {
       res.status(500).send({
         message: err.message || "Some error occurred while generating the full body workout."
@@ -442,7 +441,7 @@ export const generatePullWorkout = (req, res) => {
  */
 export const generateLegWorkout = (req, res) => {
   const workoutId = req.params.workoutId;
-  Exercise.generateLegWorkout(workoutId, (err, data) => {
+  Exercise.generateLowerBodyWorkout(workoutId, (err, data) => {
     if (err) {
       res.status(500).send({
         message: err.message || "Some error occurred while generating the leg workout."

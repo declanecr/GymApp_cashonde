@@ -150,42 +150,42 @@ Workout.generateWorkout = (numDays, result )=>{
 
     switch (numDays) {
         case 1:
-            Workout.generateFullBodyWorkout(exercises);
+            generateFullBodyWorkout(exercises);
             break;
 
         case 2:
-            Workout.generateUpperBodyWorkout(exercises);
-            Workout.generateLowerBodyWorkout(exercises);
+            generateUpperBodyWorkout(exercises);
+            generateLowerBodyWorkout(exercises);
             break;
 
         case 3:
-            Workout.generatePushWorkout(exercises);
-            Workout.generatePullWorkout(exercises);
-            Workout.generateLegWorkout(exercises);
+            generatePushWorkout(exercises);
+            generatePullWorkout(exercises);
+            generateLegWorkout(exercises);
             break;
 
         case 4:
-            Workout.generateUpperBodyWorkout(exercises);
-            Workout.generateLowerBodyWorkout(exercises);
-            Workout.generateUpperBodyWorkout(exercises);
-            Workout.generateLowerBodyWorkout(exercises);
+            generateUpperBodyWorkout(exercises);
+            generateLowerBodyWorkout(exercises);
+            generateUpperBodyWorkout(exercises);
+            generateLowerBodyWorkout(exercises);
             break;
 
         case 5:
-            Workout.generatePushWorkout(exercises);
-            Workout.generatePullWorkout(exercises);
-            Workout.generateLegWorkout(exercises);
-            Workout.generateUpperBodyWorkout(exercises);
-            Workout.generateLowerBodyWorkout(exercises);
+            generatePushWorkout(exercises);
+            generatePullWorkout(exercises);
+            generateLegWorkout(exercises);
+            generateUpperBodyWorkout(exercises);
+            generateLowerBodyWorkout(exercises);
             break;
 
         case 6:
-            Workout.generatePushWorkout(exercises);
-            Workout.generatePullWorkout(exercises);
-            Workout.generateLegWorkout(exercises);
-            Workout.generatePushWorkout(exercises);
-            Workout.generatePullWorkout(exercises);
-            Workout.generateLegWorkout(exercises);
+            generatePushWorkout(exercises);
+            generatePullWorkout(exercises);
+            generateLegWorkout(exercises);
+            generatePushWorkout(exercises);
+            generatePullWorkout(exercises);
+            generateLegWorkout(exercises);
             break;
 
         default:
@@ -197,7 +197,7 @@ Workout.generateWorkout = (numDays, result )=>{
 
 
 //generates full body workout
-Workout.generateFullBodyWorkout = (exercises) => {
+const generateFullBodyWorkout = (exercises) => {
   // Create a new workout with current date and time as name
   const workoutName = new `Full Body - ${Date().toLocaleString()}`;
   const newWorkout = {
@@ -222,7 +222,7 @@ Workout.generateFullBodyWorkout = (exercises) => {
 };
 
 //generates upper body workout
-Workout.generateUpperBodyWorkout = (exercises) => {
+const generateUpperBodyWorkout = (exercises) => {
   const workoutName = `Upper Body - ${new Date().toLocaleString()}`;
   const newWorkout = {
     name: workoutName,
@@ -242,7 +242,7 @@ Workout.generateUpperBodyWorkout = (exercises) => {
 };
 
 //generates lower body workout
-Workout.generateLowerBodyWorkout = (exercises) => {
+const generateLowerBodyWorkout = (exercises) => {
   const workoutName = `Lower Body - ${new Date().toLocaleString()}`;
   const newWorkout = {
     name: workoutName,
@@ -262,7 +262,7 @@ Workout.generateLowerBodyWorkout = (exercises) => {
 };
 
 //generates push workout
-Workout.generatePushWorkout = (exercises) => {
+const generatePushWorkout = (exercises) => {
   const workoutName = `Push - ${new Date().toLocaleString()}`;
   const newWorkout = {
     name: workoutName,
@@ -282,7 +282,7 @@ Workout.generatePushWorkout = (exercises) => {
 };
 
 //generates pull workout
-Workout.generatePullWorkout = (exercises) => {
+const generatePullWorkout = (exercises) => {
   const workoutName = `Pull - ${new Date().toLocaleString()}`;
   const newWorkout = {
     name: workoutName,
@@ -302,7 +302,7 @@ Workout.generatePullWorkout = (exercises) => {
 };
 
 //generates leg workout
-Workout.generateLegWorkout = (exercises) => {
+const generateLegWorkout = (exercises) => {
   const workoutName = `Leg - ${new Date().toLocaleString()}`;
   const newWorkout = {
     name: workoutName,
@@ -316,7 +316,7 @@ Workout.generateLegWorkout = (exercises) => {
     }
 
     const workoutId = createdWorkout.id;
-    Exercise.generateLegWorkout(exercises, workoutId);
+    Exercise.generateLowerBodyWorkout(exercises, workoutId);
     console.log(`Leg workout created with ID: ${workoutId}`);
   });
 };

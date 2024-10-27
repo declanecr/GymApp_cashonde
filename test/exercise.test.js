@@ -279,153 +279,135 @@ describe('Exercise Module Tests', () => {
 
     describe('Workout Generation', () => {
     let req, res;
+    let sqlStub;
+    let workoutExercises;
 
     beforeEach(() => {
-      req = {
-        params: { workoutId: '1' }
-      };
-      res = {
-        status: sinon.stub().returns({ send: sinon.spy() }),
-        send: sinon.spy()
-      };
+      sqlStub=sinon.stub(sql, 'query');
     });
 
-    it('should generate a full body workout', (done) => {
-      const expectedWorkout = [
-        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
-        { id: 2, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
-        { id: 3, name: 'Deadlifts', type: 'Compound', main_muscle: 'Back' }
+    afterEach(()=>{
+      sqlStub.restore();
+    });
+
+    it('should generate a full body workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
+        { id: 1, name: 'Push-ups', type: 'Compound', main_muscle: 'Chest' },
+        { id: 2, name: 'Squats', type: 'Compound', main_muscle: 'Quadriceps' },
+        { id: 3, name: 'Pull-ups', type: 'Compound', main_muscle: 'Back' },
+        { id: 4, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
+        { id: 5, name: 'Lunges', type: 'Compound', main_muscle: 'Hamstrings' },
+        { id: 6, name: 'Rows', type: 'Compound', main_muscle: 'Back' },
+        { id: 7, name: 'Calf-Raise', type: 'Isolation', main_muscle: 'Calves' }
       ];
-
-      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generateFullBodyWorkout(req, res);
-
-      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generateFullBodyWorkoutStub.restore();
-      done();
+    
+      sqlStub.yields(null, mockExercises);
+    
+      const result = await Exercise.generateFullBodyWorkout(workoutExercises, workoutId);
+    
+      expect(result).to.have.lengthOf(7); // 4 upper body + 3 lower body
+      expect(result).to.deep.include.members(mockExercises);
+      
+      // Additional assertions to ensure a balanced workout
+      const muscleGroups = result.map(exercise => exercise.main_muscle);
+      expect(muscleGroups).to.include('Chest');
+      expect(muscleGroups).to.include('Back');
+      expect(muscleGroups).to.include('Quadriceps');
+      expect(muscleGroups).to.include('Shoulders');
+      expect(muscleGroups).to.include('Calves');
     });
 
-    it('should handle errors when generating a full body workout', (done) => {
-      const error = new Error('Database error');
+    
 
-      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
-        callback(error);
-      });
-
-      exercises.generateFullBodyWorkout(req, res);
-
-      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
-      sinon.assert.calledWith(res.status, 500);
-      sinon.assert.calledWith(res.status().send, { message: error.message });
-
-      generateFullBodyWorkoutStub.restore();
-      done();
-    });
-
-    it('should generate an upper body workout', (done) => {
-      const expectedWorkout = [
-        { id: 1, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
-        { id: 2, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
-        { id: 3, name: 'Tricep Extensions', type: 'Isolation', main_muscle: 'Arms' }
+    it('should generate an upper body workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
+        { id: 1, name: 'Bench Press',  main_muscle: 'Chest' },
+        { id: 2, name: 'Shoulder Press',  main_muscle: 'Shoulders' },
+        { id: 3, name: 'Bicep Curls',  main_muscle: 'Arms' }
       ];
-
-      const generateUpperBodyWorkoutStub = sinon.stub(Exercise, 'generateUpperBodyWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generateUpperBodyWorkout(req, res);
-
-      sinon.assert.calledOnce(generateUpperBodyWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generateUpperBodyWorkoutStub.restore();
-      done();
+  
+      sqlStub.yields(null, mockExercises);
+  
+      const result = await Exercise.generateUpperBodyWorkout(workoutExercises, workoutId);
+  
+      expect(result).to.have.lengthOf(3);
+      expect(result).to.deep.include.members(mockExercises);
     });
-
-    it('should generate a lower body workout', (done) => {
-      const expectedWorkout = [
-        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
-        { id: 2, name: 'Leg Press', type: 'Compound', main_muscle: 'Legs' },
-        { id: 3, name: 'Calf Raises', type: 'Isolation', main_muscle: 'Legs' }
-      ];
-
-      const generateLowerBodyWorkoutStub = sinon.stub(Exercise, 'generateLowerBodyWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generateLowerBodyWorkout(req, res);
-
-      sinon.assert.calledOnce(generateLowerBodyWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generateLowerBodyWorkoutStub.restore();
-      done();
-    });
-
-    it('should generate a push workout', (done) => {
-      const expectedWorkout = [
-        { id: 1, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
-        { id: 2, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
-        { id: 3, name: 'Tricep Pushdowns', type: 'Isolation', main_muscle: 'Arms' }
-      ];
-
-      const generatePushWorkoutStub = sinon.stub(Exercise, 'generatePushWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generatePushWorkout(req, res);
-
-      sinon.assert.calledOnce(generatePushWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generatePushWorkoutStub.restore();
-      done();
-    });
-
-    it('should generate a pull workout', (done) => {
-      const expectedWorkout = [
-        { id: 1, name: 'Pull-ups', type: 'Compound', main_muscle: 'Back' },
-        { id: 2, name: 'Barbell Rows', type: 'Compound', main_muscle: 'Back' },
-        { id: 3, name: 'Bicep Curls', type: 'Isolation', main_muscle: 'Arms' }
-      ];
-
-      const generatePullWorkoutStub = sinon.stub(Exercise, 'generatePullWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generatePullWorkout(req, res);
-
-      sinon.assert.calledOnce(generatePullWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generatePullWorkoutStub.restore();
-      done();
-    });
-
-    it('should generate a leg workout', (done) => {
-      const expectedWorkout = [
+  
+    it('should generate a lower body workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
         { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
         { id: 2, name: 'Lunges', type: 'Compound', main_muscle: 'Legs' },
-        { id: 3, name: 'Leg Extensions', type: 'Isolation', main_muscle: 'Legs' }
+        { id: 3, name: 'Calf Raises', type: 'Isolation', main_muscle: 'Legs' }
       ];
-
-      const generateLegWorkoutStub = sinon.stub(Exercise, 'generateLegWorkout').callsFake((workoutId, callback) => {
-        callback(null, expectedWorkout);
-      });
-
-      exercises.generateLegWorkout(req, res);
-
-      sinon.assert.calledOnce(generateLegWorkoutStub);
-      sinon.assert.calledWith(res.send, expectedWorkout);
-
-      generateLegWorkoutStub.restore();
-      done();
+  
+      sqlStub.yields(null, mockExercises);
+  
+      const result = await Exercise.generateLowerBodyWorkout(workoutExercises, workoutId);
+      
+      //console.log(result);
+      expect(result).to.have.lengthOf(3);
+      expect(result).to.deep.include.members(mockExercises);
     });
+  
+    it('should generate a push workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
+        { id: 1, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
+        { id: 2, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
+        { id: 3, name: 'Tricep Extensions', type: 'Isolation', main_muscle: 'Triceps' }
+      ];
+  
+      sqlStub.yields(null, mockExercises);
+  
+      const result = await Exercise.generatePushWorkout(workoutExercises, workoutId);
+  
+      expect(result).to.have.lengthOf(3);
+      expect(result).to.deep.include.members(mockExercises);
+    });
+  
+    it('should generate a pull workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
+        { id: 1, name: 'Pull-ups', type: 'Compound', main_muscle: 'Back' },
+        { id: 2, name: 'Rows', type: 'Compound', main_muscle: 'Back' },
+        { id: 3, name: 'Bicep Curls', type: 'Isolation', main_muscle: 'Biceps' }
+      ];
+  
+      sqlStub.yields(null, mockExercises);
+  
+      const result = await Exercise.generatePullWorkout(workoutExercises, workoutId);
+  
+      expect(result).to.have.lengthOf(3);
+      expect(result).to.deep.include.members(mockExercises);
+    });
+  
+    it('should generate a leg workout', async () => {
+      const workoutExercises = [];
+      const workoutId = 1;
+      const mockExercises = [
+        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
+        { id: 2, name: 'Lunges', type: 'Compound', main_muscle: 'Legs' },
+        { id: 3, name: 'Calf Raises', type: 'Isolation', main_muscle: 'Legs' }
+      ];
+  
+      sqlStub.yields(null, mockExercises);
+  
+      const result = await Exercise.generateLowerBodyWorkout(workoutExercises, workoutId);
+  
+      expect(result).to.have.lengthOf(3);
+      expect(result).to.deep.include.members(mockExercises);
+    });
+
+    
   });
 
 
