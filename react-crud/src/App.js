@@ -41,7 +41,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
         <Route path="/add" element={<AddExercise />} />
-        <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout}/>} />
+        <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
         <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
       </Routes>
     </>

@@ -344,3 +344,111 @@ export const getWorkouts = (req,res)=>{
     }
   });
 }
+
+/**
+ * Generate a full body workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generateFullBodyWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generateFullBodyWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the full body workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+/**
+ * Generate an upper body workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generateUpperBodyWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generateUpperBodyWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the upper body workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+/**
+ * Generate a lower body workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generateLowerBodyWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generateLowerBodyWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the lower body workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+/**
+ * Generate a push workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generatePushWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generatePushWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the push workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+/**
+ * Generate a pull workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generatePullWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generatePullWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the pull workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
+/**
+ * Generate a leg workout
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generateLegWorkout = (req, res) => {
+  const workoutId = req.params.workoutId;
+  Exercise.generateLegWorkout(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || "Some error occurred while generating the leg workout."
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};

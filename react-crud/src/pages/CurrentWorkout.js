@@ -11,8 +11,9 @@ import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
 import ExerciseDataService from '../services/ExerciseDataService';
+import WorkoutDataService from '../services/WorkoutDataService';
 
-const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
+const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
   const [sets, setSets] = useState({});
   const [selectedDays, setSelectedDays] = useState({
     Monday: false,
@@ -80,7 +81,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     console.log("workoutData: ", workoutData);
 
     try {
-      const response = await ExerciseDataService.createWorkout(workoutData);
+      const response = await WorkoutDataService.createWorkout(workoutData);
       console.log("Created workout:", response);
       const workoutId = response.id;
       console.log("Workout ID:", workoutId);
@@ -98,14 +99,20 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     }
   };
 
-  const handleGenerateWorkout = () => {
-    // Add logic for generating 
-    // TODO 
-    // get number of weekday checkboxes checked
-    // call DataService method for generating workouts
-    // use addToWorkout from App.js
-
-    console.log("Generating workout...");
+  const handleGenerateWorkout = async () => {
+    const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
+    
+    if (selectedDayCount === 0) {
+      console.log("No days selected");
+      return;
+    }
+  
+    try {
+      const generatedWorkout = await ExerciseDataService.generateWorkout(selectedDayCount);
+      generatedWorkout.forEach(exercise => addToWorkout(exercise));
+    } catch (error) {
+      console.error('Error generating workout:', error);
+    }
   };
 
   return (
@@ -115,13 +122,24 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           Current Workout
         </Typography>
         
-        <SaveWorkoutButton 
-          onClick={onSWBclick} 
-          currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
-            setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-          )} //TODO currentWorkout is not passing exerciseID here
-          removeFromWorkout={removeFromWorkout} 
-          deleteWorkout={deleteWorkout}
+        <FormGroup row>
+          {Object.keys(selectedDays).map((day) => (
+            <FormControlLabel
+              key={day}
+              control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
+              label={day}
+            />
+          ))}
+        </FormGroup>
+
+        {currentWorkout.length > 0 ? (
+          <SaveWorkoutButton 
+            onClick={onSWBclick} 
+            currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
+              setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+            )} //TODO currentWorkout is not passing exerciseID here
+            removeFromWorkout={removeFromWorkout} 
+            deleteWorkout={deleteWorkout}
           />
         ) : (
           <Button
@@ -210,7 +228,8 @@ CurrentWorkout.propTypes = {
     })
   ).isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
-  deleteWorkout: PropTypes.func.isRequired
+  deleteWorkout: PropTypes.func.isRequired,
+  addToWorkout:PropTypes.func.isRequired
 };
 
 export default CurrentWorkout;

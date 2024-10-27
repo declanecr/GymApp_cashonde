@@ -277,6 +277,158 @@ describe('Exercise Module Tests', () => {
     // Add more controller tests here...
   });
 
+    describe('Workout Generation', () => {
+    let req, res;
+
+    beforeEach(() => {
+      req = {
+        params: { workoutId: '1' }
+      };
+      res = {
+        status: sinon.stub().returns({ send: sinon.spy() }),
+        send: sinon.spy()
+      };
+    });
+
+    it('should generate a full body workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
+        { id: 2, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
+        { id: 3, name: 'Deadlifts', type: 'Compound', main_muscle: 'Back' }
+      ];
+
+      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generateFullBodyWorkout(req, res);
+
+      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generateFullBodyWorkoutStub.restore();
+      done();
+    });
+
+    it('should handle errors when generating a full body workout', (done) => {
+      const error = new Error('Database error');
+
+      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
+        callback(error);
+      });
+
+      exercises.generateFullBodyWorkout(req, res);
+
+      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
+      sinon.assert.calledWith(res.status, 500);
+      sinon.assert.calledWith(res.status().send, { message: error.message });
+
+      generateFullBodyWorkoutStub.restore();
+      done();
+    });
+
+    it('should generate an upper body workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
+        { id: 2, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
+        { id: 3, name: 'Tricep Extensions', type: 'Isolation', main_muscle: 'Arms' }
+      ];
+
+      const generateUpperBodyWorkoutStub = sinon.stub(Exercise, 'generateUpperBodyWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generateUpperBodyWorkout(req, res);
+
+      sinon.assert.calledOnce(generateUpperBodyWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generateUpperBodyWorkoutStub.restore();
+      done();
+    });
+
+    it('should generate a lower body workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
+        { id: 2, name: 'Leg Press', type: 'Compound', main_muscle: 'Legs' },
+        { id: 3, name: 'Calf Raises', type: 'Isolation', main_muscle: 'Legs' }
+      ];
+
+      const generateLowerBodyWorkoutStub = sinon.stub(Exercise, 'generateLowerBodyWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generateLowerBodyWorkout(req, res);
+
+      sinon.assert.calledOnce(generateLowerBodyWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generateLowerBodyWorkoutStub.restore();
+      done();
+    });
+
+    it('should generate a push workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
+        { id: 2, name: 'Shoulder Press', type: 'Compound', main_muscle: 'Shoulders' },
+        { id: 3, name: 'Tricep Pushdowns', type: 'Isolation', main_muscle: 'Arms' }
+      ];
+
+      const generatePushWorkoutStub = sinon.stub(Exercise, 'generatePushWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generatePushWorkout(req, res);
+
+      sinon.assert.calledOnce(generatePushWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generatePushWorkoutStub.restore();
+      done();
+    });
+
+    it('should generate a pull workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Pull-ups', type: 'Compound', main_muscle: 'Back' },
+        { id: 2, name: 'Barbell Rows', type: 'Compound', main_muscle: 'Back' },
+        { id: 3, name: 'Bicep Curls', type: 'Isolation', main_muscle: 'Arms' }
+      ];
+
+      const generatePullWorkoutStub = sinon.stub(Exercise, 'generatePullWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generatePullWorkout(req, res);
+
+      sinon.assert.calledOnce(generatePullWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generatePullWorkoutStub.restore();
+      done();
+    });
+
+    it('should generate a leg workout', (done) => {
+      const expectedWorkout = [
+        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
+        { id: 2, name: 'Lunges', type: 'Compound', main_muscle: 'Legs' },
+        { id: 3, name: 'Leg Extensions', type: 'Isolation', main_muscle: 'Legs' }
+      ];
+
+      const generateLegWorkoutStub = sinon.stub(Exercise, 'generateLegWorkout').callsFake((workoutId, callback) => {
+        callback(null, expectedWorkout);
+      });
+
+      exercises.generateLegWorkout(req, res);
+
+      sinon.assert.calledOnce(generateLegWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generateLegWorkoutStub.restore();
+      done();
+    });
+  });
+
+
   // Exercise Routes Tests
   describe('Exercise Routes', () => {
     let app;

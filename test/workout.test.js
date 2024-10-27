@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import request from 'supertest';
 import * as WorkoutController from '../app/controllers/workout.controller.js';
 import sql from '../app/models/db.js';
+import Exercise from '../app/models/exercise.model.js';
 import Workout from '../app/models/workout.model.js';
 
 describe('Workout Module Tests', () => {
@@ -370,6 +371,73 @@ describe('Workout Module Tests', () => {
 
       expect(response.body).to.deep.equal(expectedSets);
       expect(mockWorkoutController.getWorkoutSets.calledOnce).to.be.true;
+    });
+  });
+
+  // New test for generateWorkout
+  describe('Generate Workout', () => {
+    let req, res;
+
+    beforeEach(() => {
+      req = {
+        body: {},
+        params: { id: '1' }
+      };
+      res = {
+        status: sinon.stub().returns({ send: sinon.spy() }),
+        send: sinon.spy()
+      };
+    });
+
+    it('should generate a full body workout', (done) => {
+      req.body.type = 'fullbody';
+      const expectedWorkout = [
+        { id: 1, name: 'Squats', type: 'Compound', main_muscle: 'Legs' },
+        { id: 2, name: 'Bench Press', type: 'Compound', main_muscle: 'Chest' },
+        { id: 3, name: 'Deadlifts', type: 'Compound', main_muscle: 'Back' }
+      ];
+
+      const generateFullBodyWorkoutStub = sinon.stub(Exercise, 'generateFullBodyWorkout').callsFake((workoutId, callback) => {
+        
+        callback(null, expectedWorkout);
+      });
+
+      WorkoutController.generateWorkout(req, res);
+
+      sinon.assert.calledOnce(generateFullBodyWorkoutStub);
+      sinon.assert.calledWith(res.send, expectedWorkout);
+
+      generateFullBodyWorkoutStub.restore();
+      done();
+    });
+
+    it('should return an error for invalid workout type', (done) => {
+      req.body.type = 'invalidtype';
+
+      WorkoutController.generateWorkout(req, res);
+
+      sinon.assert.calledWith(res.status, 400);
+      sinon.assert.calledWith(res.status().send, { message: "Invalid workout type" });
+
+      done();
+    });
+
+    it('should handle errors during workout generation', (done) => {
+      req.body.type = 'upperbody';
+      const error = new Error('Database error');
+
+      const generateUpperBodyWorkoutStub = sinon.stub(Exercise, 'generateUpperBodyWorkout').callsFake((workoutId, callback) => {
+        callback(error);
+      });
+
+      WorkoutController.generateWorkout(req, res);
+
+      sinon.assert.calledOnce(generateUpperBodyWorkoutStub);
+      sinon.assert.calledWith(res.status, 500);
+      sinon.assert.calledWith(res.status().send, { message: error.message });
+
+      generateUpperBodyWorkoutStub.restore();
+      done();
     });
   });
 });

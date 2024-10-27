@@ -6,6 +6,7 @@
  * processing data and sending appropriate responses.
  */
 
+import Exercise from "../models/exercise.model.js";
 import Workout from "../models/workout.model.js";
 
 /**
@@ -154,4 +155,59 @@ export const getWorkoutSets = (req, res) => {
     }
   });
 };
+
+  /**
+ * Generate a workout based on type
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
+export const generateWorkout = (req, res) => {
+  const { type } = req.body;
+  const workoutId = req.params.id;
+
+  if (!type) {
+    res.status(400).send({
+      message: "Workout type is required"
+    });
+    return;
+  }
+
+  let generateFunction;
+  switch (type.toLowerCase()) {
+    case 'fullbody':
+      generateFunction = Exercise.generateFullBodyWorkout;
+      break;
+    case 'upperbody':
+      generateFunction = Exercise.generateUpperBodyWorkout;
+      break;
+    case 'lowerbody':
+      generateFunction = Exercise.generateLowerBodyWorkout;
+      break;
+    case 'push':
+      generateFunction = Exercise.generatePushWorkout;
+      break;
+    case 'pull':
+      generateFunction = Exercise.generatePullWorkout;
+      break;
+    case 'legs':
+      generateFunction = Exercise.generateLegWorkout;
+      break;
+    default:
+      res.status(400).send({
+        message: "Invalid workout type"
+      });
+      return;
+  }
+
+  generateFunction(workoutId, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message || `Some error occurred while generating the ${type} workout.`
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};
+
 
