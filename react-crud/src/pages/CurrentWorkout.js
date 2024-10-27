@@ -5,7 +5,7 @@
  * It allows users to view their selected exercises, remove them if needed, and add sets.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Checkbox, Container, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
@@ -14,6 +14,15 @@ import ExerciseDataService from '../services/ExerciseDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
   const [sets, setSets] = useState({});
+  const [selectedDays, setSelectedDays] = useState({
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false
+  });
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -46,6 +55,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
       )
     }));
   }; 
+
+  const handleDayChange = (day) => {
+    setSelectedDays(prevDays => ({
+      ...prevDays,
+      [day]: !prevDays[day]
+    }));
+  };
 
   const onSWBclick = async () => {
     console.log("onSWBclick");
@@ -82,6 +98,16 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     }
   };
 
+  const handleGenerateWorkout = () => {
+    // Add logic for generating 
+    // TODO 
+    // get number of weekday checkboxes checked
+    // call DataService method for generating workouts
+    // use addToWorkout from App.js
+
+    console.log("Generating workout...");
+  };
+
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, textAlign: 'center' }}>
@@ -93,10 +119,19 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           onClick={onSWBclick} 
           currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
             setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-          )} 
+          )} //TODO currentWorkout is not passing exerciseID here
           removeFromWorkout={removeFromWorkout} 
           deleteWorkout={deleteWorkout}
           />
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGenerateWorkout}
+          >
+            Generate Workout
+          </Button>
+        )}
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
