@@ -371,7 +371,7 @@ Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId)=>{
 };
 
 //generates push workout
-Exercise.generatePushWorkout = (workoutExercises, workoutId)=>{
+Exercise.generatePushWorkout = (workoutExercises, workoutId) => {
   sql.query("SELECT * FROM exercises", (err, exercises) => {
     if (err) {
       console.log("error: ", err);
@@ -379,7 +379,25 @@ Exercise.generatePushWorkout = (workoutExercises, workoutId)=>{
     }
     const pushExercises = filterPushExercises(exercises);
     const shuffledExercises = shuffle(pushExercises);
-    console.log('generating pushWorkout', shuffledExercises);
+    const selectedExercises = shuffledExercises.slice(0, 6);
+    console.log('generating pushWorkout', selectedExercises);
+    
+    // Create 3 empty sets for each exercise
+    selectedExercises.forEach(exercise => {
+      for (let i = 0; i < 3; i++) {
+        const newSet = {
+          exercise_id: exercise.id,
+          workout_id: workoutId,
+          reps: 10,
+          weight: 0
+        };
+        Set.create(newSet, (err, result) => {
+          if (err) {
+            console.log("Error creating set: ", err);
+          }
+        });
+      }
+    });
   });
 };
 
