@@ -93,7 +93,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           onClick={onSWBclick} 
           currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
             setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-          )} //TODO currentWorkout is not passing exerciseID here
+          )} 
           removeFromWorkout={removeFromWorkout} 
           deleteWorkout={deleteWorkout}
           />

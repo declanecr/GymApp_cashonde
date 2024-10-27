@@ -320,4 +320,157 @@ Exercise.getWorkouts = (id, result) => {
   );
 };
 
+//TODO
+//add workout ID
+/*add sql queries
+  add lists of 'upper body muscles', 'lower body muscles', etc.
+  add groups of muscles "primary", "secondary", "tertiary"
+    to track how many exercises have been selected for each group
+  add automatic set creation
+*/
+
+//generates full body workout
+Exercise.generateFullBodyWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const upperBodyExercises = filterUpperBodyExercises(exercises);
+    const lowerBodyExercises = filterLowerBodyExercises(exercises);
+    const shuffledUpperBody = shuffle(upperBodyExercises).slice(0, 4);
+    const shuffledLowerBody = shuffle(lowerBodyExercises).slice(0, 3);
+    const fullBodyWorkout = [...shuffledUpperBody, ...shuffledLowerBody];
+    console.log('generating fullBodyWorkout', fullBodyWorkout);
+  });
+};
+
+//generates upper body workout
+Exercise.generateUpperBodyWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const upperBodyExercises = filterUpperBodyExercises(exercises);
+    const shuffledExercises = shuffle(upperBodyExercises).slice(0, 6);
+    console.log('generating upperBodyWorkout', shuffledExercises);
+  });};
+
+//generates lower body workout
+Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const lowerBodyExercises = filterLowerBodyExercises(exercises);
+    const shuffledExercises = shuffle(lowerBodyExercises).slice(0, 6);
+    console.log('generating lowerBodyWorkout', shuffledExercises);
+  });
+};
+
+//generates push workout
+Exercise.generatePushWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const pushExercises = filterPushExercises(exercises);
+    const shuffledExercises = shuffle(pushExercises);
+    console.log('generating pushWorkout', shuffledExercises);
+  });
+};
+
+//generates pull workout
+Exercise.generatePullWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const pullExercises = filterPullExercises(exercises);
+    const shuffledExercises = shuffle(pullExercises);
+    console.log('generating pullWorkout', shuffledExercises);
+  });
+};
+
+//generates leg workout
+Exercise.generateLegWorkout = (workoutExercises, workoutId)=>{
+  sql.query("SELECT * FROM exercises", (err, exercises) => {
+    if (err) {
+      console.log("error: ", err);
+      return;
+    }
+    const legExercises = filterLowerBodyExercises(exercises);
+    const shuffledExercises = shuffle(legExercises);
+    console.log('generating legWorkout', shuffledExercises);
+  });
+};
+
+
+// Helper functions (to be implemented)
+const getUniqueMuscles = (exercises) => {
+  // Implementation here
+  // get unique muscles from passed exercises
+  return [...new Set(exercises.map(exercise => exercise.main_muscle))];
+};
+
+/**
+ * 
+ Shuffles an array of exercises using the Fisher-Yates algorithm
+ * @param {Array} exercises - The array of exercises to shuffle
+ * @returns {Array} A new array with the exercises in a random order
+ */
+const shuffle = (exercises) => {
+  const shuffled = [...exercises];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+
+const generateWorkoutSets = (exercise, workoutId) => {
+  // Implementation here
+  // use Set.create
+
+  // TODO implement this later when I worry about generating sets based on exercise history
+  // also will need to have WorkoutID implemented
+};
+
+const filterUpperBodyExercises = (exercises) => {
+  // Implementation here
+  // list upperBodyMuscles = 'Abdominals' 'Shoulders' 'Biceps' 'Middle Back' 'Lower Back' 'Lats' 'Chest' 'Triceps' 'Traps' 'Forearms' 'Neck' 'Back'
+  // return filtered list of exercises in which only ones whos 'main_muscle' is an upper body muscle
+  const upperBodyMuscles = ['Abdominals', 'Shoulders', 'Biceps', 'Middle Back', 'Lower Back', 'Lats', 'Chest', 'Triceps', 'Traps', 'Forearms', 'Neck', 'Back'];
+  return exercises.filter(exercise => upperBodyMuscles.includes(exercise.main_muscle));
+};
+
+const filterLowerBodyExercises = (exercises) => {
+  // Implementation here
+  //list lowerBodyMuscles = 'Quadriceps' 'Hamstrings' 'Adductors' 'Calves' 'Glutes'
+  // return filtered list in which 'main_muscle' is in lowerBodyMuscles
+  const lowerBodyMuscles = ['Quadriceps', 'Hamstrings', 'Adductors', 'Calves', 'Glutes'];
+  return exercises.filter(exercise => lowerBodyMuscles.includes(exercise.main_muscle));
+};
+
+const filterPushExercises = (exercises) => {
+  // Implementation here
+  // list pushMuscles = 'Shoulders' 'Chest' 'Triceps'
+  // return filtered list where main_muscle is in pushMuscles
+  const pushMuscles = ['Shoulders', 'Chest', 'Triceps'];
+  return exercises.filter(exercise => pushMuscles.includes(exercise.main_muscle));
+};
+
+const filterPullExercises = (exercises) => {
+  // Implementation here
+  //list pullMuscles = 'Biceps' 'Middle Back' 'Lower Back' 'Lats' 'Back' 'Forearms' 'Traps'
+  //return filtered lists where main_muscle is in pullMuscles
+  const pullMuscles = ['Biceps', 'Middle Back', 'Lower Back', 'Lats', 'Back', 'Forearms', 'Traps'];
+  return exercises.filter(exercise => pullMuscles.includes(exercise.main_muscle));
+};
+
 export default Exercise;
