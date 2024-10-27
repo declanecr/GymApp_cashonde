@@ -98,6 +98,16 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
     }
   };
 
+  const handleGenerateWorkout = () => {
+    // Add logic for generating 
+    // TODO 
+    // get number of weekday checkboxes checked
+    // call DataService method for generating workouts
+    // use addToWorkout from App.js
+
+    console.log("Generating workout...");
+  };
+
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, textAlign: 'center' }}>
@@ -115,14 +125,24 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           ))}
         </FormGroup>
 
-        <SaveWorkoutButton 
-          onClick={onSWBclick} 
-          currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
-            setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-          )} //TODO currentWorkout is not passing exerciseID here
-          removeFromWorkout={removeFromWorkout} 
-          deleteWorkout={deleteWorkout}
-        />
+        {currentWorkout.length > 0 ? (
+          <SaveWorkoutButton 
+            onClick={onSWBclick} 
+            currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
+              setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+            )} //TODO currentWorkout is not passing exerciseID here
+            removeFromWorkout={removeFromWorkout} 
+            deleteWorkout={deleteWorkout}
+          />
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGenerateWorkout}
+          >
+            Generate Workout
+          </Button>
+        )}
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
