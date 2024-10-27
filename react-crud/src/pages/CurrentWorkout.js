@@ -5,7 +5,7 @@
  * It allows users to view their selected exercises, remove them if needed, and add sets.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Checkbox, Container, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
@@ -14,6 +14,15 @@ import ExerciseDataService from '../services/ExerciseDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) => {
   const [sets, setSets] = useState({});
+  const [selectedDays, setSelectedDays] = useState({
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false
+  });
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -46,6 +55,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
       )
     }));
   }; 
+
+  const handleDayChange = (day) => {
+    setSelectedDays(prevDays => ({
+      ...prevDays,
+      [day]: !prevDays[day]
+    }));
+  };
 
   const onSWBclick = async () => {
     console.log("onSWBclick");
@@ -89,6 +105,16 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           Current Workout
         </Typography>
         
+        <FormGroup row>
+          {Object.keys(selectedDays).map((day) => (
+            <FormControlLabel
+              key={day}
+              control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
+              label={day}
+            />
+          ))}
+        </FormGroup>
+
         <SaveWorkoutButton 
           onClick={onSWBclick} 
           currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
@@ -96,7 +122,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout }) =>
           )} //TODO currentWorkout is not passing exerciseID here
           removeFromWorkout={removeFromWorkout} 
           deleteWorkout={deleteWorkout}
-          />
+        />
         {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
