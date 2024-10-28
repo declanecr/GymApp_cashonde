@@ -5,7 +5,7 @@
  * It allows users to view their selected exercises, remove them if needed, and add sets.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Checkbox, Container, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Container, Divider, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
@@ -85,6 +85,10 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   };
 
   const handleGeneratedWorkout = (workout) => {
+    if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
+      deleteWorkout();
+      setSets({});
+    }
     setGeneratedWorkout(workout);
   };
 
@@ -100,19 +104,27 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
         <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
           Generated Workout
         </Typography>
-        <List>
-          {generatedWorkout.map((exercise) => (
-            <ListItem key={exercise.id}>
-              <ListItemText
-                primary={exercise.name}
-                secondary={`Main Muscle: ${exercise.main_muscle}`}
-              />
-              <Button onClick={() => addToWorkout(exercise)} variant="contained" color="primary">
-                Add to Workout
-              </Button>
-            </ListItem>
-          ))}
-        </List>
+        {generatedWorkout.map((dayWorkout, dayIndex) => (
+          <Box key={dayIndex} sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Day {dayIndex + 1}
+            </Typography>
+            <List>
+              {dayWorkout.map((exercise) => (
+                <ListItem key={exercise.id}>
+                  <ListItemText
+                    primary={exercise.name}
+                    secondary={`Main Muscle: ${exercise.main_muscle}`}
+                  />
+                  <Button onClick={() => addToWorkout(exercise)} variant="contained" color="primary">
+                    Add to Workout
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+            {dayIndex < generatedWorkout.length - 1 && <Divider />}
+          </Box>
+        ))}
 
         <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
           Your Workout

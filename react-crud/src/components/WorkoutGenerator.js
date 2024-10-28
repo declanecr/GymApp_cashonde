@@ -3,7 +3,7 @@
  * 
  * This component handles the generation of workouts based on selected days.
  */
-import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import WorkoutDataService from '../services/WorkoutDataService';
@@ -45,6 +45,9 @@ const WorkoutGenerator = ({ onGenerateWorkout }) => {
 
   return (
     <>
+      <Typography variant="h6" gutterBottom>
+        Select Days for Workout
+      </Typography>
       <FormGroup row>
         {Object.keys(selectedDays).map((day) => (
           <FormControlLabel
@@ -58,6 +61,7 @@ const WorkoutGenerator = ({ onGenerateWorkout }) => {
         variant="contained"
         color="primary"
         onClick={handleGenerateWorkout}
+        disabled={Object.values(selectedDays).filter(Boolean).length === 0}
       >
         Generate Workout
       </Button>

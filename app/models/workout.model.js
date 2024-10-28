@@ -144,7 +144,6 @@ Workout.getSets = (id, result) => {
  */
 Workout.generateWorkout = (numDays, result) => {
   const workouts = [];
-  //TODO MAKE SURE IT ADDS EXERCISES
   const generateWorkoutForDay = async (type) => {
     const workout = {
       name: `${type} - ${new Date().toLocaleString()}`,
@@ -179,7 +178,7 @@ Workout.generateWorkout = (numDays, result) => {
       }
   
       await exerciseGenerator(workout.exercises);
-      workouts.push(workout);
+      workouts.push(workout.exercises);
       
       //console.log('workouts flatmap: \n', workouts.flatMap(w => w.exercises));
       
@@ -188,7 +187,7 @@ Workout.generateWorkout = (numDays, result) => {
 
       if (workouts.length === parseInt(numDays)) {
         console.log('RETURNING EXERCISES');
-        result(null, workouts.flatMap(w => w.exercises));
+        result(null, workouts);
       }
     } catch (err) {
       console.log(`Error creating ${type} workout: `, err);
