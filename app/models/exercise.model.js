@@ -329,7 +329,7 @@ Exercise.getWorkouts = (id, result) => {
   add automatic set creation
 */
 
-Exercise.generateFullBodyWorkout = (workoutExercises, workoutId) => {
+Exercise.generateFullBodyWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -353,7 +353,7 @@ Exercise.generateFullBodyWorkout = (workoutExercises, workoutId) => {
   });
 };
 
-Exercise.generateUpperBodyWorkout = (workoutExercises, workoutId) => {
+Exercise.generateUpperBodyWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -373,7 +373,7 @@ Exercise.generateUpperBodyWorkout = (workoutExercises, workoutId) => {
   });
 };
 
-Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId) => {
+Exercise.generateLowerBodyWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -393,7 +393,7 @@ Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId) => {
   });
 };
 
-Exercise.generatePushWorkout = (workoutExercises, workoutId) => {
+Exercise.generatePushWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -413,7 +413,7 @@ Exercise.generatePushWorkout = (workoutExercises, workoutId) => {
   });
 };
 
-Exercise.generatePullWorkout = (workoutExercises, workoutId) => {
+Exercise.generatePullWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -433,7 +433,7 @@ Exercise.generatePullWorkout = (workoutExercises, workoutId) => {
   });
 };
 
-Exercise.generateLegWorkout = (workoutExercises, workoutId) => {
+Exercise.generateLegWorkout = (workoutExercises) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];

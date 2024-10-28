@@ -153,14 +153,8 @@ Workout.generateWorkout = (numDays, result) => {
     };
   
     try {
-      const createdWorkout = await new Promise((resolve, reject) => {
-        Workout.create({name: workout.name, date:workout.date}, (err, created) => {
-          if (err) reject(err);
-          else resolve(created);
-        });
-      });
+      
 
-      const workoutId = createdWorkout.id;
       let exerciseGenerator;
   
       switch (type) {
@@ -184,8 +178,7 @@ Workout.generateWorkout = (numDays, result) => {
           break;
       }
   
-      await exerciseGenerator(workout.exercises, workoutId);
-      console.log(`workout.model: ${type} workout created with ID: ${workoutId}`);
+      await exerciseGenerator(workout.exercises);
       workouts.push(workout);
       
       //console.log('workouts flatmap: \n', workouts.flatMap(w => w.exercises));
