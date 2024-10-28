@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
-import ExerciseDataService from '../services/ExerciseDataService';
 import WorkoutDataService from '../services/WorkoutDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
@@ -108,7 +107,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   
     try {
-      const generatedWorkout = await ExerciseDataService.generateWorkout(selectedDayCount);
+      const generatedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
+      console.log('generatedWorkout: ', generatedWorkout)
       generatedWorkout.forEach(exercise => addToWorkout(exercise));
     } catch (error) {
       console.error('Error generating workout:', error);

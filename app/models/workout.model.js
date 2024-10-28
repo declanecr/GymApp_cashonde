@@ -130,195 +130,115 @@ Workout.getSets = (id, result) => {
     });
 };
 
-/**generates workouts
- * creates workout based on number of days
- * calls workout generate methods, which create workouts
- * then they call Exercise.workout generate methods to
+
+
+const generateWorkoutForDay = (type) => {
+  console.log('generateWorkoutForDay called');
+  const workout = {
+    name: `${type} - ${new Date().toLocaleString()}`,
+    date: new Date(),
+    exercises: []
+  };
+  console.log('workout: ', workout);
+
+  Workout.create(workout, (err, createdWorkout) => {
+    if (err) {
+      console.log(`Error creating ${type} workout: `, err);
+      return;
+    }
+
+    const workoutId = createdWorkout.id;
+    let exerciseGenerator;
+
+    switch (type) {
+      case 'Full Body':
+        exerciseGenerator = Exercise.generateFullBodyWorkout;
+        break;
+      case 'Upper Body':
+        exerciseGenerator = Exercise.generateUpperBodyWorkout;
+        break;
+      case 'Lower Body':
+        exerciseGenerator = Exercise.generateLowerBodyWorkout;
+        break;
+      case 'Push':
+        exerciseGenerator = Exercise.generatePushWorkout;
+        break;
+      case 'Pull':
+        exerciseGenerator = Exercise.generatePullWorkout;
+        break;
+      case 'Leg':
+        exerciseGenerator = Exercise.generateLowerBodyWorkout;
+        break;
+    }
+
+    exerciseGenerator(workout.exercises, workoutId);
+    console.log(`${type} workout created with ID: ${workoutId}`);
+    workouts.push(workout);
+
+    if (workouts.length === numDays) {
+      result(null, workouts.flatMap(w => w.exercises));
+    }
+  });
+};
+
+/**
+ * Generates workouts based on the number of days
+ * Creates workout based on number of days
+ * Calls workout generate methods, which create workouts
+ * Then they call Exercise.workout generate methods to
  * create list of exercises and sets for each
  * 
- * should be called in CurrentWorkout.js
-  numDays -- the number of days selected to generate workouts for
-  TODO -- filters -- the filters for what machines, equipment, 
-  etc are available to the user
-*/
+ * Should be called in CurrentWorkout.js
+ * @param {number} numDays - The number of days selected to generate workouts for
+ * @param {Function} result - Callback function
+ * @returns {Array} Array of exercises to be added to the current workout
+ */
+Workout.generateWorkout = (numDays, result) => {
+  console.log('workout.model.js generating Workout');
+  const workouts = [];
+  //TODO MAKE SURE IT ADDS EXERCISES
 
-Workout.generateWorkout = (numDays, result )=>{
-  //TODO ADD createworkout and workout id
-  //switch statement determining how many days are being generated for
-  console.log('generating Workout');
-  const exercises = [];
-
-    switch (numDays) {
-        case 1:
-            generateFullBodyWorkout(exercises);
-            break;
-
-        case 2:
-            generateUpperBodyWorkout(exercises);
-            generateLowerBodyWorkout(exercises);
-            break;
-
-        case 3:
-            generatePushWorkout(exercises);
-            generatePullWorkout(exercises);
-            generateLegWorkout(exercises);
-            break;
-
-        case 4:
-            generateUpperBodyWorkout(exercises);
-            generateLowerBodyWorkout(exercises);
-            generateUpperBodyWorkout(exercises);
-            generateLowerBodyWorkout(exercises);
-            break;
-
-        case 5:
-            generatePushWorkout(exercises);
-            generatePullWorkout(exercises);
-            generateLegWorkout(exercises);
-            generateUpperBodyWorkout(exercises);
-            generateLowerBodyWorkout(exercises);
-            break;
-
-        case 6:
-            generatePushWorkout(exercises);
-            generatePullWorkout(exercises);
-            generateLegWorkout(exercises);
-            generatePushWorkout(exercises);
-            generatePullWorkout(exercises);
-            generateLegWorkout(exercises);
-            break;
-
-        default:
-            // Handle unexpected cases
-            break;
-    }
-    return exercises;
-};
-
-
-//generates full body workout
-const generateFullBodyWorkout = (exercises) => {
-  // Create a new workout with current date and time as name
-  const workoutName = new `Full Body - ${Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  // Create the workout and get its ID
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-
-    // Generate full body workout exercises
-    Exercise.generateFullBodyWorkout(exercises, workoutId);
-
-    console.log(`Full body workout created with ID: ${workoutId}`);
-  });
-};
-
-//generates upper body workout
-const generateUpperBodyWorkout = (exercises) => {
-  const workoutName = `Upper Body - ${new Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating upper body workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    Exercise.generateUpperBodyWorkout(exercises, workoutId);
-    console.log(`Upper body workout created with ID: ${workoutId}`);
-  });
-};
-
-//generates lower body workout
-const generateLowerBodyWorkout = (exercises) => {
-  const workoutName = `Lower Body - ${new Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating lower body workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    Exercise.generateLowerBodyWorkout(exercises, workoutId);
-    console.log(`Lower body workout created with ID: ${workoutId}`);
-  });
-};
-
-//generates push workout
-const generatePushWorkout = (exercises) => {
-  const workoutName = `Push - ${new Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating push workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    Exercise.generatePushWorkout(exercises, workoutId);
-    console.log(`Push workout created with ID: ${workoutId}`);
-  });
-};
-
-//generates pull workout
-const generatePullWorkout = (exercises) => {
-  const workoutName = `Pull - ${new Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating pull workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    Exercise.generatePullWorkout(exercises, workoutId);
-    console.log(`Pull workout created with ID: ${workoutId}`);
-  });
-};
-
-//generates leg workout
-const generateLegWorkout = (exercises) => {
-  const workoutName = `Leg - ${new Date().toLocaleString()}`;
-  const newWorkout = {
-    name: workoutName,
-    date: new Date()
-  };
-
-  Workout.create(newWorkout, (err, createdWorkout) => {
-    if (err) {
-      console.log("Error creating leg workout: ", err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    Exercise.generateLowerBodyWorkout(exercises, workoutId);
-    console.log(`Leg workout created with ID: ${workoutId}`);
-  });
+  
+  console.log('switch case numDays: ', numDays);
+  switch (parseInt(numDays)) {
+    case 1:
+      generateWorkoutForDay('Full Body');
+      break;
+    case 2:
+      generateWorkoutForDay('Upper Body');
+      generateWorkoutForDay('Lower Body');
+      console.log('reached case 2');
+      break;
+    case 3:
+      generateWorkoutForDay('Push');
+      generateWorkoutForDay('Pull');
+      generateWorkoutForDay('Leg');
+      break;
+    case 4:
+      generateWorkoutForDay('Upper Body');
+      generateWorkoutForDay('Lower Body');
+      generateWorkoutForDay('Upper Body');
+      generateWorkoutForDay('Lower Body');
+      break;
+    case 5:
+      generateWorkoutForDay('Push');
+      generateWorkoutForDay('Pull');
+      generateWorkoutForDay('Leg');
+      generateWorkoutForDay('Upper Body');
+      generateWorkoutForDay('Lower Body');
+      break;
+    case 6:
+      generateWorkoutForDay('Push');
+      generateWorkoutForDay('Pull');
+      generateWorkoutForDay('Leg');
+      generateWorkoutForDay('Push');
+      generateWorkoutForDay('Pull');
+      generateWorkoutForDay('Leg');
+      break;
+    default:
+      result({ kind: "invalid_input" }, null);
+      break;
+  }
 };
 
 

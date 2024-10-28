@@ -11,6 +11,12 @@ export default function (app) {
     // Retrieve all Workouts
     router.get('/', workouts.findAll);
 
+    // Generate workouts then returns exercises
+    router.get('/generate/:numDays', (req, res) => {
+        console.log('Number of days:', req.params.numDays);
+        workouts.generateWorkout(req, res);
+    });
+
     // Retrieve a single Workout with workoutId
     router.get('/:id', workouts.findOne);
 
@@ -22,6 +28,8 @@ export default function (app) {
 
     // Gets Sets from a workout
     router.get('/:id/sets', workouts.getWorkoutSets);
+
+    
 
     app.use('/api/workouts', router);
 }

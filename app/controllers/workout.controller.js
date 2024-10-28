@@ -161,22 +161,29 @@ export const getWorkoutSets = (req, res) => {
  * @param {Object} res - The response object
  */
 export const generateWorkout = (req, res) => {
-  const { numDays } = req.body;
-  const workoutId = req.params.id;
+  const numDays = req.params.numDays;
+  console.log('numDays: ', numDays);
+  try{
+    console.log(numDays);
+  } catch {
+    console.log('didnt print');
+  }
 
-  if (!numDays) {
+  
+  if (isNaN(numDays) || numDays <= 0) {
     res.status(400).send({
-      message: "Number of days is required"
+      message: "Number of days must be a positive integer"
     });
     return;
   }
 
-  Workout.generateWorkout(workoutId, numDays, (err, data) => {
+  Workout.generateWorkout(numDays, (err, data) => {
     if (err) {
       res.status(500).send({
         message: err.message || `Some error occurred while generating the workout for ${numDays} days.`
       });
     } else {
+      // Send the array of exercises returned by Workout.generateWorkout
       res.send(data);
     }
   });

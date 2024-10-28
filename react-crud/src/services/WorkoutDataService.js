@@ -109,6 +109,26 @@ const WorkoutDataService = {
    */
     getWorkouts: (exerciseId) => {
         return http.get(`/exercises/${exerciseId}/workouts`);
+    },
+
+    /**
+     * Generates a workout based on number of days
+     * Purpose: Create a workout plan for a specified number of days
+     * Inputs: numDays - The number of days for the workout plan
+     * Outputs: Promise resolving to an array of exercises for the generated workout
+     * API Call: GET /workouts/generate/:numDays 
+     */
+    generateWorkout: (numDays) => {
+        console.log('WDS.generateWorkout numDays: ',numDays);
+        return http.get(`/workouts/generate/${numDays}`)
+            .then(response => {
+                if (response.data && Array.isArray(response.data)) {
+                    console.log('response.data: ', response.data);
+                    return response.data;
+                } else {
+                    throw new Error("Invalid response format");
+                }
+            });
     }
 };
 

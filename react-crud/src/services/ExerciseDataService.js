@@ -122,9 +122,7 @@ const ExerciseDataService = {
     return http.get(`/exercises?name=${name}`);
   },
 
-  generateWorkout: (dayCount) => {
-    return http.get(`/generate-workout?days=${dayCount}`);
-  },
+  
 };
 
 export default ExerciseDataService;

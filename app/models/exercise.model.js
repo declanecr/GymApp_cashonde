@@ -329,13 +329,11 @@ Exercise.getWorkouts = (id, result) => {
   add automatic set creation
 */
 
-//generates full body workout
-Exercise.generateFullBodyWorkout = (workoutExercises) => {
+Exercise.generateFullBodyWorkout = (workoutExercises, workoutId) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
-    console.log('workoutExercises: ', workoutExercises);
 
     sql.query("SELECT * FROM exercises", (err, exercises) => {
       if (err) {
@@ -343,29 +341,25 @@ Exercise.generateFullBodyWorkout = (workoutExercises) => {
         reject(err);
         return;
       }
-      //console.log('exercises: ',exercises);
       const upperBodyExercises = filterUpperBodyExercises(exercises);
-      //console.log('upperBodyExercises: ',upperBodyExercises);
       const lowerBodyExercises = filterLowerBodyExercises(exercises);
-      //console.log('lowerBodyExercises: ', lowerBodyExercises);
       const shuffledUpperBody = shuffle(upperBodyExercises).slice(0, 4);
       const shuffledLowerBody = shuffle(lowerBodyExercises).slice(0, 3);
       const fullBodyWorkout = [...shuffledUpperBody, ...shuffledLowerBody];
       console.log('generating fullBodyWorkout', fullBodyWorkout);
-      workoutExercises.push(...fullBodyWorkout);
+      workoutExercises.push(...fullBodyWorkout.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
 
-//generates upper body workout
-Exercise.generateUpperBodyWorkout = (workoutExercises) => {
+Exercise.generateUpperBodyWorkout = (workoutExercises, workoutId) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Chest', 'Back', 'Lats', 'Lower Back', 'Middle Back', 'Triceps', 'Forearms', 'Traps', 'Shoulders', 'Biceps', 'Abdominals')", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Chest', 'Back', 'Shoulders', 'Arms')", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
@@ -373,19 +367,19 @@ Exercise.generateUpperBodyWorkout = (workoutExercises) => {
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
       console.log('generating upperBodyWorkout', shuffledExercises);
-      workoutExercises.push(...shuffledExercises);
+      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
 
-Exercise.generateLowerBodyWorkout = (workoutExercises) => {
+Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Quadriceps','Hamstrings','Adductors','Calves','Glutes','Abductors') ", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE main_muscle = 'Legs'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
@@ -393,13 +387,13 @@ Exercise.generateLowerBodyWorkout = (workoutExercises) => {
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
       console.log('generating lowerBodyWorkout', shuffledExercises);
-      workoutExercises.push(...shuffledExercises);
+      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
 
-Exercise.generatePushWorkout = (workoutExercises) => {
+Exercise.generatePushWorkout = (workoutExercises, workoutId) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -413,13 +407,13 @@ Exercise.generatePushWorkout = (workoutExercises) => {
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
       console.log('generating pushWorkout', shuffledExercises);
-      workoutExercises.push(...shuffledExercises);
+      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
 
-Exercise.generatePullWorkout = (workoutExercises) => {
+Exercise.generatePullWorkout = (workoutExercises, workoutId) => {
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
@@ -433,7 +427,27 @@ Exercise.generatePullWorkout = (workoutExercises) => {
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
       console.log('generating pullWorkout', shuffledExercises);
-      workoutExercises.push(...shuffledExercises);
+      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
+      resolve(workoutExercises);
+    });
+  });
+};
+
+Exercise.generateLegWorkout = (workoutExercises, workoutId) => {
+  return new Promise((resolve, reject) => {
+    if (!Array.isArray(workoutExercises)) {
+      workoutExercises = [];
+    }
+
+    sql.query("SELECT * FROM exercises WHERE main_muscle = 'Legs'", (err, exercises) => {
+      if (err) {
+        console.log("error: ", err);
+        reject(err);
+        return;
+      }
+      const shuffledExercises = shuffle(exercises).slice(0, 6);
+      console.log('generating legWorkout', shuffledExercises);
+      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
