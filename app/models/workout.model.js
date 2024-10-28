@@ -130,10 +130,6 @@ Workout.getSets = (id, result) => {
     });
 };
 
-
-
-
-
 /**
  * Generates workouts based on the number of days
  * Creates workout based on number of days
@@ -149,21 +145,21 @@ Workout.getSets = (id, result) => {
 Workout.generateWorkout = (numDays, result) => {
   const workouts = [];
   //TODO MAKE SURE IT ADDS EXERCISES
-  const generateWorkoutForDay = (type) => {
-    console.log('generateWorkoutForDay called');
+  const generateWorkoutForDay = async (type) => {
     const workout = {
       name: `${type} - ${new Date().toLocaleString()}`,
       date: new Date(),
-  
+      exercises: [],
     };
-    console.log('workout: ', workout);
   
-    Workout.create(workout, (err, createdWorkout) => {
-      if (err) {
-        console.log(`Error creating ${type} workout: `, err);
-        return;
-      }
-  
+    try {
+      const createdWorkout = await new Promise((resolve, reject) => {
+        Workout.create({name: workout.name, date:workout.date}, (err, created) => {
+          if (err) reject(err);
+          else resolve(created);
+        });
+      });
+
       const workoutId = createdWorkout.id;
       let exerciseGenerator;
   
@@ -188,14 +184,23 @@ Workout.generateWorkout = (numDays, result) => {
           break;
       }
   
-      exerciseGenerator(workout.exercises, workoutId);
-      console.log(`${type} workout created with ID: ${workoutId}`);
+      await exerciseGenerator(workout.exercises, workoutId);
+      console.log(`workout.model: ${type} workout created with ID: ${workoutId}`);
       workouts.push(workout);
-  
-      if (workouts.length === numDays) {
+      
+      //console.log('workouts flatmap: \n', workouts.flatMap(w => w.exercises));
+      
+      console.log('workouts.length: ', workouts.length);
+      
+
+      if (workouts.length === parseInt(numDays)) {
+        console.log('RETURNING EXERCISES');
         result(null, workouts.flatMap(w => w.exercises));
       }
-    });
+    } catch (err) {
+      console.log(`Error creating ${type} workout: `, err);
+      result(err, null);
+    }
   };
   
   console.log('switch case numDays: ', numDays);
@@ -239,6 +244,5 @@ Workout.generateWorkout = (numDays, result) => {
       break;
   }
 };
-
 
 export default Workout;

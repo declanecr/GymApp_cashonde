@@ -346,7 +346,7 @@ Exercise.generateFullBodyWorkout = (workoutExercises, workoutId) => {
       const shuffledUpperBody = shuffle(upperBodyExercises).slice(0, 4);
       const shuffledLowerBody = shuffle(lowerBodyExercises).slice(0, 3);
       const fullBodyWorkout = [...shuffledUpperBody, ...shuffledLowerBody];
-      console.log('generating fullBodyWorkout', fullBodyWorkout);
+      console.log('Full Body Workout Exercises:', fullBodyWorkout.map(exercise => exercise.name));
       workoutExercises.push(...fullBodyWorkout.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
@@ -366,7 +366,7 @@ Exercise.generateUpperBodyWorkout = (workoutExercises, workoutId) => {
         return;
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('generating upperBodyWorkout', shuffledExercises);
+      console.log('Upper Body Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
       workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
@@ -379,14 +379,14 @@ Exercise.generateLowerBodyWorkout = (workoutExercises, workoutId) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle = 'Legs'", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Quadriceps', 'Hamstrings', 'Adductors', 'Calves', 'Glutes')", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('generating lowerBodyWorkout', shuffledExercises);
+      console.log('Lower Body Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
       workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
@@ -406,7 +406,7 @@ Exercise.generatePushWorkout = (workoutExercises, workoutId) => {
         return;
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('generating pushWorkout', shuffledExercises);
+      console.log('Push Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
       workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
@@ -426,7 +426,7 @@ Exercise.generatePullWorkout = (workoutExercises, workoutId) => {
         return;
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('generating pullWorkout', shuffledExercises);
+      console.log('Pull Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
       workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
@@ -446,7 +446,7 @@ Exercise.generateLegWorkout = (workoutExercises, workoutId) => {
         return;
       }
       const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('generating legWorkout', shuffledExercises);
+      console.log('Leg Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
       workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });

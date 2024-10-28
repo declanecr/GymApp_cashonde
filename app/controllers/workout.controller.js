@@ -178,6 +178,7 @@ export const generateWorkout = (req, res) => {
   }
 
   Workout.generateWorkout(numDays, (err, data) => {
+    console.log('controller genereate workout called');
     if (err) {
       res.status(500).send({
         message: err.message || `Some error occurred while generating the workout for ${numDays} days.`
