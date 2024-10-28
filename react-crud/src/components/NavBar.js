@@ -6,8 +6,8 @@
  * It also wraps the main content in Routes for proper routing.
  */
 
+import { AppBar, Button, Container, Toolbar } from '@mui/material';
 import React from 'react';
-import { AppBar, Toolbar, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const NavBar = () => {
@@ -25,7 +25,7 @@ const NavBar = () => {
             Add Exercise
           </Button>
           <Button component={Link} to="/current-workout" color="inherit">
-            Current Workout
+            Workouts
           </Button>
         </Toolbar>
       </Container>

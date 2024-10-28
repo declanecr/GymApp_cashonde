@@ -5,24 +5,17 @@
  * It allows users to view their selected exercises, remove them if needed, and add sets.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Container, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
+import WorkoutGenerator from '../components/WorkoutGenerator';
 import WorkoutDataService from '../services/WorkoutDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
   const [sets, setSets] = useState({});
-  const [selectedDays, setSelectedDays] = useState({
-    Monday: false,
-    Tuesday: false,
-    Wednesday: false,
-    Thursday: false,
-    Friday: false,
-    Saturday: false,
-    Sunday: false
-  });
+  const [generatedWorkout, setGeneratedWorkout] = useState([]);
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -55,13 +48,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       )
     }));
   }; 
-
-  const handleDayChange = (day) => {
-    setSelectedDays(prevDays => ({
-      ...prevDays,
-      [day]: !prevDays[day]
-    }));
-  };
 
   const onSWBclick = async () => {
     console.log("onSWBclick");
@@ -98,21 +84,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   };
 
-  const handleGenerateWorkout = async () => {
-    const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
-    
-    if (selectedDayCount === 0) {
-      console.log("No days selected");
-      return;
-    }
-  
-    try {
-      const generatedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
-      console.log('generatedWorkout: ', generatedWorkout)
-      generatedWorkout.forEach(exercise => addToWorkout(exercise));
-    } catch (error) {
-      console.error('Error generating workout:', error);
-    }
+  const handleGeneratedWorkout = (workout) => {
+    setGeneratedWorkout(workout);
   };
 
   return (
@@ -122,39 +95,43 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
           Current Workout
         </Typography>
         
-        <FormGroup row>
-          {Object.keys(selectedDays).map((day) => (
-            <FormControlLabel
-              key={day}
-              control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
-              label={day}
-            />
-          ))}
-        </FormGroup>
+        <WorkoutGenerator onGenerateWorkout={handleGeneratedWorkout} />
 
+        <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          Generated Workout
+        </Typography>
+        <List>
+          {generatedWorkout.map((exercise) => (
+            <ListItem key={exercise.id}>
+              <ListItemText
+                primary={exercise.name}
+                secondary={`Main Muscle: ${exercise.main_muscle}`}
+              />
+              <Button onClick={() => addToWorkout(exercise)} variant="contained" color="primary">
+                Add to Workout
+              </Button>
+            </ListItem>
+          ))}
+        </List>
+
+        <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          Your Workout
+        </Typography>
         {currentWorkout.length > 0 ? (
           <SaveWorkoutButton 
             onClick={onSWBclick} 
             currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
               setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-            )} //TODO currentWorkout is not passing exerciseID here
+            )}
             removeFromWorkout={removeFromWorkout} 
             deleteWorkout={deleteWorkout}
           />
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleGenerateWorkout}
-          >
-            Generate Workout
-          </Button>
-        )}
-        {currentWorkout.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
             No exercises added to the workout yet.
           </Typography>
-        ) : (
+        )}
+        {currentWorkout.length > 0 && (
           <List>
             {currentWorkout.map((exercise) => (
               <ListItem key={exercise.id} divider>
@@ -229,7 +206,7 @@ CurrentWorkout.propTypes = {
   ).isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
   deleteWorkout: PropTypes.func.isRequired,
-  addToWorkout:PropTypes.func.isRequired
+  addToWorkout: PropTypes.func.isRequired
 };
 
 export default CurrentWorkout;
