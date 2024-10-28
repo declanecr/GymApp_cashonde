@@ -132,54 +132,7 @@ Workout.getSets = (id, result) => {
 
 
 
-const generateWorkoutForDay = (type) => {
-  console.log('generateWorkoutForDay called');
-  const workout = {
-    name: `${type} - ${new Date().toLocaleString()}`,
-    date: new Date(),
-    exercises: []
-  };
-  console.log('workout: ', workout);
 
-  Workout.create(workout, (err, createdWorkout) => {
-    if (err) {
-      console.log(`Error creating ${type} workout: `, err);
-      return;
-    }
-
-    const workoutId = createdWorkout.id;
-    let exerciseGenerator;
-
-    switch (type) {
-      case 'Full Body':
-        exerciseGenerator = Exercise.generateFullBodyWorkout;
-        break;
-      case 'Upper Body':
-        exerciseGenerator = Exercise.generateUpperBodyWorkout;
-        break;
-      case 'Lower Body':
-        exerciseGenerator = Exercise.generateLowerBodyWorkout;
-        break;
-      case 'Push':
-        exerciseGenerator = Exercise.generatePushWorkout;
-        break;
-      case 'Pull':
-        exerciseGenerator = Exercise.generatePullWorkout;
-        break;
-      case 'Leg':
-        exerciseGenerator = Exercise.generateLowerBodyWorkout;
-        break;
-    }
-
-    exerciseGenerator(workout.exercises, workoutId);
-    console.log(`${type} workout created with ID: ${workoutId}`);
-    workouts.push(workout);
-
-    if (workouts.length === numDays) {
-      result(null, workouts.flatMap(w => w.exercises));
-    }
-  });
-};
 
 /**
  * Generates workouts based on the number of days
@@ -194,10 +147,56 @@ const generateWorkoutForDay = (type) => {
  * @returns {Array} Array of exercises to be added to the current workout
  */
 Workout.generateWorkout = (numDays, result) => {
-  console.log('workout.model.js generating Workout');
   const workouts = [];
   //TODO MAKE SURE IT ADDS EXERCISES
-
+  const generateWorkoutForDay = (type) => {
+    console.log('generateWorkoutForDay called');
+    const workout = {
+      name: `${type} - ${new Date().toLocaleString()}`,
+      date: new Date(),
+  
+    };
+    console.log('workout: ', workout);
+  
+    Workout.create(workout, (err, createdWorkout) => {
+      if (err) {
+        console.log(`Error creating ${type} workout: `, err);
+        return;
+      }
+  
+      const workoutId = createdWorkout.id;
+      let exerciseGenerator;
+  
+      switch (type) {
+        case 'Full Body':
+          exerciseGenerator = Exercise.generateFullBodyWorkout;
+          break;
+        case 'Upper Body':
+          exerciseGenerator = Exercise.generateUpperBodyWorkout;
+          break;
+        case 'Lower Body':
+          exerciseGenerator = Exercise.generateLowerBodyWorkout;
+          break;
+        case 'Push':
+          exerciseGenerator = Exercise.generatePushWorkout;
+          break;
+        case 'Pull':
+          exerciseGenerator = Exercise.generatePullWorkout;
+          break;
+        case 'Leg':
+          exerciseGenerator = Exercise.generateLowerBodyWorkout;
+          break;
+      }
+  
+      exerciseGenerator(workout.exercises, workoutId);
+      console.log(`${type} workout created with ID: ${workoutId}`);
+      workouts.push(workout);
+  
+      if (workouts.length === numDays) {
+        result(null, workouts.flatMap(w => w.exercises));
+      }
+    });
+  };
   
   console.log('switch case numDays: ', numDays);
   switch (parseInt(numDays)) {
