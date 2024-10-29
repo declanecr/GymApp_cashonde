@@ -2,21 +2,29 @@
  * CurrentWorkout Component
  * 
  * This component manages and displays the current workout session.
- * It allows users to view their selected exercises, remove them if needed, and add sets.
+ * It allows users to view their selected exercises, remove them if needed, add sets,
+ * and generate workouts based on selected days.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Checkbox, Container, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Checkbox, Container, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
-import WorkoutGenerator from '../components/WorkoutGenerator';
 import WorkoutDataService from '../services/WorkoutDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
   const [sets, setSets] = useState({});
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
-  const [selectedDays, setSelectedDays] =useState({});
+  const [selectedDays, setSelectedDays] = useState({
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false
+  });
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -85,13 +93,32 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   };
 
-  const handleGeneratedWorkout = (workout, days) => {
-    if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
-      deleteWorkout();
-      setSets({});
+  const handleDayChange = (day) => {
+    setSelectedDays(prevDays => ({
+      ...prevDays,
+      [day]: !prevDays[day]
+    }));
+  };
+
+  const handleGenerateWorkout = async () => {
+    const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
+    
+    if (selectedDayCount === 0) {
+      console.log("No days selected");
+      return;
     }
-    setGeneratedWorkout(workout);
-    setSelectedDays(days);
+  
+    try {
+      const generatedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
+      console.log('generatedWorkout: ', generatedWorkout);
+      if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
+        deleteWorkout();
+        setSets({});
+      }
+      setGeneratedWorkout(generatedWorkout);
+    } catch (error) {
+      console.error('Error generating workout:', error);
+    }
   };
 
   const setAsWorkout = (workout) => {
@@ -99,15 +126,14 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     setSets({});
     workout.forEach(exercise => addToWorkout(exercise));
   };
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
           Current Workout
         </Typography>
         
-        
-
         <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
           Your Workout
         </Typography>
@@ -185,40 +211,64 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
             ))}
           </List>
         )}
-        <WorkoutGenerator onGenerateWorkout={handleGeneratedWorkout} />
 
-      <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-        Generated Workout
-      </Typography>
-      <Grid container spacing={2}>
-        {generatedWorkout.map((dayWorkout, dayIndex) => (
-          <Grid item xs={12} sm={6} md={4} key={dayIndex}>
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                {Object.keys(selectedDays).filter(day=>selectedDays[day])[dayIndex]}
-              </Typography>
-              <List>
-                {dayWorkout.map((exercise) => (
-                  <ListItem key={exercise.id}>
-                    <ListItemText
-                      primary={exercise.name}
-                      secondary={`Main Muscle: ${exercise.main_muscle}`}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-              <Button 
-                onClick={() => setAsWorkout(dayWorkout)} 
-                variant="contained" 
-                color="primary"
-                fullWidth
-              >
-                Set as Workout
-              </Button>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+        <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          Chose which days to generate workouts for
+        </Typography>
+        <FormGroup row>
+          {Object.keys(selectedDays).map((day) => (
+            <FormControlLabel
+              key={day}
+              control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
+              label={day}
+            />
+          ))}
+        </FormGroup>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleGenerateWorkout}
+          disabled={Object.values(selectedDays).filter(Boolean).length === 0}
+        >
+          Generate Workout
+        </Button>
+
+        <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+          Generated Workout
+        </Typography>
+        <Grid container spacing={2}>
+          {generatedWorkout.map((dayWorkout, dayIndex) => (
+            <Grid item xs={12} sm={6} md={3} key={dayIndex}>
+              <Card sx={{ mb: 3}}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {Object.keys(selectedDays).filter(day => selectedDays[day])[dayIndex]}
+                  </Typography>
+                  <List>
+                    {dayWorkout.map((exercise) => (
+                      <ListItem key={exercise.id}>
+                        <ListItemText
+                          primary={exercise.name}
+                          secondary={`Main Muscle: ${exercise.main_muscle}`}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                  </CardContent>
+                  <CardActions>
+                    <Button 
+                      onClick={() => setAsWorkout(dayWorkout)} 
+                      variant="contained" 
+                      color="primary"
+                      fullWidth
+                    >
+                      Set as Workout
+                    </Button>
+                  </CardActions>  
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Container>
   );

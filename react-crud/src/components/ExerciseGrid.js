@@ -6,8 +6,8 @@ import 'react-data-grid/lib/styles.css'; //removing this removes  the css for th
 
 import ExerciseDataService from "../services/ExerciseDataService";
 import AddToWorkoutButton from './AddToWorkoutButton';
+import CurrentExerciseCard from './CurrentExerciseCard';
 import ExerciseFilters from './ExerciseFilters';
-import TestCurrentExercise from './testCurrentExercise';
 import ViewSetsButton from './ViewSetsButton';
 
 const ExerciseGrid = ({ addToWorkout }) => {
@@ -72,7 +72,7 @@ const ExerciseGrid = ({ addToWorkout }) => {
     };
 
     setCurrentExercise(updatedRow);
-    TestCurrentExercise.exercise = currentExercise;
+    CurrentExerciseCard.exercise = currentExercise;
     console.log(updatedRow);
   };
 
@@ -87,7 +87,7 @@ const ExerciseGrid = ({ addToWorkout }) => {
   return (
     <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
       <Box mb={3}>
-        <TestCurrentExercise exercise={currentExercise} />
+        <CurrentExerciseCard exercise={currentExercise} />
         <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
         <ViewSetsButton exercise={currentExercise}/>
       </Box>
