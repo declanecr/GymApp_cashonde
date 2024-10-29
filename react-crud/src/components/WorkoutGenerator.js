@@ -43,6 +43,8 @@ const WorkoutGenerator = ({ onGenerateWorkout }) => {
     }
   };
 
+  
+
   return (
     <>
       <Typography variant="h6" gutterBottom>
