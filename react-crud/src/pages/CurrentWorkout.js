@@ -16,6 +16,7 @@ import WorkoutDataService from '../services/WorkoutDataService';
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
   const [sets, setSets] = useState({});
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
+  const [selectedDays, setSelectedDays] =useState({});
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -84,12 +85,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   };
 
-  const handleGeneratedWorkout = (workout) => {
+  const handleGeneratedWorkout = (workout, days) => {
     if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
       deleteWorkout();
       setSets({});
     }
     setGeneratedWorkout(workout);
+    setSelectedDays(days);
   };
 
   const setAsWorkout = (workout) => {
@@ -185,38 +187,38 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
         )}
         <WorkoutGenerator onGenerateWorkout={handleGeneratedWorkout} />
 
-        <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-          Generated Workout
-        </Typography>
-        <Grid container spacing={2}>
-          {generatedWorkout.map((dayWorkout, dayIndex) => (
-            <Grid item xs={12} sm={6} md={4} key={dayIndex}>
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" gutterBottom>
-                  Day {dayIndex + 1}
-                </Typography>
-                <List>
-                  {dayWorkout.map((exercise) => (
-                    <ListItem key={exercise.id}>
-                      <ListItemText
-                        primary={exercise.name}
-                        secondary={`Main Muscle: ${exercise.main_muscle}`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-                <Button 
-                  onClick={() => setAsWorkout(dayWorkout)} 
-                  variant="contained" 
-                  color="primary"
-                  fullWidth
-                >
-                  Set as Workout
-                </Button>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+      <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+        Generated Workout
+      </Typography>
+      <Grid container spacing={2}>
+        {generatedWorkout.map((dayWorkout, dayIndex) => (
+          <Grid item xs={12} sm={6} md={4} key={dayIndex}>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                {Object.keys(selectedDays).filter(day=>selectedDays[day])[dayIndex]}
+              </Typography>
+              <List>
+                {dayWorkout.map((exercise) => (
+                  <ListItem key={exercise.id}>
+                    <ListItemText
+                      primary={exercise.name}
+                      secondary={`Main Muscle: ${exercise.main_muscle}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+              <Button 
+                onClick={() => setAsWorkout(dayWorkout)} 
+                variant="contained" 
+                color="primary"
+                fullWidth
+              >
+                Set as Workout
+              </Button>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
       </Box>
     </Container>
   );

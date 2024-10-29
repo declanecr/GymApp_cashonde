@@ -37,7 +37,7 @@ const WorkoutGenerator = ({ onGenerateWorkout }) => {
     try {
       const generatedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
       console.log('generatedWorkout: ', generatedWorkout);
-      onGenerateWorkout(generatedWorkout);
+      onGenerateWorkout(generatedWorkout, selectedDays);
     } catch (error) {
       console.error('Error generating workout:', error);
     }
