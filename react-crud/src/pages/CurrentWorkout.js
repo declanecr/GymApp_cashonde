@@ -6,7 +6,8 @@
  * and generate workouts based on selected days.
  */
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Card, CardActions, CardContent, Checkbox, Container, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Checkbox, Container, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';

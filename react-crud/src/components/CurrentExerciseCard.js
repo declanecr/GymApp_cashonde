@@ -1,6 +1,8 @@
+import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
+
+import { Box, Card, CardContent, Typography } from '@mui/material';
 
 const TestCurrentExercise = ({ exercise }) => {
   if (!exercise) {
