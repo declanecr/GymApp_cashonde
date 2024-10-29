@@ -1,8 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import DataGrid from 'react-data-grid';
-import 'react-data-grid/lib/styles.css'; //removing this removes  the css for the data grid
 
 import ExerciseDataService from "../services/ExerciseDataService";
 import AddToWorkoutButton from './AddToWorkoutButton';
@@ -64,11 +63,10 @@ const ExerciseGrid = ({ addToWorkout }) => {
     setFilters(newFilters);
   };
 
-  const handleCellClick = (args) => {
-    const { row } = args;
+  const handleRowClick = (params) => {
     const updatedRow = {
-      ...row,
-      rating: Number(row.rating),
+      ...params.row,
+      rating: Number(params.row.rating),
     };
 
     setCurrentExercise(updatedRow);
@@ -77,11 +75,11 @@ const ExerciseGrid = ({ addToWorkout }) => {
   };
 
   const columns = [
-    { key: 'name', name: 'Name', sortable: true, width: 240 },
-    { key: 'main_muscle', name: 'Main Muscle', width: 120 },
-    { key: 'equipment', name: 'Equipment', width: 120 },
-    { key: 'level', name: 'Level', width: 120 },
-    { key: 'rating', name: 'Rating', sortable: true, width: 100 },
+    { field: 'name', headerName: 'Name', width: 240 },
+    { field: 'main_muscle', headerName: 'Main Muscle', width: 120 },
+    { field: 'equipment', headerName: 'Equipment', width: 120 },
+    { field: 'level', headerName: 'Level', width: 120 },
+    { field: 'rating', headerName: 'Rating', type: 'number', width: 100 },
   ];
 
   return (
@@ -98,15 +96,15 @@ const ExerciseGrid = ({ addToWorkout }) => {
         Exercise List
       </Typography>
 
-      <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
-        <div style={{ background: 'transparent', maxWidth: 'fit-content', margin: 'auto' }}>
-          <DataGrid
-            columns={columns}
-            rows={exercises}
-            defaultColumnOptions={{ sortable: false }}
-            onCellClick={handleCellClick}
-          />
-        </div>
+      <Box sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={exercises}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableRowSelectionOnClick
+          onRowClick={handleRowClick}
+        />
       </Box>
     </Container>
   );
