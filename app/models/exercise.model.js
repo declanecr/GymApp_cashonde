@@ -328,130 +328,279 @@ Exercise.getWorkouts = (id, result) => {
     to track how many exercises have been selected for each group
   add automatic set creation
 */
+const muscleCategories = {
+  large: ['Chest',  'Lower Back', 'Middle Back', 'Quadriceps', 'Hamstrings', 'Glutes'],
+  medium: ['Shoulders', 'Biceps', 'Triceps', 'Calves', 'Abdominals'],
+  small: ['Forearms', 'Traps', 'Neck']
+};
+
 
 Exercise.generateFullBodyWorkout = (workoutExercises) => {
+  console.log('generateFullBodyWorkout');
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
-      const upperBodyExercises = filterUpperBodyExercises(exercises);
-      const lowerBodyExercises = filterLowerBodyExercises(exercises);
-      const shuffledUpperBody = shuffle(upperBodyExercises).slice(0, 4);
-      const shuffledLowerBody = shuffle(lowerBodyExercises).slice(0, 3);
-      const fullBodyWorkout = [...shuffledUpperBody, ...shuffledLowerBody];
-      console.log('Full Body Workout Exercises:', fullBodyWorkout.map(exercise => exercise.name));
-      workoutExercises.push(...fullBodyWorkout.map(exercise => ({ ...exercise })));
+
+      const workoutPlan = [];
+
+      // Add one exercise for each large muscle group
+      muscleCategories.large.forEach(muscle => {
+        const muscleExercises = exercises.filter(e => e.main_muscle === muscle);
+        if (muscleExercises.length > 0) {
+          workoutPlan.push(shuffle(muscleExercises)[0]);
+        }
+      });
+
+      // Add one exercise for shoulders, biceps, and triceps
+      ['Shoulders', 'Biceps', 'Triceps'].forEach(muscle => {
+        const muscleExercises = exercises.filter(e => e.main_muscle === muscle);
+        if (muscleExercises.length > 0) {
+          workoutPlan.push(shuffle(muscleExercises)[0]);
+        }
+      });
+
+      console.log('Full Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
+      workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
+
 
 Exercise.generateUpperBodyWorkout = (workoutExercises) => {
+  console.log('generateUpperBodyWorkout');
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Chest', 'Back', 'Shoulders', 'Arms')", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
-      const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('Upper Body Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
-      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
+
+      const workoutPlan = [];
+      const muscleGroups = [
+        { name: 'Middle Back', count: 1 },
+        { name: 'Lats', count: 1 },
+        { name: 'Biceps', count: 1 },
+        { name: 'Chest', count: 2, includeIncline: true },
+        { name: 'Shoulders', count: 1 }
+      ];
+
+      muscleGroups.forEach(group => {
+        let muscleExercises = exercises.filter(e => e.main_muscle === group.name);
+        
+        if (group.name === 'Chest' && group.includeIncline) {
+          const inclineExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('incline'));
+          if (inclineExercises.length > 0) {
+            workoutPlan.push(shuffle(inclineExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => !e.name.toLowerCase().includes('incline'));
+            group.count--;
+          }
+        }
+
+        for (let i = 0; i < group.count; i++) {
+          if (muscleExercises.length > 0) {
+            workoutPlan.push(shuffle(muscleExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+          }
+        }
+      });
+
+      console.log('Upper Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
+      workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
+
+
+
+
 
 Exercise.generateLowerBodyWorkout = (workoutExercises) => {
+  console.log('generateLowerBodyWorkout');
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Quadriceps', 'Hamstrings', 'Adductors', 'Calves', 'Glutes')", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
-      const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('Lower Body Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
-      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
+
+      const workoutPlan = [];
+      const muscleGroups = [
+        { name: ['Glutes', 'Quadriceps', 'Hamstrings'], count: 1, includeSquat: true },
+        { name: 'Glutes', count: 1 },
+        { name: 'Quadriceps', count: 1 },
+        { name: 'Hamstrings', count: 1 },
+        { name: 'Abductors', count: 1 },
+        { name: 'Adductors', count: 1 }
+      ];
+
+      muscleGroups.forEach(group => {
+        let muscleExercises = exercises.filter(e => 
+          Array.isArray(group.name) ? group.name.includes(e.main_muscle) : e.main_muscle === group.name
+        );
+
+        if (group.includeSquat) {
+          const squatExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('squat'));
+          if (squatExercises.length > 0) {
+            workoutPlan.push(shuffle(squatExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+            group.count--;
+          }
+        }
+
+        for (let i = 0; i < group.count; i++) {
+          if (muscleExercises.length > 0) {
+            workoutPlan.push(shuffle(muscleExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+          }
+        }
+      });
+
+      console.log('Lower Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
+      workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
+
+
 
 Exercise.generatePushWorkout = (workoutExercises) => {
+  console.log('generatePushWorkout');
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Chest', 'Shoulders', 'Triceps')", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
-      const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('Push Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
-      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
+
+      const workoutPlan = [];
+      const muscleGroups = [
+        { name: 'Chest', count: 3, includePress: true, includeIncline: true },
+        { name: 'Shoulders', count: 2, excludeRear: true, includeFrontOrRaise: true },
+        { name: 'Triceps', count: 1 }
+      ];
+
+      muscleGroups.forEach(group => {
+        let muscleExercises = exercises.filter(e => e.main_muscle === group.name);
+        
+        if (group.name === 'Chest') {
+          if (group.includePress) {
+            const pressExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('press'));
+            if (pressExercises.length > 0) {
+              workoutPlan.push(shuffle(pressExercises)[0]);
+              muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+              group.count--;
+            }
+          }
+          if (group.includeIncline) {
+            const inclineExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('incline'));
+            if (inclineExercises.length > 0) {
+              workoutPlan.push(shuffle(inclineExercises)[0]);
+              muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+              group.count--;
+            }
+          }
+        }
+
+        if (group.name === 'Shoulders') {
+          muscleExercises = muscleExercises.filter(e => !e.name.toLowerCase().includes('rear'));
+          if (group.includeFrontOrRaise) {
+            muscleExercises = muscleExercises.filter(e => 
+              e.name.toLowerCase().includes('front') || e.name.toLowerCase().includes('raise')
+            );
+          }
+        }
+
+        for (let i = 0; i < group.count; i++) {
+          if (muscleExercises.length > 0) {
+            workoutPlan.push(shuffle(muscleExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+          }
+        }
+      });
+
+      console.log('Push Workout Exercises:', workoutPlan.map(exercise => exercise.name));
+      workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
+
 
 Exercise.generatePullWorkout = (workoutExercises) => {
+  console.log('generatePullWorkout');
   return new Promise((resolve, reject) => {
     if (!Array.isArray(workoutExercises)) {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle IN ('Back', 'Biceps')", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
         return;
       }
-      const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('Pull Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
-      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
+
+      const workoutPlan = [];
+      const muscleGroups = [
+        { name: 'Middle Back', count: 1 },
+        { name: 'Lats', count: 1 },
+        { name: 'Lower Back', count: 1 },
+        { name: 'Biceps', count: 2 },
+        { name: 'Shoulders', count: 1, includePullOrRear: true }
+      ];
+
+      muscleGroups.forEach(group => {
+        let muscleExercises = exercises.filter(e => e.main_muscle === group.name);
+        
+        if (group.name === 'Shoulders' && group.includePullOrRear) {
+          muscleExercises = muscleExercises.filter(e => 
+            e.name.toLowerCase().includes('pull') || e.name.toLowerCase().includes('rear')
+          );
+        }
+
+        for (let i = 0; i < group.count; i++) {
+          if (muscleExercises.length > 0) {
+            workoutPlan.push(shuffle(muscleExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+          }
+        }
+      });
+
+      console.log('Pull Workout Exercises:', workoutPlan.map(exercise => exercise.name));
+      workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
     });
   });
 };
 
-Exercise.generateLegWorkout = (workoutExercises) => {
-  return new Promise((resolve, reject) => {
-    if (!Array.isArray(workoutExercises)) {
-      workoutExercises = [];
-    }
 
-    sql.query("SELECT * FROM exercises WHERE main_muscle = 'Legs'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
-      const shuffledExercises = shuffle(exercises).slice(0, 6);
-      console.log('Leg Workout Exercises:', shuffledExercises.map(exercise => exercise.name));
-      workoutExercises.push(...shuffledExercises.map(exercise => ({ ...exercise })));
-      resolve(workoutExercises);
-    });
-  });
-};
+
 
 
 
