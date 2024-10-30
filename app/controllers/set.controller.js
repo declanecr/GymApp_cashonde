@@ -38,6 +38,7 @@ export const create = (req, res) => {
     workout_id: req.body.workout_id,
     date: req.body.date,
     reps: req.body.reps,
+    user_id: req.body.user_id,
     weight: req.body.weight
   });
 
