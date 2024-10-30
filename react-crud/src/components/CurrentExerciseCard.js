@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-const TestCurrentExercise = ({ exercise }) => {
+const CurrentExerciseCard = ({ exercise }) => {
   if (!exercise) {
     return (
       <Typography variant="h6" align="center" color="textSecondary">
@@ -79,7 +79,7 @@ const TestCurrentExercise = ({ exercise }) => {
 };
 
 
-TestCurrentExercise.propTypes = {
+CurrentExerciseCard.propTypes = {
   exercise: PropTypes.shape({
     name: PropTypes.string,
     description: PropTypes.string,
@@ -91,4 +91,4 @@ TestCurrentExercise.propTypes = {
   }),
 };
 
-export default TestCurrentExercise;
+export default CurrentExerciseCard;

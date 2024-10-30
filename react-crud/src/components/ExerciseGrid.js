@@ -4,16 +4,12 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import ExerciseDataService from "../services/ExerciseDataService";
-import AddToWorkoutButton from './AddToWorkoutButton';
-import CurrentExerciseCard from './CurrentExerciseCard';
 import ExerciseFilters from './ExerciseFilters';
-import ViewSetsButton from './ViewSetsButton';
 
-const ExerciseGrid = ({ addToWorkout }) => {
+const ExerciseGrid = ({  handleRowClick }) => {
   const [exercises, setExercises] = useState([]);
   const [allExercises, setAllExercises] = useState([]);
   const [filters, setFilters] = useState({});
-  const [currentExercise, setCurrentExercise] = useState(null);
 
   useEffect(() => {
     retrieveAllExercises();
@@ -63,17 +59,6 @@ const ExerciseGrid = ({ addToWorkout }) => {
     setFilters(newFilters);
   };
 
-  const handleRowClick = (params) => {
-    const updatedRow = {
-      ...params.row,
-      rating: Number(params.row.rating),
-    };
-
-    setCurrentExercise(updatedRow);
-    CurrentExerciseCard.exercise = currentExercise;
-    console.log(updatedRow);
-  };
-
   const columns = [
     { field: 'name', headerName: 'Name', width: 240 },
     { field: 'main_muscle', headerName: 'Main Muscle', width: 120 },
@@ -84,12 +69,6 @@ const ExerciseGrid = ({ addToWorkout }) => {
 
   return (
     <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
-      <Box mb={3}>
-        <CurrentExerciseCard exercise={currentExercise} />
-        <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
-        <ViewSetsButton exercise={currentExercise}/>
-      </Box>
-
       <ExerciseFilters onFiltersChange={handleFiltersChange} />
 
       <Typography variant="h5" gutterBottom>
@@ -111,7 +90,7 @@ const ExerciseGrid = ({ addToWorkout }) => {
 };
 
 ExerciseGrid.propTypes = {
-  addToWorkout: PropTypes.func.isRequired,
+  handleRowClick: PropTypes.func.isRequired,
 };
 
 export default ExerciseGrid;
