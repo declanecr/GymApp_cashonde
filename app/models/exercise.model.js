@@ -328,13 +328,6 @@ Exercise.getWorkouts = (id, result) => {
     to track how many exercises have been selected for each group
   add automatic set creation
 */
-const muscleCategories = {
-  large: ['Chest',  'Lower Back', 'Middle Back', 'Quadriceps', 'Hamstrings', 'Glutes'],
-  medium: ['Shoulders', 'Biceps', 'Triceps', 'Calves', 'Abdominals'],
-  small: ['Forearms', 'Traps', 'Neck']
-};
-
-
 Exercise.generateFullBodyWorkout = (workoutExercises) => {
   console.log('generateFullBodyWorkout');
   return new Promise((resolve, reject) => {
@@ -350,20 +343,26 @@ Exercise.generateFullBodyWorkout = (workoutExercises) => {
       }
 
       const workoutPlan = [];
+      const muscleGroups = [
+        { name: 'Chest', count: 1 },
+        { name: 'Lower Back', count: 1 },
+        { name: 'Middle Back', count: 1 },
+        { name: 'Quadriceps', count: 1 },
+        { name: 'Hamstrings', count: 1 },
+        { name: 'Glutes', count: 1 },
+        { name: 'Shoulders', count: 1 },
+        { name: 'Biceps', count: 1 },
+        { name: 'Triceps', count: 1 }
+      ];
 
-      // Add one exercise for each large muscle group
-      muscleCategories.large.forEach(muscle => {
-        const muscleExercises = exercises.filter(e => e.main_muscle === muscle);
-        if (muscleExercises.length > 0) {
-          workoutPlan.push(shuffle(muscleExercises)[0]);
-        }
-      });
-
-      // Add one exercise for shoulders, biceps, and triceps
-      ['Shoulders', 'Biceps', 'Triceps'].forEach(muscle => {
-        const muscleExercises = exercises.filter(e => e.main_muscle === muscle);
-        if (muscleExercises.length > 0) {
-          workoutPlan.push(shuffle(muscleExercises)[0]);
+      muscleGroups.forEach(group => {
+        let muscleExercises = exercises.filter(e => e.main_muscle === group.name);
+        
+        for (let i = 0; i < group.count; i++) {
+          if (muscleExercises.length > 0) {
+            workoutPlan.push(shuffle(muscleExercises)[0]);
+            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+          }
         }
       });
 
@@ -373,7 +372,6 @@ Exercise.generateFullBodyWorkout = (workoutExercises) => {
     });
   });
 };
-
 
 Exercise.generateUpperBodyWorkout = (workoutExercises) => {
   console.log('generateUpperBodyWorkout');
