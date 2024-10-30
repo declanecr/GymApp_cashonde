@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
@@ -66,9 +66,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
         mt: 4,
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Exercise Filters
-      </Typography>
+
 
       <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
         {/* Muscle Group Filter */}
