@@ -10,6 +10,8 @@ import Exercise from "./exercise.model.js";
 
 // Constructor
 const Workout = function(workout) {
+  this.workoutId = workout.id;
+  this.userId = workout.user_id;
   this.name = workout.name;
   this.date = workout.date;
 };
@@ -46,6 +48,42 @@ Workout.findById = (id, result) => {
     result({ kind: "not_found" }, null);
   });
 };
+
+Workout.findByUserId = (userId, result) => {
+  sql.query(`SELECT * FROM workouts WHERE user_id = ?`, [userId], (err, res) => {
+    if (err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if(res.length) {
+      console.log("Success: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({kind: "not_found"}, null);
+  })
+}
+
+Workout.findSpecificWorkout = (id, userId, result) => {
+  sql.query(`SELECT * FROM workouts WHERE user_id = ? AND id = ?`, [userId, id], (err, res) => {
+    if (err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("Success: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({kind: "not_found"}, null);
+  })
+}
 
 // Get all Workouts
 Workout.getAll = (result) => {
@@ -103,15 +141,33 @@ Workout.remove = (id, result) => {
   });
 };
 
+Workout.removeByUser = (userId, result) => {
+  sql.query(`DELETE FROM workouts WHERE user_id = ?`, userId, (err, res) => {
+    if(err) {
+      console.log("Error: ", err);
+      result(null, err);
+      returnl
+    }
+
+    if(res.affectedRows == 0) {
+      result({kind: "not_found"}, null);
+      return;
+    }
+
+    console.log("Deleted workouts with userid: ", userId);
+    result(null, res);
+  });
+}
+
 // Fetch sets from a workout
-Workout.getSets = (id, result) => {
+Workout.getSets = (userId, id, result) => {
   sql.query(
     `
     SELECT s.* FROM sets s
     JOIN workout_exercises we ON s.exercise_id = we.exercise_id
-    WHERE we.workout_id = ?
+    WHERE we.workout_id = ? AND  we.user_id = ?
     `, 
-    [id],
+    [id, userId],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

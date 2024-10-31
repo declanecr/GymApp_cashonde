@@ -4,7 +4,8 @@ import sql from "./db.js";
 class Set {
   constructor(set) {
     this.exercise_id = set.exercise_id;
-    this.workout_id=set.workout_id;
+    this.workout_id = set.workout_id;
+    this.userId = set.user_id
     this.date = set.date; 
     this.reps = set.reps;
     this.weight = set.weight;
@@ -26,7 +27,7 @@ class Set {
   }
 
   static findById(exerciseId, setId, result) {
-    sql.query(`SELECT * FROM sets WHERE exercise_id = ? AND id = ?`, [exerciseId, setId], (err, res) => {
+    sql.query(`SELECT * FROM sets WHERE user_id = ? AND exercise_id = ? AND id = ?`, [userId, exerciseId, setId], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -43,7 +44,7 @@ class Set {
   }
 
   static findByWorkoutId(workoutId, result) {
-    sql.query(`SELECT * FROM sets WHERE workout_id = ?`, [workoutId], (err, res) => {
+    sql.query(`SELECT * FROM sets WHERE user_id = ? AND workout_id = ?`, [userId, workoutId], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -73,8 +74,8 @@ class Set {
 
   static updateById(id, set, result) {
     sql.query(
-      "UPDATE sets SET exercise_id = ?, date = ?, reps = ?, weight = ? WHERE id = ?",
-      [set.exercise_id, set.date, set.reps, set.weight, id],
+      "UPDATE sets SET exercise_id = ?, date = ?, reps = ?, weight = ? WHERE user_id = ? AND id = ?",
+      [set.exercise_id, set.date, set.reps, set.weight, userId, id],
       (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -95,7 +96,7 @@ class Set {
   }
 
   static remove(id, result) {
-    sql.query("DELETE FROM sets WHERE id = ?", id, (err, res) => {
+    sql.query("DELETE FROM sets WHERE user_id = ? AND id = ?", [userId, id], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -143,6 +144,42 @@ class Set {
     // not found Sets with the exercise id
     result({ kind: "not_found" }, null);
   });
+}
+
+static findByUserId(userId, result) {
+  sql.query(`SELECT * FROM sets WHERE user_id = ?`, [userId], (err, res) => {
+    if(err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if(res.length) {
+      console.log("Success: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({kind: "not_found"}, null);
+  })
+}
+
+static findExactSet(userId, setId, result) {
+  sql.query(`SELECT * FROM sets WHERE user_id = ? AND exercise_id = ?`, [userId, setId], (err, res) => {
+    if(err) {
+      console.log("Error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if(res.length) {
+      console.log("Success: ", res);
+      result(null, res);
+      return;
+    }
+
+    result({kind: "not_found"}, null);
+  })
 }
 }
 
