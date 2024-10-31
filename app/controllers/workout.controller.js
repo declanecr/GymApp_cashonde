@@ -26,7 +26,8 @@ export const create = (req, res) => {
   // Create a Workout
   const workout = new Workout({
     name: req.body.name,
-    date: req.body.date,
+    date: req.body.date, //TODO add user id
+    user_id: req.body.user_id,
   });
 
   // Save Workout in the database

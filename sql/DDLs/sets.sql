@@ -2,7 +2,7 @@ CREATE TABLE `sets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `exercise_id` int DEFAULT NULL,
   `workout_id` int DEFAULT NULL,
-  `user_id` int NOT NULL,
+  `user_id` int NOT NULL DEFAULT '0',
   `date` date DEFAULT NULL,
   `reps` int DEFAULT NULL,
   `weight` decimal(5,2) DEFAULT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE `sets` (
   KEY `workout_id` (`workout_id`),
   CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`exercise_id`) REFERENCES `exercises` (`id`),
   CONSTRAINT `sets_ibfk_2` FOREIGN KEY (`workout_id`) REFERENCES `workouts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4
+) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
