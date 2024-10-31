@@ -352,7 +352,7 @@ const weightedRandomSelection = (exercises, count) => {
 
 const getExercises = () => {
   return new Promise((resolve, reject) => {
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength' ORDER BY rating DESC", (err, exercises) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IN ('cable', 'barbell', 'dumbbell', 'Machine', 'Body Only') AND type = 'strength' ORDER BY rating DESC", (err, exercises) => {
       if (err) {
         console.log("error: ", err);
         reject(err);
