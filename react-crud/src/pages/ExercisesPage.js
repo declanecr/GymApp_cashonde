@@ -18,29 +18,29 @@ const ExercisePage = ({ addToWorkout }) => {
     };
 
     return (
-      <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 2 }}>
-      <Typography variant="h3" component="h1" gutterBottom>
-          Exercises
-      </Typography>
-      
-      <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-              <ExerciseGrid 
-                  addToWorkout={addToWorkout} 
-                  currentExercise={currentExercise}
-                  handleRowClick={handleRowClick}
-          />
-      </Grid>
-          <Grid item xs={12} md={4}>
-              <Box mb={3}>
-                  <CurrentExerciseCard exercise={currentExercise} />
-                  <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
-                  <ViewSetsButton exercise={currentExercise}/>
-              </Box>
-          </Grid>
-          
-      </Grid>
-  </Container>
+        <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 2 }}>
+        <Typography variant="h3" component="h1" gutterBottom>
+            Exercises
+        </Typography>
+        
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={8}>
+                <ExerciseGrid 
+                    addToWorkout={addToWorkout} 
+                    currentExercise={currentExercise}
+                    handleRowClick={handleRowClick}
+            />
+        </Grid>
+            <Grid item xs={12} md={4}>
+                <Box mb={3}>
+                    <CurrentExerciseCard exercise={currentExercise} />
+                    <AddToWorkoutButton exercise={currentExercise} onAddToWorkout={addToWorkout} />
+                    <ViewSetsButton exercise={currentExercise}/>
+                </Box>
+            </Grid>
+            
+        </Grid>
+    </Container>
     );
 };
 
