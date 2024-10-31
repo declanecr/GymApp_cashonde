@@ -27,7 +27,7 @@ const NavBar = () => {
           <Button component={Link} to="/current-workout" color="inherit">
             Workouts
           </Button>
-          <Button component={Link} to= "/" color="inherit">
+          <Button component={Link} to= "/users" color="inherit">
             UserName
           </Button>
         </Toolbar>
