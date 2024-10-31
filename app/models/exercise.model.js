@@ -328,6 +328,41 @@ Exercise.getWorkouts = (id, result) => {
     to track how many exercises have been selected for each group
   add automatic set creation
 */
+const weightedRandomSelection = (exercises, count) => {
+  const totalRating = exercises.reduce((sum, exercise) => {
+      const rating = Number(exercise.rating);
+      return sum + (isNaN(rating) ? 0 : rating);
+    }, 0);  const selectedExercises = [];
+
+  for (let i = 0; i < count; i++) {
+    let randomValue = Math.random() * totalRating;
+    let cumulativeRating = 0;
+
+    for (const exercise of exercises) {
+      cumulativeRating += Number(exercise.rating);
+      if (randomValue <= cumulativeRating) {
+        selectedExercises.push(exercise);
+        break;
+      }
+    }
+  }
+
+  return selectedExercises;
+};
+
+const getExercises = () => {
+  return new Promise((resolve, reject) => {
+    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength' ORDER BY rating DESC", (err, exercises) => {
+      if (err) {
+        console.log("error: ", err);
+        reject(err);
+        return;
+      }
+      resolve(exercises);
+    });
+  });
+};
+
 Exercise.generateFullBodyWorkout = (workoutExercises) => {
   console.log('generateFullBodyWorkout');
   return new Promise((resolve, reject) => {
@@ -335,12 +370,8 @@ Exercise.generateFullBodyWorkout = (workoutExercises) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
+    getExercises()
+      .then(exercises => {
 
       const workoutPlan = [];
       const muscleGroups = [
@@ -357,19 +388,16 @@ Exercise.generateFullBodyWorkout = (workoutExercises) => {
 
       muscleGroups.forEach(group => {
         let muscleExercises = exercises.filter(e => e.main_muscle === group.name);
-        
-        for (let i = 0; i < group.count; i++) {
-          if (muscleExercises.length > 0) {
-            workoutPlan.push(shuffle(muscleExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
-          }
-        }
+        const selectedExercises = weightedRandomSelection(muscleExercises, group.count);
+
+        workoutPlan.push(...selectedExercises);
       });
 
       console.log('Full Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
       workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
-    });
+    })
+    .catch(err=>reject(err));
   });
 };
 
@@ -380,12 +408,8 @@ Exercise.generateUpperBodyWorkout = (workoutExercises) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
+    getExercises()
+      .then(exercises => {
 
       const workoutPlan = [];
       const muscleGroups = [
@@ -402,30 +426,24 @@ Exercise.generateUpperBodyWorkout = (workoutExercises) => {
         if (group.name === 'Chest' && group.includeIncline) {
           const inclineExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('incline'));
           if (inclineExercises.length > 0) {
-            workoutPlan.push(shuffle(inclineExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => !e.name.toLowerCase().includes('incline'));
+            const selectedIncline = weightedRandomSelection(inclineExercises, 1)[0];
+            workoutPlan.push(selectedIncline);
+            muscleExercises = muscleExercises.filter(e => e.id !== selectedIncline.id);
             group.count--;
           }
         }
 
-        for (let i = 0; i < group.count; i++) {
-          if (muscleExercises.length > 0) {
-            workoutPlan.push(shuffle(muscleExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
-          }
-        }
+        const selectedExercises = weightedRandomSelection(muscleExercises, group.count);
+        workoutPlan.push(...selectedExercises);
       });
 
       console.log('Upper Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
       workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
-    });
+    })
+    .catch(err=>reject(err));
   });
 };
-
-
-
-
 
 Exercise.generateLowerBodyWorkout = (workoutExercises) => {
   console.log('generateLowerBodyWorkout');
@@ -434,12 +452,8 @@ Exercise.generateLowerBodyWorkout = (workoutExercises) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
+    getExercises()
+      .then(exercises => {
 
       const workoutPlan = [];
       const muscleGroups = [
@@ -459,27 +473,24 @@ Exercise.generateLowerBodyWorkout = (workoutExercises) => {
         if (group.includeSquat) {
           const squatExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('squat'));
           if (squatExercises.length > 0) {
-            workoutPlan.push(shuffle(squatExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+            const selectedSquat = weightedRandomSelection(squatExercises, 1)[0];
+            workoutPlan.push(selectedSquat);
+            muscleExercises = muscleExercises.filter(e => e.id !== selectedSquat.id);
             group.count--;
           }
         }
 
-        for (let i = 0; i < group.count; i++) {
-          if (muscleExercises.length > 0) {
-            workoutPlan.push(shuffle(muscleExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
-          }
-        }
+        const selectedExercises = weightedRandomSelection(muscleExercises, group.count);
+        workoutPlan.push(...selectedExercises);
       });
 
       console.log('Lower Body Workout Exercises:', workoutPlan.map(exercise => exercise.name));
       workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
-    });
+    })
+    .catch(err => reject(err));
   });
 };
-
 
 
 Exercise.generatePushWorkout = (workoutExercises) => {
@@ -489,12 +500,8 @@ Exercise.generatePushWorkout = (workoutExercises) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
+    getExercises()
+      .then(exercises => {
 
       const workoutPlan = [];
       const muscleGroups = [
@@ -510,16 +517,18 @@ Exercise.generatePushWorkout = (workoutExercises) => {
           if (group.includePress) {
             const pressExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('press'));
             if (pressExercises.length > 0) {
-              workoutPlan.push(shuffle(pressExercises)[0]);
-              muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+              const selectedPress = weightedRandomSelection(pressExercises, 1)[0];
+              workoutPlan.push(selectedPress);
+              muscleExercises = muscleExercises.filter(e => e.id !== selectedPress.id);
               group.count--;
             }
           }
           if (group.includeIncline) {
             const inclineExercises = muscleExercises.filter(e => e.name.toLowerCase().includes('incline'));
             if (inclineExercises.length > 0) {
-              workoutPlan.push(shuffle(inclineExercises)[0]);
-              muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
+              const selectedIncline = weightedRandomSelection(inclineExercises, 1)[0];
+              workoutPlan.push(selectedIncline);
+              muscleExercises = muscleExercises.filter(e => e.id !== selectedIncline.id);
               group.count--;
             }
           }
@@ -534,21 +543,17 @@ Exercise.generatePushWorkout = (workoutExercises) => {
           }
         }
 
-        for (let i = 0; i < group.count; i++) {
-          if (muscleExercises.length > 0) {
-            workoutPlan.push(shuffle(muscleExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
-          }
-        }
+        const selectedExercises = weightedRandomSelection(muscleExercises, group.count);
+        workoutPlan.push(...selectedExercises);
       });
 
       console.log('Push Workout Exercises:', workoutPlan.map(exercise => exercise.name));
       workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
+    })
+    .catch(err => reject(err));
     });
-  });
 };
-
 
 Exercise.generatePullWorkout = (workoutExercises) => {
   console.log('generatePullWorkout');
@@ -557,12 +562,8 @@ Exercise.generatePullWorkout = (workoutExercises) => {
       workoutExercises = [];
     }
 
-    sql.query("SELECT * FROM exercises WHERE rating IS NOT NULL AND equipment IS NOT NULL AND type = 'strength'", (err, exercises) => {
-      if (err) {
-        console.log("error: ", err);
-        reject(err);
-        return;
-      }
+    getExercises()
+      .then(exercises => {
 
       const workoutPlan = [];
       const muscleGroups = [
@@ -582,18 +583,15 @@ Exercise.generatePullWorkout = (workoutExercises) => {
           );
         }
 
-        for (let i = 0; i < group.count; i++) {
-          if (muscleExercises.length > 0) {
-            workoutPlan.push(shuffle(muscleExercises)[0]);
-            muscleExercises = muscleExercises.filter(e => e.id !== workoutPlan[workoutPlan.length - 1].id);
-          }
-        }
+        const selectedExercises = weightedRandomSelection(muscleExercises, group.count);
+        workoutPlan.push(...selectedExercises);
       });
 
       console.log('Pull Workout Exercises:', workoutPlan.map(exercise => exercise.name));
       workoutExercises.push(...workoutPlan.map(exercise => ({ ...exercise })));
       resolve(workoutExercises);
-    });
+    })
+    .catch(err => reject(err));
   });
 };
 
