@@ -10,6 +10,7 @@ const WorkoutDataService = {
    * API Call: POST /workouts/
    */
     createWorkout(workoutData){
+        //add default userID to workout_data here
         console.log("createWorkout: ", workoutData);
         return http.post(`/workouts/`,workoutData)
         .then(response =>{
