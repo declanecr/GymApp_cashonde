@@ -29,15 +29,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   });
   const [selectedExercise, setSelectedExercise]=useState(null);
   
-
-const handleExerciseSelection = (exercise) => {
-  const updatedExercise = {
-    ...exercise,
-    rating: Number(exercise.rating)
+  const handleExerciseSelection = (exercise) => {
+    const updatedExercise = {
+      ...exercise,
+      rating: Number(exercise.rating)
+    };
+    setSelectedExercise(updatedExercise);
   };
-  setSelectedExercise(updatedExercise);
-};
-
 
   const handleAddSet = (exerciseId) => {
     setSets(prevSets => ({
@@ -140,158 +138,161 @@ const handleExerciseSelection = (exercise) => {
     workout.forEach(exercise => addToWorkout(exercise));
   };
 
-  
-
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Grid>
-          <Grid>
-            <Typography variant="h4" gutterBottom>
-              Current Workout
-            </Typography>
-            
-            <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-              Your Workout
-            </Typography>
-            {currentWorkout.length > 0 ? (
-              <SaveWorkoutButton 
-                onClick={onSWBclick} 
-                currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
-                  setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
-                )}
-                removeFromWorkout={removeFromWorkout} 
-                deleteWorkout={deleteWorkout}
-              />
-            ) : (
-              <Typography variant="body1" color="textSecondary">
-                No exercises added to the workout yet.
-              </Typography>
-            )}
-            {currentWorkout.length > 0 && (
-              <List>
-                {currentWorkout.map((exercise) => (
-                  <ListItem key={exercise.id} divider onClick ={()=> handleExerciseSelection(exercise)}>
-                    <ListItemText
-                      primary={exercise.name}
-                      secondary={`Main Muscle: ${exercise.main_muscle}`}
+    <Container maxWidth={false} >
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
+          <Grid container spacing={3} item xs={12} sx ={{minHeight: '100vh'}}>
+              <Grid item xs={12} md={8} sx={{maxWidth: 1100, alignItems: 'left'}}>
+                <Card>
+                <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+                  Choose which days to generate workouts for
+                </Typography>
+                <FormGroup row>
+                  {Object.keys(selectedDays).map((day) => (
+                    <FormControlLabel
+                      key={day}
+                      control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
+                      label={day}
                     />
-                    <Box>
-                      <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
-                        Add Set
-                      </Button>
-                      <List>
-                      {(sets[exercise.id] || []).map((set, setIndex) => (
-                        <ListItem 
-                          key={`${exercise.id}-${setIndex}`}
-                          sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            mt: 2,
-                            backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
-                            padding: '5px',
-                            borderRadius: '4px',
-                            }}
-                          > 
-                          <TextField
-                            label="Weight"
-                            type="number"
-                            value={set.weight}
-                            onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
-                            sx={{ mr: 2 }}
+                  ))}
+                </FormGroup>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleGenerateWorkout}
+                  disabled={Object.values(selectedDays).filter(Boolean).length === 0}
+                >
+                  Generate Workout
+                </Button>
+
+                <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+                  Generated Workout
+                </Typography>
+                <Grid container spacing={2}>
+                  {generatedWorkout.map((dayWorkout, dayIndex) => (
+                    <Grid item xs={12} sm={6} md={6} key={dayIndex}>
+                      <Card sx={{ mb: 3 }}>
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom>
+                            {Object.keys(selectedDays).filter(day => selectedDays[day])[dayIndex]}
+                          </Typography>
+                          <List>
+                            {dayWorkout.map((exercise) => (
+                              <ListItem key={exercise.id}>
+                                <ListItemText
+                                  primary={exercise.name}
+                                  secondary={`Main Muscle: ${exercise.main_muscle}`}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </CardContent>
+                        <CardActions>
+                          <Button 
+                            onClick={() => setAsWorkout(dayWorkout)} 
+                            variant="contained" 
+                            color="primary"
+                            fullWidth
+                          >
+                            Set as Workout
+                          </Button>
+                        </CardActions>  
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <Card>
+                  <Typography variant="h4" gutterBottom>
+                    Current Workout
+                  </Typography>
+                  
+                  <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+                    Your Workout
+                  </Typography>
+                  {currentWorkout.length > 0 ? (
+                    <SaveWorkoutButton 
+                      onClick={onSWBclick} 
+                      currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
+                        setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+                      )}
+                      removeFromWorkout={removeFromWorkout} 
+                      deleteWorkout={deleteWorkout}
+                    />
+                  ) : (
+                    <Typography variant="body1" color="textSecondary">
+                      No exercises added to the workout yet.
+                    </Typography>
+                  )}
+                  {currentWorkout.length > 0 && (
+                    <List>
+                      {currentWorkout.map((exercise) => (
+                        <ListItem key={exercise.id} divider onClick ={() => handleExerciseSelection(exercise)}>
+                          <ListItemText
+                            primary={exercise.name}
+                            secondary={`Main Muscle: ${exercise.main_muscle}`}
                           />
-                          <TextField
-                            label="Reps"
-                            type="number"
-                            value={set.reps}
-                            onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
-                            sx={{ mr: 2 }}
-                          />
-                          <Checkbox
-                            checked={set.isCompleted}
-                            onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
-                            sx={{
-                              '&.Mui-checked': {
-                              color: 'green',
-                            },
-                            }}
-                          />
-                          <IconButton onClick={() => handleRemoveSet(exercise.id, setIndex)} aria-label="delete">
-                            <DeleteIcon />
-                          </IconButton>
+                          <Box>
+                            <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
+                              Add Set
+                            </Button>
+                            <List>
+                            {(sets[exercise.id] || []).map((set, setIndex) => (
+                              <ListItem 
+                                key={`${exercise.id}-${setIndex}`}
+                                sx={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  mt: 2,
+                                  backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
+                                  padding: '5px',
+                                  borderRadius: '4px',
+                                }}
+                              > 
+                                <TextField
+                                  label="Weight"
+                                  type="number"
+                                  value={set.weight}
+                                  onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
+                                  sx={{ mr: 2 }}
+                                />
+                                <TextField
+                                  label="Reps"
+                                  type="number"
+                                  value={set.reps}
+                                  onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
+                                  sx={{ mr: 2 }}
+                                />
+                                <Checkbox
+                                  checked={set.isCompleted}
+                                  onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
+                                  sx={{
+                                    '&.Mui-checked': {
+                                      color: 'green',
+                                    },
+                                  }}
+                                />
+                                <IconButton onClick={() => handleRemoveSet(exercise.id, setIndex)} aria-label="delete">
+                                  <DeleteIcon />
+                                </IconButton>
+                              </ListItem>
+                            ))}
+                            </List>
+                          </Box>
+                          <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
                         </ListItem>
                       ))}
-                      </List>
-                    </Box>
-                    <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-
-            <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-              Chose which days to generate workouts for
-            </Typography>
-            <FormGroup row>
-              {Object.keys(selectedDays).map((day) => (
-                <FormControlLabel
-                  key={day}
-                  control={<Checkbox checked={selectedDays[day]} onChange={() => handleDayChange(day)} />}
-                  label={day}
-                />
-              ))}
-            </FormGroup>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleGenerateWorkout}
-              disabled={Object.values(selectedDays).filter(Boolean).length === 0}
-            >
-              Generate Workout
-            </Button>
-
-            <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-              Generated Workout
-            </Typography>
-            <Grid container spacing={2}>
-              {generatedWorkout.map((dayWorkout, dayIndex) => (
-                <Grid item xs={12} sm={6} md={3} key={dayIndex}>
-                  <Card sx={{ mb: 3}}>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        {Object.keys(selectedDays).filter(day => selectedDays[day])[dayIndex]}
-                      </Typography>
-                      <List>
-                        {dayWorkout.map((exercise) => (
-                          <ListItem key={exercise.id}>
-                            <ListItemText
-                              primary={exercise.name}
-                              secondary={`Main Muscle: ${exercise.main_muscle}`}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                      </CardContent>
-                      <CardActions>
-                        <Button 
-                          onClick={() => setAsWorkout(dayWorkout)} 
-                          variant="contained" 
-                          color="primary"
-                          fullWidth
-                        >
-                          Set as Workout
-                        </Button>
-                      </CardActions>  
+                    </List>
+                  )}
                   </Card>
-                </Grid>
-              ))}
-            </Grid>
-            <Grid>
-              <CurrentExerciseCard exercise={selectedExercise} ></CurrentExerciseCard>
-
-            </Grid>
+              </Grid>
+                
+              <Grid item xs={12} md={4}>
+                <CurrentExerciseCard exercise={selectedExercise} />
+              </Grid>
           </Grid>
-        </Grid>
       </Box>
     </Container>
   );

@@ -14,7 +14,7 @@ const CurrentExerciseCard = ({ exercise }) => {
   }
 
   return (
-    <Card elevation={4} sx={{ borderRadius: '10px', overflow: 'hidden', backgroundColor: '#f5f5f5', mt: 2 }}>
+    <Card elevation={4}  sx={{ borderRadius: '10px', overflow: 'hidden', backgroundColor: '#f5f5f5', mt: 2, maxWidth: 750 }}>
       <CardContent sx={{ fontFamily: 'Consolas, monospace' }}>
         <Typography variant="h3" align="center" color="primary" gutterBottom sx={{ fontFamily: 'Consolas, monospace' }}>
           {exercise.name}
