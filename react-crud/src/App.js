@@ -7,6 +7,8 @@
 
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import SignIn from './components/login/loginPage';
+import SignUp from './components/login/SignUp';
 import NavBar from './components/NavBar';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
@@ -14,6 +16,7 @@ import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
+
 
 const App = () => {
   const [currentWorkout, setCurrentWorkout] = useState([]);
@@ -45,6 +48,8 @@ const App = () => {
         <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
         <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
         <Route path="/users" element ={<UserPage/>}/>
+        <Route path="/login" element={<SignIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
       </Routes>
     </>
   );

@@ -20,6 +20,7 @@
     "react-bootstrap": "^2.10.5",
     "react-data-grid": "^7.0.0-beta.47",
     "react-dom": "^18.3.1",
+    "react-login-page": "^1.0.4",
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
