@@ -12,8 +12,10 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import ForgotPassword from './ForgotPassword';
 import AppTheme from './shared-theme/AppTheme';
@@ -61,7 +63,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn(props) {
+export default function SignIn({handleLogin, ...props}) {
   const navigate=useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -77,16 +79,28 @@ export default function SignIn(props) {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (emailError || passwordError) {
-      event.preventDefault();
       return;
     }
     const data = new FormData(event.currentTarget);
-    console.log({
+    const userData = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+    try {
+      if (handleLogin) {
+        await handleLogin(userData);
+      } else {
+        const response = await UserDataService.login(userData);
+        const user = response.data;
+        localStorage.setItem('user', JSON.stringify(user));
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   const validateInputs = () => {
@@ -238,3 +252,7 @@ export default function SignIn(props) {
     </AppTheme>
   );
 }
+
+SignIn.propTypes = {
+  handleLogin: PropTypes.func
+};

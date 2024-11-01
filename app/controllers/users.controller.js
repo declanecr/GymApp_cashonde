@@ -29,6 +29,33 @@ export const create = (req, res) => {
     });
 };
 
+// Login a User
+export const login = (req, res) => {
+    if (!req.body) {
+        res.status(400).send({
+            message: "Content can not be empty!"
+        });
+    }
+
+    User.login(req.body.email, req.body.password, (err, data) => {
+        if (err) {
+            if (err.kind === "not_found") {
+                res.status(404).send({
+                    message: `User not found with email ${req.body.email}.`
+                });
+            } else if (err.kind === "invalid_password") {
+                res.status(401).send({
+                    message: "Invalid password!"
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error logging in user"
+                });
+            }
+        } else res.send(data);
+    });
+};
+
 // Retrieve all Users from the database (with condition)
 export const findAll = (req, res) => {
 

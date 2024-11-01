@@ -1,93 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import UserDataService from '../services/UserDataService';
 
 const UserPage = () => {
-    const [loginUsername, setLoginUsername] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+    const navigate = useNavigate();
 
-    const [signupUsername, setSignupUsername] = useState('');
-    const [signupEmail, setSignupEmail] = useState('');
-    const [signupPassword, setSignupPassword] = useState('');
-    const [message, setMessage]=useState('');
+    useEffect(() => {
+        // Check if user is logged in
+        const loggedInUser = localStorage.getItem('user');
+        if (loggedInUser) {
+            const foundUser = JSON.parse(loggedInUser);
+            setCurrentUser(foundUser);
+        }
+    }, []);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setCurrentUser(null);
+        navigate('/login');
+    };
+
+    const handleLogin = async (userData) => {
         try {
-            const response = await UserDataService.getAllUsers();
-            const users = response.data;
-            const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
-            if (user) {
-                setMessage('Login successful');
-                // Add further logic here (e.g., setting user state, redirecting)
-            } else {
-                setMessage('Invalid username or password');
-            }
+            const response = await UserDataService.login(userData);
+            const user = response.data;
+            setCurrentUser(user);
+            localStorage.setItem('user', JSON.stringify(user));
+            navigate('/dashboard');
         } catch (error) {
-            setMessage('Error during login: ' + error.message);
+            console.error('Login error:', error);
         }
     };
 
-    const handleSignup = async (e) => {
-        e.preventDefault();
+    const handleSignup = async (userData) => {
         try {
-            const userData = { username: signupUsername, email: signupEmail, password: signupPassword };            
-            await UserDataService.createUser(userData);
-            setMessage('User created successfully');
-            // Clear form fields
-            setSignupUsername('');
-            setSignupEmail('');
-            setSignupPassword('');
+            const response = await UserDataService.createUser(userData);
+            const newUser = response.data;
+            setCurrentUser(newUser);
+            localStorage.setItem('user', JSON.stringify(newUser));
+            navigate('/dashboard');
         } catch (error) {
-            setMessage('Error creating user: ' + error.message);
+            console.error('Signup error:', error);
         }
     };
 
     return (
-        
-            
         <div>
-        <h2>User Page</h2>
-        
-
-        <form onSubmit={handleLogin}>
-            <h3>Login</h3>
-            <input
-            type="text"
-            placeholder="Username"
-            value={loginUsername}
-            onChange={(e) => setLoginUsername(e.target.value)}
-            />
-            <input
-            type="password"
-            placeholder="Password"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-        </form>
-        <form onSubmit={handleSignup}>
-            <h3>Sign Up</h3>
-            <input
-            type="text"
-            placeholder="Username"
-            value={signupUsername}
-            onChange={(e) => setSignupUsername(e.target.value)}
-            />
-            <input
-            type="email"
-            placeholder="Email"
-            value={signupEmail}
-            onChange={(e) => setSignupEmail(e.target.value)}
-            />
-            <input
-            type="password"
-            placeholder="Password"
-            value={signupPassword}
-            onChange={(e) => setSignupPassword(e.target.value)}
-            />
-            <button type="submit">Sign Up</button>
-        </form>
-        {message && <p>{message}</p>}
+            <h1>User Page</h1>
+            {currentUser ? (
+                <div>
+                    <p>Welcome, {currentUser.username}!</p>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
+            ) : (
+                <nav>
+                    <ul>
+                        <li><Link to="/login" handleLogin={ handleLogin }>Login</Link></li>
+                        <li><Link to="/signup" state={{ handleSignup }}>Sign Up</Link></li>
+                    </ul>
+                </nav>
+            )}
         </div>
     );
 };

@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import sql from "./db.js";
 
 /**
@@ -26,6 +27,41 @@ User.create = (newUser, result) => {
 
         console.log("created user: ", { id: res.insertId, ...newUser });
         result(null, { id: res.insertId, ...newUser });
+    });
+};
+
+/**
+ * Login a user
+ * @param {string} email - The email of the user
+ * @param {string} password - The password of the user
+ * @param {Function} result - Callback function
+ */
+User.login = (email, password, result) => {
+    sql.query(`SELECT * FROM users WHERE email = ?`, [email], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            const user = res[0];
+            bcrypt.compare(password, user.password, (bcryptErr, isMatch) => {
+                if (bcryptErr) {
+                    console.log("error: ", bcryptErr);
+                    result(bcryptErr, null);
+                    return;
+                }
+                if (isMatch) {
+                    console.log("logged in user: ", { id: user.id, ...user });
+                    result(null, { id: user.id, ...user });
+                } else {
+                    result({ kind: "invalid_password" }, null);
+                }
+            });
+        } else {
+            result({ kind: "not_found" }, null);
+        }
     });
 };
 

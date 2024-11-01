@@ -10,6 +10,12 @@ export default function(app) {
         userController.create(req,res);
     });
 
+    // Login route
+    router.post('/login', (req,res) => {
+        console.log ('logging in: ', req.body.username);
+        userController.login(req,res);
+    });
+
     // Retrieve all Users
     router.get("/", userController.findAll);
 

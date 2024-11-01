@@ -13,7 +13,8 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from './shared-theme/AppTheme';
 import ColorModeSelect from './shared-theme/ColorModeSelect';
@@ -62,7 +63,9 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
-    const navigate =useNavigate();
+  const navigate =useNavigate();
+  const location = useLocation();
+  const { handleSignup } = location.state || {};
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -107,19 +110,30 @@ export default function SignUp(props) {
     return isValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
+        return;
     }
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+    const userData = {
+        name: data.get('name'),
+        email: data.get('email'),
+        password: data.get('password'),
+    };
+    try {
+        if (handleSignup) {
+            await handleSignup(userData);
+        } else {
+            const response = await UserDataService.createUser(userData);
+            const newUser = response.data;
+            localStorage.setItem('user', JSON.stringify(newUser));
+            navigate('/dashboard');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+    }
+};
 
   return (
     <AppTheme {...props}>
