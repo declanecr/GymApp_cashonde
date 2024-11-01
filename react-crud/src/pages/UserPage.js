@@ -12,8 +12,19 @@ const UserPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        // Implement login logic here
-        setMessage('Login functionality not implemented yet');
+        try {
+            const response = await UserDataService.getAllUsers();
+            const users = response.data;
+            const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
+            if (user) {
+                setMessage('Login successful');
+                // Add further logic here (e.g., setting user state, redirecting)
+            } else {
+                setMessage('Invalid username or password');
+            }
+        } catch (error) {
+            setMessage('Error during login: ' + error.message);
+        }
     };
 
     const handleSignup = async (e) => {
