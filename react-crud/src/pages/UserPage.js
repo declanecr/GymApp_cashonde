@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import UserDataService from '../services/UserDataService';
 
 const UserPage = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
+    const [loginUsername, setLoginUsername] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+
+    const [signupUsername, setSignupUsername] = useState('');
+    const [signupEmail, setSignupEmail] = useState('');
+    const [signupPassword, setSignupPassword] = useState('');
+    const [message, setMessage]=useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -16,13 +19,13 @@ const UserPage = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            const userData = { username, email, password };
+            const userData = { username: signupUsername, email: signupEmail, password: signupPassword };
             await UserDataService.createUser(userData);
             setMessage('User created successfully');
             // Clear form fields
-            setUsername('');
-            setEmail('');
-            setPassword('');
+            setSignupUsername('');
+            setSignupEmail('');
+            setSignupPassword('');
         } catch (error) {
             setMessage('Error creating user: ' + error.message);
         }
@@ -36,14 +39,14 @@ const UserPage = () => {
             <input
             type="text"
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={loginUsername}
+            onChange={(e) => setLoginUsername(e.target.value)}
             />
             <input
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
             />
             <button type="submit">Login</button>
         </form>
@@ -52,20 +55,20 @@ const UserPage = () => {
             <input
             type="text"
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={signupUsername}
+            onChange={(e) => setSignupUsername(e.target.value)}
             />
             <input
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={signupEmail}
+            onChange={(e) => setSignupEmail(e.target.value)}
             />
             <input
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={signupPassword}
+            onChange={(e) => setSignupPassword(e.target.value)}
             />
             <button type="submit">Sign Up</button>
         </form>
