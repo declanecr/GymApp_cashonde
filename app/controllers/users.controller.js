@@ -2,6 +2,7 @@ import User from "../models/users.model.js";
 
 // Create and Save a new User
 export const create = (req, res) => {
+    console.log('users.controller create');
     // Validate request
     if (!req.body) {
         res.status(400).send({
@@ -30,9 +31,8 @@ export const create = (req, res) => {
 
 // Retrieve all Users from the database (with condition)
 export const findAll = (req, res) => {
-    const username = req.query.username;
 
-    User.getAll(username, (err, data) => {
+    User.getAll((err, data) => {
         if (err)
         res.status(500).send({
             message:

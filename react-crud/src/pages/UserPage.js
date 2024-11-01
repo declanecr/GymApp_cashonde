@@ -19,7 +19,7 @@ const UserPage = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            const userData = { username: signupUsername, email: signupEmail, password: signupPassword };
+            const userData = { username: signupUsername, email: signupEmail, password: signupPassword };            
             await UserDataService.createUser(userData);
             setMessage('User created successfully');
             // Clear form fields

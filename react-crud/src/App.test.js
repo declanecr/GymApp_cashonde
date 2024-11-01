@@ -119,4 +119,16 @@ describe('App Component', () => {
       expect(screen.getByText(/Current Workout/i)).toBeInTheDocument();
     })
   })
+
+  test('renders UserPage', async() => {
+    render(
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    );
+    await act(async () => {
+      // Check if the UserPage' link is present in the document
+      expect(screen.getByText(/user/i)).toBeInTheDocument();
+    })
+  })
 });

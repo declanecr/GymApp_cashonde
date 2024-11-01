@@ -57,12 +57,8 @@ User.findById = (id, result) => {
  * @param {string} username - Optional username to filter users
  * @param {Function} result - Callback function
  */
-User.getAll = (username, result) => {
+User.getAll = (result) => {
     let query = "SELECT * FROM users";
-
-    if (username) {
-        query += ` WHERE username LIKE '%${username}%'`;
-    }
 
     sql.query(query, (err, res) => {
         if (err) {

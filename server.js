@@ -10,6 +10,7 @@ import express from "express";
 import exerciseRoutes from "./app/routes/exercise.routes.js";
 import homeRoutes from "./app/routes/home.routes.js";
 import setRoutes from "./app/routes/set.routes.js";
+import usersRoutes from "./app/routes/users.routes.js";
 import workoutRoutes from "./app/routes/workout.routes.js";
 
 const app = express();
@@ -42,6 +43,7 @@ exerciseRoutes(app);
 setRoutes(app);
 homeRoutes(app);
 workoutRoutes(app);
+usersRoutes(app);
 
 // Set up server to listen on specified port
 const PORT = process.env.PORT || 3000;

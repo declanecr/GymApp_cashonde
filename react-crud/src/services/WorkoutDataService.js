@@ -27,7 +27,7 @@ const WorkoutDataService = {
    * API Call: GET /workouts
    */
     getAllWorkouts: () => {
-        return http.get('/workouts');
+        return http.get(`/workouts`);
     },
 
     /**

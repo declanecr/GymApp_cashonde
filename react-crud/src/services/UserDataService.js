@@ -7,7 +7,7 @@ const UserDataService = {
      * @returns {Promise} - Promise resolving to the created user object
      */
     createUser: (userData) => {
-        return http.post("/users", userData);
+        return http.post(`/users`, userData);
     },
 
     /**
@@ -15,7 +15,7 @@ const UserDataService = {
      * @returns {Promise} - Promise resolving to an array of user objects
      */
     getAllUsers: () => {
-        return http.get("/users");
+        return http.get(`/users`);
     },
 
     /**

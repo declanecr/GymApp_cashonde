@@ -5,7 +5,10 @@ const router = express.Router();
 
 export default function(app) {
     // Create a new User
-    router.post("/", userController.create);
+    router.post("/", (req,res)=>{
+        console.log('posting new user: ',req.body.username);
+        userController.create(req,res);
+    });
 
     // Retrieve all Users
     router.get("/", userController.findAll);
