@@ -56,7 +56,7 @@ const UserPage = () => {
             ) : (
                 <nav>
                     <ul>
-                        <li><Link to="/login" handleLogin={ handleLogin }>Login</Link></li>
+                        <li><Link to="/login" state={{ handleLogin }}>Login</Link></li>
                         <li><Link to="/signup" state={{ handleSignup }}>Sign Up</Link></li>
                     </ul>
                 </nav>

@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import ForgotPassword from './ForgotPassword';
@@ -63,8 +63,10 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn({handleLogin, ...props}) {
+export default function SignIn(props) {
   const navigate=useNavigate();
+  const location = useLocation();
+  const {handleLogin} = location.state || {};
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
