@@ -27,7 +27,7 @@ const App = () => {
    * @param {Object} exercise - The exercise to be added
    */
   const addToWorkout = (exercise) => {
-    setCurrentWorkout([...currentWorkout, exercise]);
+    setCurrentWorkout(prevWorkout=>[...prevWorkout, exercise]);
   };
 
   const removeFromWorkout = (exerciseToRemove) => {
