@@ -6,13 +6,13 @@ const router = express.Router();
 export default function(app) {
     // Create a new User
     router.post("/", (req,res)=>{
-        console.log('posting new user: ',req.body.username);
+        //console.log('posting new user: ',req.body.username);
         userController.create(req,res);
     });
 
     // Login route
     router.post('/login', (req,res) => {
-        console.log ('logging in: ', req.body.username);
+        //console.log ('logging in: ', req.body.email);
         userController.login(req,res);
     });
 

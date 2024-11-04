@@ -1,10 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import UserDataService from '../services/UserDataService';
 
-const UserPage = () => {
-    const [currentUser, setCurrentUser] = useState(null);
+const UserPage = ({setCurrentUser}) => {
     const navigate = useNavigate();
+    const [currentUser, setLocalCurrentUser] = useState(null);
 
     useEffect(() => {
         // Check if user is logged in
@@ -12,37 +12,15 @@ const UserPage = () => {
         if (loggedInUser) {
             const foundUser = JSON.parse(loggedInUser);
             setCurrentUser(foundUser);
+            setLocalCurrentUser(foundUser);
         }
-    }, []);
+    }, [setCurrentUser]);
 
     const handleLogout = () => {
         localStorage.removeItem('user');
         setCurrentUser(null);
+        setLocalCurrentUser(null);
         navigate('/login');
-    };
-
-    const handleLogin = async (userData) => {
-        try {
-            const response = await UserDataService.login(userData);
-            const user = response.data;
-            setCurrentUser(user);
-            localStorage.setItem('user', JSON.stringify(user));
-            navigate('/dashboard');
-        } catch (error) {
-            console.error('Login error:', error);
-        }
-    };
-
-    const handleSignup = async (userData) => {
-        try {
-            const response = await UserDataService.createUser(userData);
-            const newUser = response.data;
-            setCurrentUser(newUser);
-            localStorage.setItem('user', JSON.stringify(newUser));
-            navigate('/dashboard');
-        } catch (error) {
-            console.error('Signup error:', error);
-        }
     };
 
     return (
@@ -56,13 +34,18 @@ const UserPage = () => {
             ) : (
                 <nav>
                     <ul>
-                        <li><Link to="/login" state={{ handleLogin }}>Login</Link></li>
-                        <li><Link to="/signup" state={{ handleSignup }}>Sign Up</Link></li>
+                        <li><Link to="/login" >Login</Link></li>
+                        <li><Link to="/signup" >Sign Up</Link></li>
                     </ul>
                 </nav>
             )}
         </div>
     );
+};
+
+
+UserPage.propTypes ={
+    setCurrentUser: PropTypes.func.isRequired
 };
 
 export default UserPage;

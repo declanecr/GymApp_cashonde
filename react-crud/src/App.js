@@ -20,13 +20,14 @@ import UserPage from './pages/UserPage';
 
 const App = () => {
   const [currentWorkout, setCurrentWorkout] = useState([]);
+  const [currentUser, setCurrentUser] =useState(null);
 
   /**
    * Adds an exercise to the current workout
    * @param {Object} exercise - The exercise to be added
    */
   const addToWorkout = (exercise) => {
-    setCurrentWorkout(prevWorkout => [...prevWorkout, exercise]);
+    setCurrentWorkout([...currentWorkout, exercise]);
   };
 
   const removeFromWorkout = (exerciseToRemove) => {
@@ -39,19 +40,19 @@ const App = () => {
   };
 
   return (
-    <>
-      <NavBar />
+    <div className='App'>
+      <NavBar currentUser={currentUser} setCurrentUser= {setCurrentUser}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
         <Route path="/add" element={<AddExercise />} />
         <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
         <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-        <Route path="/users" element ={<UserPage/>}/>
-        <Route path="/login" element={<SignIn/>}/>
-        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/users" element ={<UserPage setCurrentUser={setCurrentUser}/>}/>
+        <Route path="/login" element={<SignIn setCurrentUser={setCurrentUser}/>}/>
+        <Route path="/signup" element={<SignUp setCurrentUser={setCurrentUser}/>}/>
       </Routes>
-    </>
+    </div>
   );
 };
 

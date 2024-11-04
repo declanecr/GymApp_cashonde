@@ -12,8 +12,9 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from './shared-theme/AppTheme';
@@ -62,10 +63,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignUp(props) {
-  const navigate =useNavigate();
-  const location = useLocation();
-  const { handleSignup } = location.state || {};
+export default function SignUp({setCurrentUser, ...props}) {
+  const navigate = useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -110,30 +109,30 @@ export default function SignUp(props) {
     return isValid;
   };
 
+  const handleSignup = async (userData) => {
+    try {
+      const response = await UserDataService.createUser(userData);
+      const newUser = response.data;
+      setCurrentUser(newUser);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      navigate('/users');
+    } catch (error) {
+      console.error('Signup error:', error);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (nameError || emailError || passwordError) {
-        return;
-    }
+    if (validateInputs()){
     const data = new FormData(event.currentTarget);
-    const userData = {
-        name: data.get('name'),
-        email: data.get('email'),
-        password: data.get('password'),
-    };
-    try {
-        if (handleSignup) {
-            await handleSignup(userData);
-        } else {
-            const response = await UserDataService.createUser(userData);
-            const newUser = response.data;
-            localStorage.setItem('user', JSON.stringify(newUser));
-            navigate('/dashboard');
-        }
-    } catch (error) {
-        console.error('Signup error:', error);
+      const userData = {
+          username: data.get('name'),
+          email: data.get('email'),
+          password: data.get('password'),
+      };
+      await handleSignup(userData);
     }
-};
+  };
 
   return (
     <AppTheme {...props}>
@@ -251,3 +250,8 @@ export default function SignUp(props) {
     </AppTheme>
   );
 }
+
+SignUp.propTypes={
+  setCurrentUser: PropTypes.func.isRequired,
+};
+

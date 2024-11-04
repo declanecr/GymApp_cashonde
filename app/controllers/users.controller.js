@@ -21,10 +21,10 @@ export const create = (req, res) => {
     // Save User in the database
     User.create(user, (err, data) => {
         if (err)
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while creating the User."
-        });
+            res.status(500).send({
+                message:
+                err.message || "Some error occurred while creating the User."
+            });
         else res.send(data);
     });
 };

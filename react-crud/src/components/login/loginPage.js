@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import ForgotPassword from './ForgotPassword';
@@ -63,10 +63,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn(props) {
-  const navigate=useNavigate();
-  const location = useLocation();
-  const {handleLogin} = location.state || {};
+export default function SignIn({setCurrentUser, ...props}) {
+  const navigate = useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -81,6 +79,18 @@ export default function SignIn(props) {
     setOpen(false);
   };
 
+  const handleLogin = async (userData) => {
+    try {
+      const response = await UserDataService.login(userData);
+      const user = response.data;
+      setCurrentUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (emailError || passwordError) {
@@ -91,18 +101,7 @@ export default function SignIn(props) {
       email: data.get('email'),
       password: data.get('password'),
     };
-    try {
-      if (handleLogin) {
-        await handleLogin(userData);
-      } else {
-        const response = await UserDataService.login(userData);
-        const user = response.data;
-        localStorage.setItem('user', JSON.stringify(user));
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-    }
+    await handleLogin(userData);
   };
 
   const validateInputs = () => {
@@ -222,7 +221,7 @@ export default function SignIn(props) {
                 <Link
                   component="button"
                   variant="body2"
-                  onClick={()=> navigate('/signup')}
+                  onClick={() => navigate('/signup')}
                   sx={{ alignSelf: 'center' }}
                 >
                   Sign up
@@ -256,5 +255,5 @@ export default function SignIn(props) {
 }
 
 SignIn.propTypes = {
-  handleLogin: PropTypes.func
+  setCurrentUser: PropTypes.func.isRequired
 };
