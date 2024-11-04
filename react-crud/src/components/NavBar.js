@@ -41,43 +41,45 @@ const NavBar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Gym App
           </Typography>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" component={Link} to="/exercises">Exercises</Button>
-          <Button color="inherit" component={Link} to="/add">Add Exercise</Button>
-          <Button color="inherit" component={Link} to="/current-workout">Workouts</Button>
           {currentUser ? (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Account</MenuItem>
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
-                <MenuItem onClick={handleClose}>My Metrics</MenuItem>
-                <MenuItem onClick={() => { handleClose(); logout(); }}>Logout</MenuItem>
-              </Menu>
-            </div>
+            <>
+            <Button color="inherit" component={Link} to="/">Home</Button>
+            <Button color="inherit" component={Link} to="/exercises">Exercises</Button>
+            <Button color="inherit" component={Link} to="/add">Add Exercise</Button>
+            <Button color="inherit" component={Link} to="/current-workout">Workouts</Button>
+              <div>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Account</MenuItem>
+                  <MenuItem onClick={handleClose}>Settings</MenuItem>
+                  <MenuItem onClick={handleClose}>My Metrics</MenuItem>
+                  <MenuItem onClick={() => { handleClose(); logout(); }}>Logout</MenuItem>
+                </Menu>
+              </div>
+              </>
           ) : (
             <Button color="inherit" component={Link} to="/login">Login</Button>
           )}
