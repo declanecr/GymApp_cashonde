@@ -3,18 +3,18 @@
  * 
  * This component provides navigation for the main pages of the Gym App.
  * It includes links to Home, Exercises, Add Exercise, and Current Workout pages.
- * It also wraps the main content in Routes for proper routing.
+ * It also includes an autocomplete search bar for exercises.
  */
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Button, Container, IconButton, InputBase, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { AppBar, Autocomplete, Button, Container, IconButton, InputAdornment, Menu, MenuItem, TextField, Toolbar, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext'; // Assuming you have an AuthContext
-import ExerciseGrid from './ExerciseGrid';
+import { useAuth } from '../AuthContext';
+import ExerciseDataService from '../services/ExerciseDataService';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -32,34 +32,19 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
 const NavBar = () => {
   const { currentUser, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [exercises, setExercises] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    ExerciseDataService.getAll()
+      .then(response => {
+        setExercises(response.data.map(exercise => ({ id: exercise.id, name: exercise.name })));
+      })
+      .catch(error => console.error('Error fetching exercises:', error));
+  }, []);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,12 +54,10 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
-  const handleSearchOpen = () => {
-    setSearchOpen(true);
-  };
-
-  const handleSearchClose = () => {
-    setSearchOpen(false);
+  const handleExerciseSelect = (event, newValue) => {
+    if (newValue) {
+      navigate(`/exercises/${newValue.id}`);
+    }
   };
 
   return (
@@ -95,18 +78,30 @@ const NavBar = () => {
               Gym App
             </Typography>
             <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                onClick={handleSearchOpen}
+              <Autocomplete
+                freeSolo
+                options={exercises}
+                getOptionLabel={(option) => option.name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Search exercises..."
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+                onChange={handleExerciseSelect}
+                sx={{ width: 300 }}
               />
             </Search>
             {currentUser ? (
               <>
-                <Button color="inherit" component={Link} to="/">Home</Button>
                 <Button color="inherit" component={Link} to="/exercises">Exercises</Button>
                 <Button color="inherit" component={Link} to="/add">Add Exercise</Button>
                 <Button color="inherit" component={Link} to="/current-workout">Workouts</Button>
@@ -152,11 +147,6 @@ const NavBar = () => {
           </Toolbar>
         </Container>
       </AppBar>
-      {searchOpen && (
-        <Container maxWidth="lg" sx={{ mt: 2 }}>
-          <ExerciseGrid handleRowClick={handleSearchClose} />
-        </Container>
-      )}
     </>
   );
 };
