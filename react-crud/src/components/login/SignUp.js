@@ -127,7 +127,7 @@ export default function SignUp({setCurrentUser, ...props}) {
       const newUser = response.data;
       setCurrentUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
-      navigate('/users');
+      navigate(`/users/${newUser.id}`);
     } catch (error) {
       console.error('Signup error:', error);
       if (error.response && error.response.status === 409) {

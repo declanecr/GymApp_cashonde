@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const UserPage = ({setCurrentUser}) => {
+const UserProfilePage = ({setCurrentUser}) => {
     const navigate = useNavigate();
     const [currentUser, setLocalCurrentUser] = useState(null);
 
@@ -44,8 +44,8 @@ const UserPage = ({setCurrentUser}) => {
 };
 
 
-UserPage.propTypes ={
+UserProfilePage.propTypes ={
     setCurrentUser: PropTypes.func.isRequired
 };
 
-export default UserPage;
+export default UserProfilePage;

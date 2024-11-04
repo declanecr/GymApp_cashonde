@@ -14,8 +14,9 @@ import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
+import LoginSignupPage from './pages/LoginSignupPage';
 import SetsHistory from './pages/SetsHistory';
-import UserPage from './pages/UserPage';
+import UserProfilePage from './pages/UserProfilePage';
 
 
 const App = () => {
@@ -48,9 +49,10 @@ const App = () => {
         <Route path="/add" element={<AddExercise />} />
         <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
         <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-        <Route path="/users" element ={<UserPage setCurrentUser={setCurrentUser}/>}/>
+        <Route path="/users/:user_id" element ={<UserProfilePage setCurrentUser={setCurrentUser}/>}/>
         <Route path="/login" element={<SignIn setCurrentUser={setCurrentUser}/>}/>
         <Route path="/signup" element={<SignUp setCurrentUser={setCurrentUser}/>}/>
+        <Route path="/users" element={<LoginSignupPage setCurrentUser={setCurrentUser}/>}/>
       </Routes>
     </div>
   );

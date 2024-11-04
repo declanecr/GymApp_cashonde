@@ -81,7 +81,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     const currentDate = new Date().toISOString().split('T')[0];
     const workoutData = {
       name: `Workout ${currentDate}`,
-      date: currentDate
+      date: currentDate,
+      user_id: localStorage.getItem('user')
     };
     console.log("workoutData: ", workoutData);
 

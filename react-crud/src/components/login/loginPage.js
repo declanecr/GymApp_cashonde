@@ -99,7 +99,7 @@ export default function SignIn({setCurrentUser, ...props}) {
       if (user) {
         setCurrentUser(user);
         localStorage.setItem('user', JSON.stringify(user));
-        navigate('/users');
+        navigate(`/users/${user.id}`);
         setFailedAttempts(0);
       } else {
         setFailedAttempts(prevAttempts => prevAttempts + 1);

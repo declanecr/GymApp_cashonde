@@ -10,7 +10,6 @@ import Exercise from "./exercise.model.js";
 
 // Constructor
 const Workout = function(workout) {
-  this.workoutId = workout.id;
   this.userId = workout.user_id;
   this.name = workout.name;
   this.date = workout.date;
