@@ -85,7 +85,7 @@ export default function SignIn({setCurrentUser, ...props}) {
       const user = response.data;
       setCurrentUser(user);
       localStorage.setItem('user', JSON.stringify(user));
-      navigate('/dashboard');
+      navigate('/users');
     } catch (error) {
       console.error('Login error:', error);
     }
