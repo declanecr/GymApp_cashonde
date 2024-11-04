@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService";
 import ExerciseFilters from './ExerciseFilters';
 
-const ExerciseGrid = ({  handleRowClick }) => {
+const ExerciseGrid = ({ handleRowClick }) => {
   const [exercises, setExercises] = useState([]);
   const [allExercises, setAllExercises] = useState([]);
   const [filters, setFilters] = useState({});
