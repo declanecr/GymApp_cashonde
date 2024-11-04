@@ -99,7 +99,11 @@ export default function SignIn({setCurrentUser, ...props}) {
       if (user) {
         setCurrentUser(user);
         sessionStorage.setItem('user_id', user.id);
+        //localStorage.setItem()
+        console.log('switching to user page');
+        console.log('user.id: ', user.id);
         navigate(`/users/${user.id}`);
+        console.log('switched pages');
         setFailedAttempts(0);
       } else {
         setFailedAttempts(prevAttempts => prevAttempts + 1);
