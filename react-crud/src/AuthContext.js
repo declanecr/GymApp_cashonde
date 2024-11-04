@@ -1,31 +1,38 @@
-import PropTypes from "prop-types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+// AuthContext.js
+import PropTypes from 'prop-types';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  const checkAuthState = async () => {
-    // Implement your logic to check authentication state
-    // For example, check local storage or make an API call
-  };
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    checkAuthState();
+    const user = localStorage.getItem('user');
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+    }
   }, []);
 
+  const login = (userData) => {
+    setCurrentUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('user');
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, checkAuthState }}>
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
+
+export const useAuth = () => useContext(AuthContext);

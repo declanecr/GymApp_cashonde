@@ -21,6 +21,8 @@ import ForgotPassword from './ForgotPassword';
 import AppTheme from './shared-theme/AppTheme';
 import ColorModeSelect from './shared-theme/ColorModeSelect';
 
+import { useAuth } from '../../AuthContext';
+
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -63,7 +65,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn({setCurrentUser, ...props}) {
+export default function SignIn({ ...props}) {
+  const {login}= useAuth();
   const navigate = useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -97,13 +100,8 @@ export default function SignIn({setCurrentUser, ...props}) {
       const response = await UserDataService.login(userData);
       const user = response.data;
       if (user) {
-        setCurrentUser(user);
-        sessionStorage.setItem('user_id', user.id);
-        //localStorage.setItem()
-        console.log('switching to user page');
-        console.log('user.id: ', user.id);
+        login(user);
         navigate(`/users/${user.id}`);
-        console.log('switched pages');
         setFailedAttempts(0);
       } else {
         setFailedAttempts(prevAttempts => prevAttempts + 1);
