@@ -19,7 +19,6 @@ import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import ForgotPassword from './ForgotPassword';
 import AppTheme from './shared-theme/AppTheme';
-import ColorModeSelect from './shared-theme/ColorModeSelect';
 
 import { useAuth } from '../../AuthContext';
 
@@ -162,7 +161,6 @@ export default function SignIn({ ...props}) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
         <Card variant="outlined">
           <SitemarkIcon />
           <Typography

@@ -19,7 +19,6 @@ import { useAuth } from '../../AuthContext';
 import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from './shared-theme/AppTheme';
-import ColorModeSelect from './shared-theme/ColorModeSelect';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -156,7 +155,6 @@ export default function SignUp({setCurrentUser, ...props}) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <SitemarkIcon />
