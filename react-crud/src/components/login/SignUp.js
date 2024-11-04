@@ -69,13 +69,13 @@ export default function SignUp({setCurrentUser, ...props}) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [usernameError, setUsernameError] = React.useState(false);
+  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
-    const name = document.getElementById('name');
+    const username = document.getElementById('username');
 
     let isValid = true;
 
@@ -88,22 +88,34 @@ export default function SignUp({setCurrentUser, ...props}) {
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 8 || password.value.length > 128) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('Password must be between 8 and 128 characters long.');
+      isValid = false;
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password.value)) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password must include at least one uppercase letter, one lowercase letter, and one number.');
+      isValid = false;
+    } else if (password.value === username.value) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password cannot be the same as the username.');
       isValid = false;
     } else {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
 
-    if (!name.value || name.value.length < 1) {
-      setNameError(true);
-      setNameErrorMessage('Name is required.');
+    if (!username.value || username.value.length < 3 || username.value.length > 20) {
+      setUsernameError(true);
+      setUsernameErrorMessage('Username must be between 3 and 20 characters long.');
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(username.value)) {
+      setUsernameError(true);
+      setUsernameErrorMessage('Username can only contain letters, numbers, underscores, and hyphens.');
       isValid = false;
     } else {
-      setNameError(false);
-      setNameErrorMessage('');
+      setUsernameError(false);
+      setUsernameErrorMessage('');
     }
 
     return isValid;
@@ -118,6 +130,10 @@ export default function SignUp({setCurrentUser, ...props}) {
       navigate('/users');
     } catch (error) {
       console.error('Signup error:', error);
+      if (error.response && error.response.status === 409) {
+        setUsernameError(true);
+        setUsernameErrorMessage('This username is already taken. Please choose another.');
+      }
     }
   };
 
@@ -126,7 +142,7 @@ export default function SignUp({setCurrentUser, ...props}) {
     if (validateInputs()){
     const data = new FormData(event.currentTarget);
       const userData = {
-          username: data.get('name'),
+          username: data.get('username'),
           email: data.get('email'),
           password: data.get('password'),
       };
@@ -154,17 +170,17 @@ export default function SignUp({setCurrentUser, ...props}) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
+              <FormLabel htmlFor="username">Username</FormLabel>
               <TextField
-                autoComplete="name"
-                name="name"
+                autoComplete="username"
+                name="username"
                 required
                 fullWidth
-                id="name"
-                placeholder="Jon Snow"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
+                id="username"
+                placeholder="johndoe123"
+                error={usernameError}
+                helperText={usernameErrorMessage}
+                color={usernameError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -179,7 +195,7 @@ export default function SignUp({setCurrentUser, ...props}) {
                 variant="outlined"
                 error={emailError}
                 helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
+                color={emailError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -188,7 +204,7 @@ export default function SignUp({setCurrentUser, ...props}) {
                 required
                 fullWidth
                 name="password"
-                placeholder="••••••"
+                placeholder="••••••••"
                 type="password"
                 id="password"
                 autoComplete="new-password"
@@ -254,4 +270,3 @@ export default function SignUp({setCurrentUser, ...props}) {
 SignUp.propTypes={
   setCurrentUser: PropTypes.func.isRequired,
 };
-

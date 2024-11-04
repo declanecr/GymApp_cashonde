@@ -70,6 +70,8 @@ export default function SignIn({setCurrentUser, ...props}) {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [failedAttempts, setFailedAttempts] = React.useState(0);
+  const [lastAttemptTime, setLastAttemptTime] = React.useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,13 +83,36 @@ export default function SignIn({setCurrentUser, ...props}) {
 
   const handleLogin = async (userData) => {
     try {
+      if (failedAttempts >= 5) {
+        const currentTime = new Date().getTime();
+        const timeSinceLastAttempt = currentTime - lastAttemptTime;
+        const waitTime = Math.pow(2, failedAttempts - 5) * 1000; // Progressive delay
+        if (timeSinceLastAttempt < waitTime) {
+          setEmailError(true);
+          setEmailErrorMessage(`Please wait ${Math.ceil((waitTime - timeSinceLastAttempt) / 1000)} seconds before trying again.`);
+          return;
+        }
+      }
+
       const response = await UserDataService.login(userData);
       const user = response.data;
-      setCurrentUser(user);
-      localStorage.setItem('user', JSON.stringify(user));
-      navigate('/users');
+      if (user) {
+        setCurrentUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        navigate('/users');
+        setFailedAttempts(0);
+      } else {
+        setFailedAttempts(prevAttempts => prevAttempts + 1);
+        setLastAttemptTime(new Date().getTime());
+        setEmailError(true);
+        setEmailErrorMessage('Invalid email or password.');
+      }
     } catch (error) {
       console.error('Login error:', error);
+      setFailedAttempts(prevAttempts => prevAttempts + 1);
+      setLastAttemptTime(new Date().getTime());
+      setEmailError(true);
+      setEmailErrorMessage('An error occurred during login. Please try again.');
     }
   };
 
