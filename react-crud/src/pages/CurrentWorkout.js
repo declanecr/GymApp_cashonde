@@ -82,7 +82,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     const workoutData = {
       name: `Workout ${currentDate}`,
       date: currentDate,
-      user_id: localStorage.getItem('user')
+      user_id: sessionStorage.getItem('user_id')
     };
     console.log("workoutData: ", workoutData);
 

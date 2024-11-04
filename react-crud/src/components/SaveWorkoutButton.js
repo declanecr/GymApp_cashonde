@@ -14,7 +14,8 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
             try {
                 const workoutData = {
                     name: `Workout ${new Date().toISOString().split('T')[0]}`,
-                    date: new Date().toISOString().split('T')[0]
+                    date: new Date().toISOString().split('T')[0],
+                    user_id: sessionStorage.getItem('user_id')
                 };
                 const workoutResponse = await WorkoutDataService.createWorkout(workoutData);
                 const workoutId = workoutResponse.id;
@@ -30,7 +31,8 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
                         workout_id: workoutId,
                         date: new Date().toISOString().split('T')[0],
                         reps: exercise.reps || 0,
-                        weight: exercise.weight || 0
+                        weight: exercise.weight || 0,
+                        user_id: sessionStorage.getItem('user_id')
                         
 
                     });

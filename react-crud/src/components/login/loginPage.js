@@ -98,7 +98,7 @@ export default function SignIn({setCurrentUser, ...props}) {
       const user = response.data;
       if (user) {
         setCurrentUser(user);
-        localStorage.setItem('user', JSON.stringify(user));
+        sessionStorage.setItem('user_id', user.id);
         navigate(`/users/${user.id}`);
         setFailedAttempts(0);
       } else {
