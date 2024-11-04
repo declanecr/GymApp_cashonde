@@ -1,51 +1,31 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
-const UserProfilePage = ({setCurrentUser}) => {
-    const navigate = useNavigate();
-    const [currentUser, setLocalCurrentUser] = useState(null);
+const UserProfilePage = ({ currentUser, handleLogout }) => {
+    const { user_id } = useParams();
 
-    useEffect(() => {
-        // Check if user is logged in
-        const loggedInUser = localStorage.getItem('user');
-        if (loggedInUser) {
-            const foundUser = JSON.parse(loggedInUser);
-            setCurrentUser(foundUser);
-            setLocalCurrentUser(foundUser);
-        }
-    }, [setCurrentUser]);
-
-    const handleLogout = () => {
-        localStorage.removeItem('user');
-        setCurrentUser(null);
-        setLocalCurrentUser(null);
-        navigate('/login');
-    };
-
+    if (!currentUser) {
+        return <div>Loading...</div>; // Or some other placeholder
+    }
     return (
         <div>
-            <h1>User Page</h1>
-            {currentUser ? (
-                <div>
-                    <p>Welcome, {currentUser.username}!</p>
-                    <button onClick={handleLogout}>Logout</button>
-                </div>
-            ) : (
-                <nav>
-                    <ul>
-                        <li><Link to="/login" >Login</Link></li>
-                        <li><Link to="/signup" >Sign Up</Link></li>
-                    </ul>
-                </nav>
-            )}
+            <h1>User Profile</h1>
+            <p>Welcome, {currentUser.username}!</p>
+            <p>User ID: {user_id}</p>
+            <button onClick={handleLogout}>Logout</button>
+            {/* Add more user profile information here */}
         </div>
     );
 };
 
 
+
 UserProfilePage.propTypes ={
-    setCurrentUser: PropTypes.func.isRequired
+    currentUser: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+    }).isRequired,
+    handleLogout: PropTypes.func.isRequired,
 };
 
 export default UserProfilePage;

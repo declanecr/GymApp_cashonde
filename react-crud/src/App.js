@@ -5,8 +5,8 @@
  * and manages the global state for the current workout.
  */
 
-import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import SignIn from './components/login/loginPage';
 import SignUp from './components/login/SignUp';
 import NavBar from './components/NavBar';
@@ -22,11 +22,26 @@ import UserProfilePage from './pages/UserProfilePage';
 const App = () => {
   const [currentWorkout, setCurrentWorkout] = useState([]);
   const [currentUser, setCurrentUser] =useState(null);
+  const navigate=useNavigate();
 
-  /**
-   * Adds an exercise to the current workout
-   * @param {Object} exercise - The exercise to be added
-   */
+
+    useEffect(() => {
+        // Check if user is logged in
+        const loggedInUser = localStorage.getItem('user');
+        if (loggedInUser) {
+            const foundUser = JSON.parse(loggedInUser);
+            setCurrentUser(foundUser);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setCurrentUser(null);
+        navigate('/login');
+    };
+
+  
+
   const addToWorkout = (exercise) => {
     setCurrentWorkout(prevWorkout=>[...prevWorkout, exercise]);
   };
@@ -42,14 +57,14 @@ const App = () => {
 
   return (
     <div className='App'>
-      <NavBar currentUser={currentUser} setCurrentUser= {setCurrentUser}/>
+      <NavBar currentUser={currentUser} setCurrentUser= {setCurrentUser} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
         <Route path="/add" element={<AddExercise />} />
         <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
         <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-        <Route path="/users/:user_id" element ={<UserProfilePage setCurrentUser={setCurrentUser}/>}/>
+        <Route path="/users/:user_id" element ={<UserProfilePage currentUser={currentUser} handleLogout={handleLogout}/>}/>
         <Route path="/login" element={<SignIn setCurrentUser={setCurrentUser}/>}/>
         <Route path="/signup" element={<SignUp setCurrentUser={setCurrentUser}/>}/>
         <Route path="/users" element={<LoginSignupPage setCurrentUser={setCurrentUser}/>}/>
