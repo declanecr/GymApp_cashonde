@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../AuthContext';
 import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from './shared-theme/AppTheme';
@@ -64,6 +65,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp({setCurrentUser, ...props}) {
+  const {login} =useAuth();
   const navigate = useNavigate();
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -127,6 +129,7 @@ export default function SignUp({setCurrentUser, ...props}) {
       const newUser = response.data;
       setCurrentUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
+      login(newUser);
       navigate(`/users/${newUser.id}`);
     } catch (error) {
       console.error('Signup error:', error);
