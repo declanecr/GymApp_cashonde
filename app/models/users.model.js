@@ -167,7 +167,9 @@ User.signUp = (newUser, result) => {
                 result({ kind: "duplicate", message: message }, null);
                 return;
             }
+            
 
+            console.log('can signUP now: ', newUser.username);
             // If no existing user found, create new user
             User.create(newUser, (err, data) => {
                 if (err) {
@@ -177,6 +179,7 @@ User.signUp = (newUser, result) => {
                 }
                 console.log("created user: ", data);
                 result(null, data);
+                return;
             });
         }
     );

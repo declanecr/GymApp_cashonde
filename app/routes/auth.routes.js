@@ -10,7 +10,7 @@ export default function(app) {
     // Signup
     router.post(
         "/signup",
-        [verifySignUp],
+        verifySignUp,
         authController.signup
     );
 

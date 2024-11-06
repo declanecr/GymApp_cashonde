@@ -8,10 +8,17 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        console.log('username: ', loginUsername);
+        console.log('password: ', loginPassword);
         try {
             const response = await UserDataService.getAllUsers();
+            if (response){
+                console.log('got users: ', response.data);
+            }
             const users = response.data;
+            
             const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
+            console.log('logging in user: ', user);
             if (user) {
                 setMessage('Login successful');
                 // Add further logic here (e.g., setting user state, redirecting)
