@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from "react";
+import { useNavigate } from "react-router-dom";
 import CheckButton from "react-validation/build/button";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-//import { isEmail } from "validator";
 import authService from "../services/auth.service";
 
 const required = value => {
@@ -15,17 +15,6 @@ const required = value => {
         );
     }
 };
-/*
-const email = value => {
-    if (!isEmail(value)) {
-        return (
-        <div className="alert alert-danger" role="alert">
-            This is not a valid email.
-        </div>
-        );
-    }
-}; //if reinstated, add email as validation on first textbox
-*/
 
 class Login extends Component {
     constructor(props) {
@@ -47,9 +36,12 @@ class Login extends Component {
 
         if (this.checkBtn.context._errors.length === 0) {
             authService.login(this.state.username, this.state.password).then(
-                () => {
-                    this.props.navigate("/profile");
-                    window.location.reload();
+                (response) => {
+                    this.setState({loading: false});
+                    this.props.setToken(response.accessToken);
+                    this.props.navigate("/exercises");
+                    const tempUser=authService.getCurrentUser();
+                    console.log('accesstoken: ', tempUser.accessToken);
                 },
                 error => {
                     const resMessage =
@@ -131,8 +123,14 @@ class Login extends Component {
     }
 }
 
-Login.propTypes = {
-    navigate: PropTypes.func.isRequired,
+const LoginWithNavigate = props => {
+    const navigate = useNavigate();
+    return <Login {...props} navigate={navigate} />;
 };
 
-export default Login;
+Login.propTypes = {
+    navigate: PropTypes.func.isRequired,
+    setToken: PropTypes.func.isRequired,
+};
+
+export default LoginWithNavigate;
