@@ -5,11 +5,15 @@
  * and manages the global state for the current workout.
  */
 
-import 'bootstrap/dist/css/bootsrap.min.css';
-import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
+
+import Profile from './components/profile.component';
+import authService from './services/auth.service';
+
 import Login from './components/login/Login';
-import NavBar from './components/NavBar';
+import Register from './components/register.component';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
@@ -23,8 +27,28 @@ class App extends Component {
     super(props);
     this.state = {
       currentWorkout: [],
-      token: null
+      token: null,
+      currentUser: undefined,
+
     };
+  }
+
+  componentDidMount() {
+    const user = authService.getCurrentUser();
+    if (user) {
+      this.setState({
+        currentUser: user,
+
+      });
+    }
+  }
+
+  logOut() {
+    authService.logout();
+    this.setState({
+      showModeratorBoard: false,
+
+    });
   }
 
   // Methods to update state
@@ -49,30 +73,37 @@ class App extends Component {
   deleteWorkout = () => {
     this.setState({ currentWorkout: [] });
   };
-
-  render(){
-    const { currentWorkout, token } =this.state;
-    
-    // If there's no token, redirect to the login page
+  render() {
+    // eslint-disable-next-line
+    const { currentUser,  currentWorkout, token } = this.state;
+  
     if (!token) {
       return <Login setToken={this.setToken} />;
     }
-    
+  
     return (
       <>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
-          <Route path="/add" element={<AddExercise />} />
-          <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
-          <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-          <Route path="/users" element ={<UserPage/>}/>
-        </Routes>
+        <nav className="navbar navbar-expand navbar-dark bg-dark">
+          {/* Add your navigation items here, similar to the example */}
+        </nav>
+        <div className="container mt-3">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/exercises" element={<ExercisesList addToWorkout={this.addToWorkout} />} />
+            <Route path="/add" element={<AddExercise />} />
+            <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout}/>} />
+            <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
+            <Route path="/users" element={<UserPage/>}/>
+          </Routes>
+        </div>
       </>
     );
   }
-};
+}
 
 
 export default App;
