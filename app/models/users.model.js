@@ -170,17 +170,9 @@ User.signUp = (newUser, result) => {
             
 
             console.log('can signUP now: ', newUser.username);
+            result(null, res);
             // If no existing user found, create new user
-            User.create(newUser, (err, data) => {
-                if (err) {
-                    console.log("error: ", err);
-                    result(err, null);
-                    return;
-                }
-                console.log("created user: ", data);
-                result(null, data);
-                return;
-            });
+            
         }
     );
 };

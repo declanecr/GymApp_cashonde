@@ -11,9 +11,8 @@ const verifySignUp = (req, res, next) => {
             return res.status(500).send({ message: "An error occurred while signing up." });
         }
         
-        // If the signup is successful, you can proceed with the next middleware or send a success response
         console.log('User signed up successfully:', data);
-        res.status(201).send(data); // Send the created user data as a response
+        next(); // Call next() here after successful signup
     });
 };
 
