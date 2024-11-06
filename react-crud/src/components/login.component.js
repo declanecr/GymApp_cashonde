@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import CheckButton from "react-validation/build/button";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import { isEmail } from "validator";
+//import { isEmail } from "validator";
 import authService from "../services/auth.service";
 
 const required = value => {
@@ -15,7 +15,7 @@ const required = value => {
         );
     }
 };
-
+/*
 const email = value => {
     if (!isEmail(value)) {
         return (
@@ -24,7 +24,8 @@ const email = value => {
         </div>
         );
     }
-};
+}; //if reinstated, add email as validation on first textbox
+*/
 
 class Login extends Component {
     constructor(props) {
@@ -89,7 +90,7 @@ class Login extends Component {
                 className="form-control"
                 value={this.state.username}
                 onChange={e => this.setState({ username: e.target.value })}
-                validations={[required, email]}
+                validations={[required]}
                 style={{ width: '100%', maxWidth: '450px' }}
                 />
             </div>
