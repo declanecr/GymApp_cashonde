@@ -10,14 +10,14 @@ import Exercise from "./exercise.model.js";
 
 // Constructor
 const Workout = function(workout) {
-  this.workoutId = workout.id;
-  this.userId = workout.user_id;
+  this.user_id = workout.user_id;
   this.name = workout.name;
   this.date = workout.date;
 };
 
 // Create a new Workout
 Workout.create = (newWorkout, result) => {
+  console.log('newWorkout: ',newWorkout);
   sql.query("INSERT INTO workouts SET ?", newWorkout, (err, res) => {
     if (err) {
       console.log("error: ", err);

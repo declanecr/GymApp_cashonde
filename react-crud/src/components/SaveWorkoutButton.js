@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SetDataService from '../services/SetDataService';
 import WorkoutDataService from '../services/WorkoutDataService';
+import authService from '../services/auth.service';
 
 const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
-    
+    const user =authService.getCurrentUser();
+    console.log('user: ', user);
     console.log("currentWorkout: ",currentWorkout);
     const saveWorkout = async () => {
         console.log("saveWorkout function called");
@@ -14,7 +16,8 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
             try {
                 const workoutData = {
                     name: `Workout ${new Date().toISOString().split('T')[0]}`,
-                    date: new Date().toISOString().split('T')[0]
+                    date: new Date().toISOString().split('T')[0],
+                    user_id: user.id
                 };
                 const workoutResponse = await WorkoutDataService.createWorkout(workoutData);
                 const workoutId = workoutResponse.id;
@@ -30,7 +33,8 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
                         workout_id: workoutId,
                         date: new Date().toISOString().split('T')[0],
                         reps: exercise.reps || 0,
-                        weight: exercise.weight || 0
+                        weight: exercise.weight || 0,
+                        user_id: user.id
                         
 
                     });

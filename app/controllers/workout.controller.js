@@ -22,14 +22,14 @@ export const create = (req, res) => {
     });
     return;
   }
-
+  console.log('req: ',req.body);
   // Create a Workout
   const workout = new Workout({
     name: req.body.name,
-    date: req.body.date, //TODO add user id
+    date: req.body.date, 
     user_id: req.body.user_id,
   });
-
+  console.log('workout: ',workout);
   // Save Workout in the database
   Workout.create(workout, (err, data) => {
     if (err)

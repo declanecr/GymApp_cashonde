@@ -6,7 +6,7 @@ class Set {
   constructor(set) {
     this.exercise_id = set.exercise_id;
     this.workout_id = set.workout_id;
-    this.userId = set.user_id
+    this.user_id = set.user_id
     this.date = set.date; 
     this.reps = set.reps;
     this.weight = set.weight;
