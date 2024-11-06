@@ -15,31 +15,39 @@ import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
+import 'bootstrap/dist/css/bootsrap.min.css';
 
-const App = () => {
-  const [currentWorkout, setCurrentWorkout] = useState([]);
-  const [token, setToken] =useState();
-
-  if (!token){
-    return <Login setToken={setToken}/>
+//class App extends Component 
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentWorkout: [],
+      token: null
+    };
   }
 
-
-  /**
-   * Adds an exercise to the current workout
-   * @param {Object} exercise - The exercise to be added
-   */
-  const addToWorkout = (exercise) => {
-    setCurrentWorkout(prevWorkout => [...prevWorkout, exercise]);
+  // Methods to update state
+  setToken = (newToken) => {
+    this.setState({ token: newToken });
   };
 
-  const removeFromWorkout = (exerciseToRemove) => {
-    console.log('App.removeFromWorkout: removing: ',exerciseToRemove.name);
-    setCurrentWorkout(currentWorkout.filter(exercise => exercise.id !== exerciseToRemove.id));
+  addToWorkout = (exercise) => {
+    this.setState((prevState) => ({
+      currentWorkout: [...prevState.currentWorkout, exercise]
+    }));
   };
 
-  const deleteWorkout =() => {
-    setCurrentWorkout([]);
+  removeFromWorkout = (exerciseToRemove) => {
+    this.setState((prevState) => ({
+      currentWorkout: prevState.currentWorkout.filter(
+        exercise => exercise.id !== exerciseToRemove.id
+      )
+    }));
+  };
+
+  deleteWorkout = () => {
+    this.setState({ currentWorkout: [] });
   };
 
   return (
