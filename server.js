@@ -7,6 +7,7 @@
 
 import cors from "cors";
 import express from "express";
+import authRoutes from "./app/routes/auth.routes.js";
 import exerciseRoutes from "./app/routes/exercise.routes.js";
 import homeRoutes from "./app/routes/home.routes.js";
 import setRoutes from "./app/routes/set.routes.js";
@@ -44,6 +45,7 @@ setRoutes(app);
 homeRoutes(app);
 workoutRoutes(app);
 usersRoutes(app);
+authRoutes(app);
 
 // Set up server to listen on specified port
 const PORT = process.env.PORT || 3000;

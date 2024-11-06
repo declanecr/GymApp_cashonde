@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Login from './components/login/Login';
 import NavBar from './components/NavBar';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
@@ -17,6 +18,12 @@ import UserPage from './pages/UserPage';
 
 const App = () => {
   const [currentWorkout, setCurrentWorkout] = useState([]);
+  const [token, setToken] =useState();
+
+  if (!token){
+    return <Login setToken={setToken}/>
+  }
+
 
   /**
    * Adds an exercise to the current workout

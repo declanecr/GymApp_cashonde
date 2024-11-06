@@ -140,4 +140,68 @@ User.removeAll = result => {
     });
 };
 
+
+/**
+ * Sign up a new user, checking for existing email or username
+ * @param {Object} newUser - The new user object to be created
+ * @param {Function} result - Callback function
+ */
+User.signUp = (newUser, result) => {
+    sql.query(
+        "SELECT * FROM users WHERE email = ? OR username = ?",
+        [newUser.email, newUser.username],
+        (err, res) => {
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+                return;
+            }
+
+            if (res.length > 0) {
+                let message = "";
+                if (res[0].email === newUser.email) {
+                    message = "Email already in use";
+                } else {
+                    message = "Username already taken";
+                }
+                result({ kind: "duplicate", message: message }, null);
+                return;
+            }
+
+            // If no existing user found, create new user
+            User.create(newUser, (err, data) => {
+                if (err) {
+                    console.log("error: ", err);
+                    result(err, null);
+                    return;
+                }
+                console.log("created user: ", data);
+                result(null, data);
+            });
+        }
+    );
+};
+
+/**
+ * Find a user by their email
+ * @param {string} email - The email of the user to find
+ * @param {Function} result - Callback function
+ */
+User.findOne = (email, result) => {
+    sql.query("SELECT * FROM users WHERE email = ?", [email], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log("found user: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+
+        result({ kind: "not_found" }, null);
+    });
+};
 export default User;
