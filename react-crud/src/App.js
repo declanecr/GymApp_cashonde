@@ -14,6 +14,7 @@ import authService from './services/auth.service';
 
 //import Login from './components/login/Login';
 import Login from './components/login.component';
+import NavBar from './components/NavBar';
 import Register from './components/register.component';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
@@ -86,7 +87,7 @@ class App extends Component {
     return (
       <>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          {/* Add your navigation items here, similar to the example */}
+          <NavBar></NavBar>
         </nav>
         <div className="container mt-3">
           <Routes>
