@@ -5,7 +5,8 @@
  * and manages the global state for the current workout.
  */
 
-import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootsrap.min.css';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Login from './components/login/Login';
 import NavBar from './components/NavBar';
@@ -15,7 +16,6 @@ import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
-import 'bootstrap/dist/css/bootsrap.min.css';
 
 //class App extends Component 
 class App extends Component {
@@ -50,19 +50,29 @@ class App extends Component {
     this.setState({ currentWorkout: [] });
   };
 
-  return (
-    <>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
-        <Route path="/add" element={<AddExercise />} />
-        <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
-        <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-        <Route path="/users" element ={<UserPage/>}/>
-      </Routes>
-    </>
-  );
+  render(){
+    const { currentWorkout, token } =this.state;
+    
+    // If there's no token, redirect to the login page
+    if (!token) {
+      return <Login setToken={this.setToken} />;
+    }
+    
+    return (
+      <>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/exercises" element={<ExercisesList addToWorkout={addToWorkout} />} />
+          <Route path="/add" element={<AddExercise />} />
+          <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={removeFromWorkout} deleteWorkout={deleteWorkout} addToWorkout={addToWorkout}/>} />
+          <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
+          <Route path="/users" element ={<UserPage/>}/>
+        </Routes>
+      </>
+    );
+  }
 };
+
 
 export default App;
