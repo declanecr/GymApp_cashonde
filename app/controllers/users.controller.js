@@ -1,5 +1,6 @@
 import User from "../models/users.model.js";
 
+
 // Create and Save a new User
 export const create = (req, res) => {
     console.log('users.controller create');

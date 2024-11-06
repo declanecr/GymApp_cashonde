@@ -1,4 +1,5 @@
 import express from 'express';
+import authController from '../controllers/auth.controller.js';
 import * as userController from '../controllers/users.controller.js';
 import { authJwt } from '../middleware/index.js';
 
@@ -39,7 +40,7 @@ export default function(app) {
     // Create a new User
     router.post("/", (req,res)=>{
         console.log('posting new user: ',req.body.username);
-        userController.create(req,res);
+        authController.signup(req,res);
     });
 
     app.use ('/api/test', router);
