@@ -100,7 +100,8 @@ class App extends Component {
             <Route path="/add" element={<AddExercise />} />
             <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout}/>} />
             <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-            <Route path="/users" element={<UserPage/>}/>
+            <Route path="/users" element={<UserPage/>}/> 
+            {/*TODO add users/:id page*/}
           </Routes>
         </div>
       </>

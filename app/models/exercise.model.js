@@ -320,14 +320,7 @@ Exercise.getWorkouts = (id, result) => {
   );
 };
 
-//TODO
-//add workout ID
-/*add sql queries
-  add lists of 'upper body muscles', 'lower body muscles', etc.
-  add groups of muscles "primary", "secondary", "tertiary"
-    to track how many exercises have been selected for each group
-  add automatic set creation
-*/
+
 const weightedRandomSelection = (exercises, count) => {
   const totalRating = exercises.reduce((sum, exercise) => {
       const rating = Number(exercise.rating);

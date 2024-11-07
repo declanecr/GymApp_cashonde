@@ -179,12 +179,12 @@ User.signUp = (newUser, result) => {
 
 /**
  * Find a user by their email
- * @param {string} username - The username of the user to find
+ * @param {string} email - The email of the user to find
  * @param {Function} result - Callback function
  */
-User.findOne = (username, result) => {
-    console.log('findOne username: ', username);
-    sql.query("SELECT * FROM users WHERE username = ?", [username], (err, res) => {
+User.findOne = (email, result) => {
+    console.log('findOne email: ', email);
+    sql.query("SELECT * FROM users WHERE email = ?", [email], (err, res) => {
         console.log('query res: ',res);
         console.log('query err: ',err);
         

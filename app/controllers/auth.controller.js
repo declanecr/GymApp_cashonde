@@ -22,9 +22,9 @@ const signup = (req, res) => {
 };
 
 const signin = (req, res) => {
-  console.log('username: ', req.body.username);
-  const username = req.body.username;
-  User.findOne(username, (err, user) => {
+  console.log('email: ', req.body.email);
+  const email = req.body.email;
+  User.findOne(email, (err, user) => {
     if (err) {
       return res.status(500).send({ message: err.message });
     }
