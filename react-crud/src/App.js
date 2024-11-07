@@ -12,8 +12,8 @@ import { Route, Routes } from 'react-router-dom';
 import Profile from './components/profile.component';
 import authService from './services/auth.service';
 
-//import Login from './components/login/Login';
-import Login from './components/login.component';
+import Login from './components/login/Login';
+//import Login from './components/login.component';
 import NavBar from './components/NavBar';
 import Register from './components/register.component';
 import AddExercise from './pages/AddExercisePage';

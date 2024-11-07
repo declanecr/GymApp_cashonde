@@ -1,14 +1,28 @@
-import { Box, Button, Card, Checkbox, CssBaseline, Divider, FormControl, FormControlLabel, FormLabel, Link, Stack, TextField, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import MuiCard from '@mui/material/Card';
+import Checkbox from '@mui/material/Checkbox';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserDataService from '../services/UserDataService';
+import UserDataService from '../../services/UserDataService';
 import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
 import ForgotPassword from './ForgotPassword';
 import AppTheme from './shared-theme/AppTheme';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+import { useAuth } from '../../AuthContext';
+
+const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
@@ -50,19 +64,16 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-function Login({ setToken }) {
-  const { login } = useAuth();
+export default function SignIn({ ...props}) {
+  const {login}= useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [lastAttemptTime, setLastAttemptTime] = useState(null);
+  const [emailError, setEmailError] = React.useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+  const [failedAttempts, setFailedAttempts] = React.useState(0);
+  const [lastAttemptTime, setLastAttemptTime] = React.useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,13 +83,7 @@ function Login({ setToken }) {
     setOpen(false);
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (emailError || passwordError) {
-      return;
-    }
-    setLoading(true);
-
+  const handleLogin = async (userData) => {
     try {
       if (failedAttempts >= 5) {
         const currentTime = new Date().getTime();
@@ -87,16 +92,14 @@ function Login({ setToken }) {
         if (timeSinceLastAttempt < waitTime) {
           setEmailError(true);
           setEmailErrorMessage(`Please wait ${Math.ceil((waitTime - timeSinceLastAttempt) / 1000)} seconds before trying again.`);
-          setLoading(false);
           return;
         }
       }
 
-      const response = await UserDataService.login({ email, password });
+      const response = await UserDataService.login(userData);
       const user = response.data;
       if (user) {
         login(user);
-        setToken(user.accessToken);
         navigate(`/users/${user.id}`);
         setFailedAttempts(0);
       } else {
@@ -111,15 +114,29 @@ function Login({ setToken }) {
       setLastAttemptTime(new Date().getTime());
       setEmailError(true);
       setEmailErrorMessage('An error occurred during login. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (emailError || passwordError) {
+      return;
+    }
+    const data = new FormData(event.currentTarget);
+    const userData = {
+      email: data.get('email'),
+      password: data.get('password'),
+    };
+    await handleLogin(userData);
+  };
+
   const validateInputs = () => {
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+
     let isValid = true;
 
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage('Please enter a valid email address.');
       isValid = false;
@@ -128,7 +145,7 @@ function Login({ setToken }) {
       setEmailErrorMessage('');
     }
 
-    if (!password || password.length < 6) {
+    if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage('Password must be at least 6 characters long.');
       isValid = false;
@@ -141,10 +158,10 @@ function Login({ setToken }) {
   };
 
   return (
-    <AppTheme>
+    <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
-        <StyledCard variant="outlined">
+        <Card variant="outlined">
           <SitemarkIcon />
           <Typography
             component="h1"
@@ -155,7 +172,7 @@ function Login({ setToken }) {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleLogin}
+            onSubmit={handleSubmit}
             noValidate
             sx={{
               display: 'flex',
@@ -179,8 +196,6 @@ function Login({ setToken }) {
                 fullWidth
                 variant="outlined"
                 color={emailError ? 'error' : 'primary'}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 sx={{ ariaLabel: 'email' }}
               />
             </FormControl>
@@ -205,12 +220,11 @@ function Login({ setToken }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                autoFocus
                 required
                 fullWidth
                 variant="outlined"
                 color={passwordError ? 'error' : 'primary'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
             <FormControlLabel
@@ -223,12 +237,11 @@ function Login({ setToken }) {
               fullWidth
               variant="contained"
               onClick={validateInputs}
-              disabled={loading}
             >
-              {loading ? "Logging in..." : "Sign in"}
+              Sign in
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <span>
                 <Link
                   component="button"
@@ -260,14 +273,12 @@ function Login({ setToken }) {
               Sign in with Facebook
             </Button>
           </Box>
-        </StyledCard>
+        </Card>
       </SignInContainer>
     </AppTheme>
   );
 }
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
+SignIn.propTypes = {
+  setCurrentUser: PropTypes.func.isRequired
 };
-
-export default Login;
