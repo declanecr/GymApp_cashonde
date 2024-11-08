@@ -14,8 +14,8 @@ import authService from './services/auth.service';
 
 import Login from './components/login/Login';
 //import Login from './components/login.component';
+import SignUp from './components/login/SignUp';
 import NavBar from './components/NavBar';
-import Register from './components/register.component';
 import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
@@ -80,28 +80,33 @@ class App extends Component {
     // eslint-disable-next-line
     const { currentUser,  currentWorkout, token } = this.state;
   
-    if (!token) {
-      return <Login setToken={this.setToken} />;
-    }
-  
     return (
       <>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <NavBar></NavBar>
-        </nav>
+        {/* Conditionally render NavBar only if the user is logged in */}
+        {token && (
+          <nav className="navbar navbar-expand navbar-dark bg-dark">
+            <NavBar />
+          </nav>
+        )}
+        
         <div className="container mt-3">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/exercises" element={<ExercisesList addToWorkout={this.addToWorkout} />} />
-            <Route path="/add" element={<AddExercise />} />
-            <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout}/>} />
-            <Route path="/exercises/:id/sets" element={<SetsHistory/>} />
-            <Route path="/users" element={<UserPage/>}/> 
-            {/*TODO add users/:id page*/}
+            <Route path="/" element={<Login setToken={this.setToken} />} />
+            {/* Make Login and Signup available regardless of token */}
+            <Route path="/login" element={<Login setToken={this.setToken} />} />
+            <Route path="/signup" element={<SignUp setToken={this.setToken} />} />
+            {/* Only allow profile and protected routes if logged in */}
+            {token && (
+              <>
+                <Route path="/home" element={<Home />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/exercises" element={<ExercisesList addToWorkout={this.addToWorkout} />} />
+                <Route path="/add" element={<AddExercise />} />
+                <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout} />} />
+                <Route path="/exercises/:id/sets" element={<SetsHistory />} />
+                <Route path="/users" element={<UserPage />} />
+              </>
+            )}
           </Routes>
         </div>
       </>

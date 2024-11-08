@@ -3,6 +3,7 @@ import CheckButton from "react-validation/build/button";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import { isEmail } from "validator";
+import authService from "../services/auth.service";
 
 const required = value => {
   if (!value) {
@@ -44,7 +45,13 @@ class Register extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      // handle successful registration
+      authService.register(this.props.username, this.props.email, this.props.password)
+      .then((response) => {
+        setToken(response.accessToken);
+        navigate(`/exercises`);
+
+        }
+      )
     } else {
       this.setState({
         loading: false,

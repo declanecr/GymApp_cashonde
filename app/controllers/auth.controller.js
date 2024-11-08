@@ -17,7 +17,18 @@ const signup = (req, res) => {
       res.status(500).send({ message: err.message });
       return;
     }
-    res.send({ message: "User was registered successfully!" });
+
+    var token =jwt.sign({id: user.id }, authConfig.secret,{
+      expiresIn:86400 //24 hours
+    });
+
+    res.status(200).send({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      accessToken: token,
+      message: "User was registered successfully!"
+    })
   });
 };
 

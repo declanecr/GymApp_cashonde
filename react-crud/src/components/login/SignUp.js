@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
@@ -15,10 +14,18 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../AuthContext';
-import UserDataService from '../../services/UserDataService';
-import { FacebookIcon, GoogleIcon, SitemarkIcon } from './CustomIcons';
+import authService from '../../services/auth.service';
+import { SitemarkIcon } from './CustomIcons';
 import AppTheme from './shared-theme/AppTheme';
+
+const emailValidate = (value) => {
+  console.log(value.value);
+  // Improved regex for email validation
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailPattern.test(value.value)) {
+    return (true);
+  }
+};
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -63,97 +70,82 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignUp({setCurrentUser, ...props}) {
-  const {login} =useAuth();
+export default function SignUp({ setToken }) {
   const navigate = useNavigate();
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [usernameError, setUsernameError] = React.useState(false);
-  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
+
+  // Local state for form fields and errors
+  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [usernameError, setUsernameError] = React.useState('');
+  const [emailError, setEmailError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const validateInputs = () => {
+    //setLoading(true);
+    const username = document.getElementById('username');
     const email = document.getElementById('email');
     const password = document.getElementById('password');
-    const username = document.getElementById('username');
+    setUsernameError('');
+    setEmailError('');
+    setPasswordError('');
 
-    let isValid = true;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+    let valid = true;
+    if (!username || username.length < 3 || username.length > 20) {
+      setUsernameError('Username must be between 3 and 20 characters');
+      valid = false;
     }
 
-    if (!password.value || password.value.length < 8 || password.value.length > 128) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be between 8 and 128 characters long.');
-      isValid = false;
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password.value)) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must include at least one uppercase letter, one lowercase letter, and one number.');
-      isValid = false;
-    } else if (password.value === username.value) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password cannot be the same as the username.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
+    if (emailValidate(email)) {
+      setEmailError('Please enter a valid email address');
+      valid = false;
     }
 
-    if (!username.value || username.value.length < 3 || username.value.length > 20) {
-      setUsernameError(true);
-      setUsernameErrorMessage('Username must be between 3 and 20 characters long.');
-      isValid = false;
-    } else if (!/^[a-zA-Z0-9_-]+$/.test(username.value)) {
-      setUsernameError(true);
-      setUsernameErrorMessage('Username can only contain letters, numbers, underscores, and hyphens.');
-      isValid = false;
-    } else {
-      setUsernameError(false);
-      setUsernameErrorMessage('');
+    if (!password || password.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      valid = false;
     }
 
-    return isValid;
+    return valid;
   };
 
-  const handleSignup = async (userData) => {
-    try {
-      const response = await UserDataService.createUser(userData);
-      const newUser = response.data;
-      setCurrentUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      login(newUser);
-      navigate(`/users/${newUser.id}`);
-    } catch (error) {
-      console.error('Signup error:', error);
-      if (error.response && error.response.status === 409) {
-        setUsernameError(true);
-        setUsernameErrorMessage('This username is already taken. Please choose another.');
-      }
-    }
+  const handleSignup = async () => {
+    authService.register(username, email, password)
+      .then(()=>{
+        authService.login(email, password)
+          .then((response) => {
+            setToken(response.accessToken);
+            navigate(`/exercises`);
+          })
+          .catch((error) => {
+            console.error('Login error:', error.message);
+            setEmailError(error.message);
+          })
+        })
+        
+      .catch((error)=>{
+        setLoading(false);
+        console.error('signup error:', error.message);
+        setEmailError(error.message);
+      });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (validateInputs()){
-    const data = new FormData(event.currentTarget);
-      const userData = {
-          username: data.get('username'),
-          email: data.get('email'),
-          password: data.get('password'),
+    if (validateInputs()) {
+      const userData = { 
+        username: username,
+        email: email, 
+        password: password 
       };
-      await handleSignup(userData);
+      console.log('userData:', userData);
+      handleSignup();
     }
   };
 
   return (
-    <AppTheme {...props}>
+    <AppTheme >
       <CssBaseline enableColorScheme />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
@@ -179,9 +171,10 @@ export default function SignUp({setCurrentUser, ...props}) {
                 fullWidth
                 id="username"
                 placeholder="johndoe123"
-                error={usernameError}
-                helperText={usernameErrorMessage}
-                color={usernameError ? 'error' : 'primary'}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                error={Boolean(usernameError)}
+                helperText={usernameError}
               />
             </FormControl>
             <FormControl>
@@ -194,9 +187,10 @@ export default function SignUp({setCurrentUser, ...props}) {
                 name="email"
                 autoComplete="email"
                 variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={emailError ? 'error' : 'primary'}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={Boolean(emailError)}
+                helperText={emailError}
               />
             </FormControl>
             <FormControl>
@@ -210,9 +204,10 @@ export default function SignUp({setCurrentUser, ...props}) {
                 id="password"
                 autoComplete="new-password"
                 variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={Boolean(passwordError)}
+                helperText={passwordError}
               />
             </FormControl>
             <FormControlLabel
@@ -223,9 +218,9 @@ export default function SignUp({setCurrentUser, ...props}) {
               type="submit"
               fullWidth
               variant="contained"
-              onClick={validateInputs}
+              disabled={loading}
             >
-              Sign up
+              {loading ? 'Registering...' : 'Sign up'}
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
@@ -233,7 +228,7 @@ export default function SignUp({setCurrentUser, ...props}) {
                 <Link
                   component="button"
                   variant="body2"
-                  onClick={()=>navigate('/login')}
+                  onClick={() => navigate('/login')}
                   sx={{ alignSelf: 'center' }}
                 >
                   Sign in
@@ -241,33 +236,13 @@ export default function SignUp({setCurrentUser, ...props}) {
               </span>
             </Typography>
           </Box>
-          <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
-          </Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Google')}
-              startIcon={<GoogleIcon />}
-            >
-              Sign up with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign up with Facebook
-            </Button>
-          </Box>
+          
         </Card>
       </SignUpContainer>
     </AppTheme>
   );
 }
 
-SignUp.propTypes={
-  setCurrentUser: PropTypes.func.isRequired,
+SignUp.propTypes = {
+  setToken: PropTypes.func.isRequired,
 };
