@@ -11,9 +11,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { AppBar, Autocomplete, Button, Container, IconButton, InputAdornment, Menu, MenuItem, TextField, Toolbar, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
 import ExerciseDataService from '../services/ExerciseDataService';
 
 const Search = styled('div')(({ theme }) => ({
@@ -32,8 +32,8 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-const NavBar = () => {
-  const { currentUser, logout } = useAuth();
+const NavBar = ({logOut}) => {
+  const currentUser = JSON.parse(localStorage.getItem('user'));
   const [anchorEl, setAnchorEl] = useState(null);
   const [exercises, setExercises] = useState([]);
   const navigate = useNavigate();
@@ -133,11 +133,13 @@ const NavBar = () => {
                   >
                     <MenuItem onClick={() => {
                       handleClose();
-                      navigate(`/users/${currentUser.id}`);
+                      navigate(`/users`);
                     }}>Account</MenuItem>
                     <MenuItem onClick={handleClose}>Settings</MenuItem>
                     <MenuItem onClick={handleClose}>My Metrics</MenuItem>
-                    <MenuItem onClick={() => { handleClose(); logout(); }}>Logout</MenuItem>
+                    <MenuItem onClick={() => { handleClose(); 
+                      logOut();
+                      navigate('/'); }}>Logout</MenuItem>
                   </Menu>
                 </div>
               </>
@@ -150,5 +152,9 @@ const NavBar = () => {
     </>
   );
 };
+
+NavBar.propTypes={
+  logOut: PropTypes.func.isRequired
+}
 
 export default NavBar;

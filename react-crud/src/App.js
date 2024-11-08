@@ -21,11 +21,13 @@ import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 import SetsHistory from './pages/SetsHistory';
+import UserPage from './pages/UserPage';
 
 //class App extends Component 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.logOut=this.logOut.bind(this)
     this.state = {
       currentWorkout: [],
       token: null,
@@ -49,8 +51,11 @@ class App extends Component {
     authService.logout();
     this.setState({
       showModeratorBoard: false,
+      token: null,
+      currentUser: undefined
 
     });
+    
   }
 
   // Methods to update state
@@ -84,7 +89,7 @@ class App extends Component {
         {/* Conditionally render NavBar only if the user is logged in */}
         {token && (
           <nav className="navbar navbar-expand navbar-dark bg-dark">
-            <NavBar />
+            <NavBar logOut={this.logOut}/>
           </nav>
         )}
         
