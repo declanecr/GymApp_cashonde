@@ -20,6 +20,7 @@ import AddExercise from './pages/AddExercisePage';
 import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
+import IndividualExercisePage from './pages/IndividualExercisePage';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
 
@@ -107,6 +108,7 @@ class App extends Component {
                 <Route path="/exercises" element={<ExercisesList addToWorkout={this.addToWorkout} />} />
                 <Route path="/add" element={<AddExercise />} />
                 <Route path="/current-workout" element={<CurrentWorkout currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout} />} />
+                <Route path="/exercises/:id" element={<IndividualExercisePage addToWorkout={this.addToWorkout} />} />
                 <Route path="/exercises/:id/sets" element={<SetsHistory />} />
                 <Route path="/users" element={<UserPage />} />
               </>

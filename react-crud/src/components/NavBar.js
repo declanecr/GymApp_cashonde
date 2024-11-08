@@ -98,6 +98,8 @@ const NavBar = ({logOut}) => {
                 )}
                 onChange={handleExerciseSelect}
                 sx={{ width: 300 }}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                getOptionKey={(option)=>option.id}
               />
             </Search>
             {currentUser ? (

@@ -1,6 +1,6 @@
+import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from '@mui/material';
 
 const AddToWorkoutButton = ({ exercise, onAddToWorkout }) => {
   const handleClick = () => {

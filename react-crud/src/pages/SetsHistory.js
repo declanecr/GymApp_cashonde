@@ -6,18 +6,16 @@
 */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import SetsGrid from '../components/SetsGrid';
 import ExerciseDataService from "../services/ExerciseDataService";
 import SetDataService from '../services/SetDataService';
 import authService from '../services/auth.service';
 
-function SetsHistory () {
-  const [sets, setSets] = useState([]);
+function SetsHistory() {
+  const [workouts, setWorkouts] = useState({});
   const [exercise, setExercise] = useState(null);
   const { id } = useParams();
 
   const user = authService.getCurrentUser();
-  console.log('user_id:',user.id);
 
   useEffect(() => {
     fetchExercise();
@@ -33,14 +31,16 @@ function SetsHistory () {
   };
 
   const fetchSets = () => {
-    const exerciseData ={
-      id: id,
-      user_id: user.id,
-    }
-    SetDataService.getSetsForExercise(exerciseData.id, exerciseData.user_id)
+    SetDataService.getSetsForExercise(id, user.id)
       .then(response => {
-        console.log('response:',response);
-        setSets(response.data);
+        const groupedSets = response.data.reduce((acc, set) => {
+          if (!acc[set.workout_id]) {
+            acc[set.workout_id] = [];
+          }
+          acc[set.workout_id].push(set);
+          return acc;
+        }, {});
+        setWorkouts(groupedSets);
       })
       .catch(error => console.error('Error fetching sets:', error));
   };
@@ -48,7 +48,29 @@ function SetsHistory () {
   return (
     <div>
       <h2>{exercise ? exercise.name : 'Loading...'} Sets History</h2>
-      <SetsGrid sets={sets} />
+      {Object.entries(workouts).map(([workoutId, sets]) => (
+        <div key={workoutId}>
+          <h3>Workout {workoutId}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>Reps</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sets.map(set => (
+                <tr key={set.id}>
+                  <td>{new Date(set.date).toLocaleDateString()}</td>
+                  <td>{set.weight}</td>
+                  <td>{set.reps}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
     </div>
   );
 }
