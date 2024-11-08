@@ -19,8 +19,13 @@ const SetDataService = {
      * Outputs: Promise resolving to an array of set objects
      * API Call: GET /exercises/:id/sets
      */
-    getSetsForExercise: (exerciseId) => {
-        return http.get(`/exercises/${exerciseId}/sets`);
+    getSetsForExercise: (exerciseId, userId) => {
+        console.log('exerciseId:',exerciseId,'\nuserId:',userId);
+        return http.get(`/exercises/${exerciseId}/sets`,{
+            headers: {
+                'x-user-id':userId //custom header for user ID
+            }
+        } );
     },
 
     /**

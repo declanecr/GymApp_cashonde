@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 
 const ViewSetsButton = ({ exercise }) => {
   const navigate = useNavigate();
-
+  
   const handleClick = () => {
     if (exercise && exercise.id) {
+
+      
       navigate(`/exercises/${exercise.id}/sets`);
     }
   };

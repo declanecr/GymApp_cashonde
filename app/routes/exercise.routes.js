@@ -37,7 +37,7 @@ export default function(app) {
     //router.post("/:id/sets", exercises.addSet);
 
     // Get all sets for an exercise
-    router.get("/:id/sets", exercises.getSets);
+    //router.get("/:id/sets", setController.findAll);
 
     // Fetch workouts for a specific exercise
     router.get("/:id/workouts", exercises.getWorkouts)

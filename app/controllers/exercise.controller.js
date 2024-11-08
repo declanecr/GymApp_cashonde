@@ -33,9 +33,12 @@ export const addSet = (req, res) => {
 };
 
 export const getSets = (req, res) => {
-  Set.findByExerciseId(req.params.id, (err, data) => {
+  Set.findByExerciseId(req.params.id, req.body.user_id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
+        console.log('no sets found');
+        console.log(req.params);
+        console.log(req.body);
         res.status(404).send({
           message: `No sets found for Exercise with id ${req.params.id}.`
         });

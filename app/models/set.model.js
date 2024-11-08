@@ -128,8 +128,8 @@ class Set {
     });
   }
 
-  static findByExerciseId(exerciseId, result) {
-  sql.query(`SELECT * FROM sets WHERE exercise_id = ?`, [exerciseId], (err, res) => {
+  static findByExerciseId(exerciseId, user_id, result) {
+  sql.query(`SELECT * FROM sets WHERE exercise_id = ? AND user_id = ?`, [exerciseId, user_id], (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

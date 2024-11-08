@@ -72,7 +72,11 @@ export const create = (req, res) => {
  */
 export const findAll = (req, res) => {
   const exerciseId = req.params.id;
-  Set.findByExerciseId(exerciseId, (err, data) => {
+  const userId = req.headers['x-user-id']; // Retrieve userId from headers
+  console.log('req.headers:', req.headers);
+  console.log('Exercise ID:', exerciseId);
+  console.log('User ID:', userId);
+  Set.findByExerciseId(exerciseId, userId, (err, data) => {
     if (err)
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving sets."

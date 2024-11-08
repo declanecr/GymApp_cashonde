@@ -9,11 +9,15 @@ import { useParams } from 'react-router-dom';
 import SetsGrid from '../components/SetsGrid';
 import ExerciseDataService from "../services/ExerciseDataService";
 import SetDataService from '../services/SetDataService';
+import authService from '../services/auth.service';
 
 function SetsHistory () {
   const [sets, setSets] = useState([]);
   const [exercise, setExercise] = useState(null);
   const { id } = useParams();
+
+  const user = authService.getCurrentUser();
+  console.log('user_id:',user.id);
 
   useEffect(() => {
     fetchExercise();
@@ -29,8 +33,13 @@ function SetsHistory () {
   };
 
   const fetchSets = () => {
-    SetDataService.getSetsForExercise(id)
+    const exerciseData ={
+      id: id,
+      user_id: user.id,
+    }
+    SetDataService.getSetsForExercise(exerciseData.id, exerciseData.user_id)
       .then(response => {
+        console.log('response:',response);
         setSets(response.data);
       })
       .catch(error => console.error('Error fetching sets:', error));

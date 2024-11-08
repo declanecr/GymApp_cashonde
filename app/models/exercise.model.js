@@ -73,6 +73,7 @@ Exercise.create = (newExercise, result) => {
  * @sends SQL query to select exercise by ID
  */
 Exercise.findById = (id, result) => {
+  // TODO add user_id call here
   // Execute SQL query to find exercise by ID
   sql.query(`SELECT * FROM exercises WHERE id = ${id}`, (err, res) => {
     if (err) {
@@ -81,22 +82,9 @@ Exercise.findById = (id, result) => {
       result(err, null);
       return;
     }
+    result(null,res);
 
-    if (res.length) {
-      const exercise = res[0];
-      // Fetch sets for this exercise
-      Set.findByExerciseId(id, (err, sets) => {
-        if (err) {
-          result(err, null);
-          return;
-        }
-        exercise.sets = sets;
-        console.log("found exercise: ", exercise);
-        result(null, exercise);
-      });
-    } else {
-      result({ kind: "not_found" }, null);
-    }
+    
   });
 };
 
@@ -240,7 +228,7 @@ Exercise.getUniqueMuscleGroups = result => {
       return;
     }
     // Log and return array of unique muscle groups
-    console.log("muscle groups: ", res);
+    //console.log("muscle groups: ", res);
     result(null, res.map(row => row.main_muscle));
   });
 };
@@ -263,7 +251,7 @@ Exercise.getUniqueEquipment = result => {
       return;
     }
     // Log and return array of unique equipment
-    console.log("equipment found: ", res.map(row => row.equipment));
+    //console.log("equipment found: ", res.map(row => row.equipment));
     result(null, res.map(row => row.equipment));
   });
 };
@@ -286,7 +274,7 @@ Exercise.getUniqueLevels = result => {
       return;
     }
     // Log and return array of unique levels
-    console.log("levels found: ", res.map(row => row.level));
+    //console.log("levels found: ", res.map(row => row.level));
     result(null, res.map(row => row.level));
   });
 };
