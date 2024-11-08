@@ -73,7 +73,6 @@ Exercise.create = (newExercise, result) => {
  * @sends SQL query to select exercise by ID
  */
 Exercise.findById = (id, result) => {
-  // TODO add user_id call here
   // Execute SQL query to find exercise by ID
   sql.query(`SELECT * FROM exercises WHERE id = ${id}`, (err, res) => {
     if (err) {
