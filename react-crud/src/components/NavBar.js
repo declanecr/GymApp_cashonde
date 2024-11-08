@@ -3,36 +3,151 @@
  * 
  * This component provides navigation for the main pages of the Gym App.
  * It includes links to Home, Exercises, Add Exercise, and Current Workout pages.
- * It also wraps the main content in Routes for proper routing.
+ * It also includes an autocomplete search bar for exercises.
  */
 
-import { AppBar, Button, Container, Toolbar } from '@mui/material';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import { AppBar, Autocomplete, Button, Container, IconButton, InputAdornment, Menu, MenuItem, TextField, Toolbar, Typography } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import ExerciseDataService from '../services/ExerciseDataService';
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+}));
 
 const NavBar = () => {
+  const { currentUser, logout } = useAuth();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [exercises, setExercises] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    ExerciseDataService.getAll()
+      .then(response => {
+        setExercises(response.data.map(exercise => ({ id: exercise.id, name: exercise.name })));
+      })
+      .catch(error => console.error('Error fetching exercises:', error));
+  }, []);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleExerciseSelect = (event, newValue) => {
+    if (newValue) {
+      navigate(`/exercises/${newValue.id}`);
+    }
+  };
+
   return (
-    <AppBar position="static">
-      <Container maxWidth="lg">
-        <Toolbar sx={{ justifyContent: 'space-between' }}> {/* Dispersing items over the space */}
-          <Button component={Link} to="/" color="inherit">
-            Home
-          </Button>
-          <Button component={Link} to="/exercises" color="inherit">
-            Exercises
-          </Button>
-          <Button component={Link} to="/add" color="inherit">
-            Add Exercise
-          </Button>
-          <Button component={Link} to="/current-workout" color="inherit">
-            Workouts
-          </Button>
-          <Button component={Link} to= "/users" color="inherit">
-            UserName
-          </Button>
-        </Toolbar>
-      </Container>
-    </AppBar>
+    <>
+      <AppBar position="static">
+        <Container maxWidth="lg">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Gym App
+            </Typography>
+            <Search>
+              <Autocomplete
+                freeSolo
+                options={exercises}
+                getOptionLabel={(option) => option.name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Search exercises..."
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+                onChange={handleExerciseSelect}
+                sx={{ width: 300 }}
+              />
+            </Search>
+            {currentUser ? (
+              <>
+                <Button color="inherit" component={Link} to="/exercises">Exercises</Button>
+                <Button color="inherit" component={Link} to="/add">Add Exercise</Button>
+                <Button color="inherit" component={Link} to="/current-workout">Workouts</Button>
+                <div>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={() => {
+                      handleClose();
+                      navigate(`/users/${currentUser.id}`);
+                    }}>Account</MenuItem>
+                    <MenuItem onClick={handleClose}>Settings</MenuItem>
+                    <MenuItem onClick={handleClose}>My Metrics</MenuItem>
+                    <MenuItem onClick={() => { handleClose(); logout(); }}>Logout</MenuItem>
+                  </Menu>
+                </div>
+              </>
+            ) : (
+              <Button color="inherit" component={Link} to="/login">Login</Button>
+            )}
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </>
   );
 };
 

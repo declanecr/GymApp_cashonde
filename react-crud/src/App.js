@@ -21,7 +21,6 @@ import CurrentWorkout from './pages/CurrentWorkout';
 import ExercisesList from './pages/ExercisesPage';
 import Home from './pages/Home';
 import SetsHistory from './pages/SetsHistory';
-import UserPage from './pages/UserPage';
 
 //class App extends Component 
 class App extends Component {

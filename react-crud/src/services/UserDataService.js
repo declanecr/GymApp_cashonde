@@ -11,6 +11,15 @@ const UserDataService = {
     },
 
     /**
+     * Logs in a user
+     * @param {Object} userData - User credentials (email and password)
+     * @returns {Promise} - Promise resolving to the logged-in user object
+     */
+    login: (userData) => {
+        return http.post("/users/login", userData);
+    },
+
+    /**
      * Retrieves all users
      * @returns {Promise} - Promise resolving to an array of user objects
      */

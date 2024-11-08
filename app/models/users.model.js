@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import sql from "./db.js";
 
 /**
@@ -17,15 +18,63 @@ const User = function(user) {
  * @param {Function} result - Callback function
  */
 User.create = (newUser, result) => {
-    sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
+    bcrypt.hash(newUser.password, 10, (err, hash) => {
         if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+        newUser.password = hash;
+        sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
+            if (err) {
+                console.log("error: ", err);
+                result(err, null);
+                return;
+            }
+            console.log("created user: ", { id: res.insertId, ...newUser });
+            result(null, { id: res.insertId, ...newUser });
+        });
+    });
+};
+
+/**
+ * Login a user
+ * @param {string} email - The email of the user
+ * @param {string} password - The password of the user
+ * @param {Function} result - Callback function
+ */
+User.login = (email, password, result) => {
+    sql.query(`SELECT * FROM users WHERE email = ?`, [email], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
         }
 
-        console.log("created user: ", { id: res.insertId, ...newUser });
-        result(null, { id: res.insertId, ...newUser });
+        if (res.length) {
+            console.log('res: ', res);
+            const user = res[0];
+            console.log('password: ', password, '\npassword type: ', typeof(password));
+            console.log('user.password: ', user.password, '\nuser.password type: ', typeof(user.password));
+            
+            bcrypt.compare(password, user.password, (bcryptErr, isMatch) => {
+                console.log('isMatch: ', isMatch);
+                
+                if (bcryptErr) {
+                    console.log("error: ", bcryptErr);
+                    result(bcryptErr, null);
+                    return;
+                }
+                if (isMatch) {
+                    console.log("logged in user: ", { id: user.id, ...user });
+                    result(null, { id: user.id, ...user });
+                } else {
+                    result({ kind: "invalid_password" }, null);
+                }
+            });
+        } else {
+            result({ kind: "not_found" }, null);
+        }
     });
 };
 
