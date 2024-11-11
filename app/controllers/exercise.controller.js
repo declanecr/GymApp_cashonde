@@ -77,7 +77,10 @@ export const create = (req, res) => {
     main_muscle: req.body.main_muscle,
     equipment: req.body.equipment,
     level: req.body.level,
-    rating: req.body.rating || 0  // Default rating to 0 if not provided
+    rating: req.body.rating || 0 , // Default rating to 0 if not provided
+    instructions: req.body.instructions,
+    image_url: req.body.image_url,
+    muscle_diagram_url: req.body.muscle_diagram_url
   });
 
   // Save Exercise in the database

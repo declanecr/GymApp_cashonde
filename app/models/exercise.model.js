@@ -36,6 +36,9 @@ const Exercise = function(exercise) {
   this.equipment = exercise.equipment;
   this.level = exercise.level;
   this.rating = exercise.rating;
+  this.instructions = exercise.instructions;
+  this.images_url = exercise.images_url;
+  this.muscle_diagram_url= exercise.muscle_diagram_url;
 };
 
 /**
@@ -131,9 +134,8 @@ Exercise.getAll = (name, result) => {
 Exercise.updateById = (id, exercise, result) => {
   // Execute SQL query to update exercise
   sql.query(
-    "UPDATE exercises SET name = ?, description = ?, type = ?, main_muscle = ?, equipment = ?, level = ?, rating = ? WHERE id = ?",
-    [exercise.name, exercise.description, exercise.type, exercise.main_muscle, exercise.equipment, exercise.level, exercise.rating, id],
-    (err, res) => {
+    "UPDATE exercises SET name = ?, description = ?, type = ?, main_muscle = ?, equipment = ?, level = ?, rating = ?, instructions = ?, images_url = ?, muscle_diagram_url = ? WHERE id = ?",
+    [exercise.name, exercise.description, exercise.type, exercise.main_muscle, exercise.equipment, exercise.level, exercise.rating, exercise.instructions, exercise.images_url, exercise.muscle_diagram_url, id],    (err, res) => {
       if (err) {
         // Log and return error if update fails
         console.log("error: ", err);

@@ -24,7 +24,10 @@ const Exercise = props => {
     main_muscle: "",
     equipment: "",
     level: "",
-    rating: 0
+    rating: 0,
+    instructions: "",
+    images_url: "",
+    muscle_diagram_url:"",
   };
   const [currentExercise, setCurrentExercise] = useState(initialExerciseState);
   const [message, setMessage] = useState("");
@@ -181,6 +184,38 @@ const Exercise = props => {
                 id="rating"
                 name="rating"
                 value={currentExercise.rating}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="instructions">Instructions</label>
+              <textarea
+                className="form-control"
+                id="instructions"
+                name="instructions"
+                value={currentExercise.instructions}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="images_url">Images URL</label>
+              <input
+                type="text"
+                className="form-control"
+                id="images_url"
+                name="images_url"
+                value={currentExercise.images_url}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="muscle_diagram_url">Muscle Diagram URL</label>
+              <input
+                type="text"
+                className="form-control"
+                id="muscle_diagram_url"
+                name="muscle_diagram_url"
+                value={currentExercise.muscle_diagram_url}
                 onChange={handleInputChange}
               />
             </div>
