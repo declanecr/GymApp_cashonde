@@ -44,6 +44,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     };
   }, [timer]);
   
+  const handleDayChange = (day) => {
+    setSelectedDays(prevDays => ({
+      ...prevDays,
+      [day]: !prevDays[day]
+    }));
+  };
+  
   const handleStartWorkout = () => {
     setIsWorkoutStarted(true);
     const now = new Date(); // Get current date and time
@@ -107,49 +114,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }));
   }; 
 
-  const onSWBclick = async () => {
-    console.log("onSWBclick");
-    const allSets = Object.values(sets).flat();
-    const completedSets = allSets.filter(set => set.isCompleted);
-    if (completedSets.length === 0) {
-      console.log("no sets");
-      return [];
-    }
-
-    const currentDate = new Date().toISOString().split('T')[0];
-    const workoutData = {
-      name: `Workout ${currentDate}`,
-      date: currentDate,
-      user_id: sessionStorage.getItem('user_id'),
-      start_time: startTime,
-      end_time: new Date()
-    };
-    console.log("workoutData: ", workoutData);
-    try {
-      const response = await WorkoutDataService.createWorkout(workoutData);
-      console.log("Created workout:", response);
-      const workoutId = response.id;
-      console.log("Workout ID:", workoutId);
-
-      const updatedSets = completedSets.map(set => ({
-        ...set,
-        workoutId: workoutId
-      }));
-
-      console.log("Updated sets with workoutId:", updatedSets);
-      setIsWorkoutStarted(false); // Reset workout started state
-      return updatedSets;
-    } catch (error) {
-      console.error('Error creating workout:', error);
-      return [];
-    }
-  };
-    const handleDayChange = (day) => {
-    setSelectedDays(prevDays => ({
-      ...prevDays,
-      [day]: !prevDays[day]
-    }));
-  };
+  
 
   const handleGenerateWorkout = async () => {
     const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
@@ -266,7 +231,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                         </Button>
                       ) : (
                         <SaveWorkoutButton 
-                          onClick={onSWBclick} 
                           currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
                             setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
                           )}

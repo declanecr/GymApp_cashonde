@@ -30,11 +30,6 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime})
                 console.log("Created workout with ID:", workoutId);
 
                 for (const exercise of currentWorkout) {
-                    console.log('exerciseID: ', exercise.exerciseId);
-                    console.log('reps: ', exercise.reps);
-                    console.log('weight: ', exercise.weight);
-                    console.log('workoutID: ', workoutId);
-                    
                     await SetDataService.createSet(exercise.exerciseId, {
                         workout_id: workoutId,
                         date: new Date().toISOString().split('T')[0],
