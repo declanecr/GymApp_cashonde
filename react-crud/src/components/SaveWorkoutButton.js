@@ -5,7 +5,7 @@ import SetDataService from '../services/SetDataService';
 import WorkoutDataService from '../services/WorkoutDataService';
 import authService from '../services/auth.service';
 
-const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime}) => {
+const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime, clearLocalStorage}) => {
     const user =authService.getCurrentUser();
     //console.log('user: ', user);
     //console.log("currentWorkout: ",currentWorkout);
@@ -23,7 +23,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime})
                     date: new Date().toISOString().split('T')[0],
                     user_id: user.id,
                     start_time: formatDateTime(startTime),    // Format: 'YYYY-MM-DD HH:MM:SS'
-                end_time: formatDateTime(endTime || new Date())
+                    end_time: formatDateTime(endTime || new Date())
                 };
                 const workoutResponse = await WorkoutDataService.createWorkout(workoutData);
                 const workoutId = workoutResponse.id;
@@ -43,6 +43,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime})
                 }
                 console.log('All sets saved successfully');
                 deleteWorkout();
+                clearLocalStorage();
             } catch (error) {
                 console.error('Error saving workout:', error);
             }
@@ -73,6 +74,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime})
 
 SaveWorkoutButton.propTypes = {
     deleteWorkout: PropTypes.func.isRequired,
+    clearLocalStorage: PropTypes.func.isRequired,
     currentWorkout: PropTypes.array.isRequired,
     startTime: PropTypes.instanceOf(Date),
     endTime: PropTypes.instanceOf(Date)

@@ -35,6 +35,41 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timer, setTimer] = useState(null);
 
+  const STORAGE_KEYS = {
+    GENERATED_WORKOUTS: 'generatedWorkouts',
+    CURRENT_WORKOUT: 'currentWorkout',
+    CURRENT_SETS: 'currentSets'
+  };
+  
+  const saveToLocalStorage = (key, data) => {
+    localStorage.setItem(key, JSON.stringify(data));
+  };
+  
+  
+
+  const clearFromLocalStorage = (key) => {
+    localStorage.removeItem(key);
+  };
+  
+  const clearCurrentWorkoutState = () => {
+    clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    clearFromLocalStorage(STORAGE_KEYS.CURRENT_SETS);
+  };
+  
+  useEffect(() => {
+    // Load generated workouts
+    const savedGeneratedWorkouts = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_WORKOUTS));
+    if (savedGeneratedWorkouts) {
+      setGeneratedWorkout(savedGeneratedWorkouts);
+    }
+  
+    // Load sets
+    const savedSets = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_SETS));
+    if (savedSets) {
+      setSets(savedSets);
+    }
+  }, []);
+
   // Cleanup timer when component unmounts
   useEffect(() => {
     return () => {
@@ -82,13 +117,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     setSelectedExercise(updatedExercise);
   };
 
-  const handleAddSet = (exerciseId) => {
-    setSets(prevSets => ({
-      ...prevSets,
-      [exerciseId]: [...(prevSets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
-    }));
-  };
-
   const handleRemoveSet = (exerciseId, index) => {
     setSets(prevSets => ({
       ...prevSets,
@@ -96,14 +124,29 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }));
   };
 
-  const handleSetChange = (exerciseId, setIndex, field, value) => {
-    setSets(prevSets => ({
-      ...prevSets,
-      [exerciseId]: prevSets[exerciseId].map((set, i) =>
-        i === setIndex ? { ...set, [field]: value } : set
-      )
-    }));
+  const handleAddSet = (exerciseId) => {
+    const newSets = {
+      ...sets,
+      [exerciseId]: [...(sets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
+    };
+    setSets(newSets);
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_SETS, newSets);
   };
+  
+  const handleSetChange = (exerciseId, setIndex, field, value) => {
+    const newSets = { ...sets };
+    newSets[exerciseId][setIndex][field] = value;
+    setSets(newSets);
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_SETS, newSets);
+  };
+  
+  const setAsWorkout = (workout) => {
+    deleteWorkout();
+    setSets({});
+    workout.forEach(exercise => addToWorkout(exercise));
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workout);
+  };
+  
 
   const handleSetCompletion = (exerciseId, index, isCompleted) => {
     setSets(prevSets => ({
@@ -132,16 +175,12 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
         setSets({});
       }
       setGeneratedWorkout(generatedWorkout);
+      saveToLocalStorage(STORAGE_KEYS.GENERATED_WORKOUTS, generatedWorkout);
     } catch (error) {
       console.error('Error generating workout:', error);
     }
   };
 
-  const setAsWorkout = (workout) => {
-    deleteWorkout();
-    setSets({});
-    workout.forEach(exercise => addToWorkout(exercise));
-  };
 
   return (
     <Container maxWidth={false} >
@@ -235,6 +274,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                             setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
                           )}
                           deleteWorkout={deleteWorkout}
+                          clearLocalStorage={clearCurrentWorkoutState}
                           startTime={startTime}
                           endTime={new Date()} //Current time as end time
                         />
