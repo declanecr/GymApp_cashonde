@@ -6,6 +6,7 @@ import AddToWorkoutButton from '../components/AddToWorkoutButton';
 import ViewSetsButton from '../components/ViewSetsButton';
 import ExerciseDataService from '../services/ExerciseDataService';
 
+import CurrentExerciseCard from '../components/CurrentExerciseCard';
 const IndividualExercisePage = ({addToWorkout}) => {
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -47,13 +48,8 @@ const IndividualExercisePage = ({addToWorkout}) => {
     <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <Card>
         <CardContent>
-          <Typography variant="h4" gutterBottom>{exercise.name}</Typography>
-          <Typography variant="body1" paragraph><strong>Description:</strong> {exercise.description}</Typography>
-          <Typography variant="body1" paragraph><strong>Type:</strong> {exercise.type}</Typography>
-          <Typography variant="body1" paragraph><strong>Main Muscle:</strong> {exercise.main_muscle}</Typography>
-          <Typography variant="body1" paragraph><strong>Equipment:</strong> {exercise.equipment}</Typography>
-          <Typography variant="body1" paragraph><strong>Level:</strong> {exercise.level}</Typography>
-          <Typography variant="body1" paragraph><strong>Rating:</strong> {exercise.rating}/10</Typography>
+          <CurrentExerciseCard exercise={exercise} />
+          
           <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                 <ViewSetsButton exercise={exercise} />
                 <AddToWorkoutButton exercise={exercise}  onAddToWorkout={addToWorkout}/>

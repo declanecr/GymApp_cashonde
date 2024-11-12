@@ -37,10 +37,9 @@ const Exercise = function(exercise) {
   this.level = exercise.level;
   this.rating = exercise.rating;
   this.instructions = exercise.instructions;
-  this.images_url = exercise.images_url;
+  this.images_url = Array.isArray(exercise.images_url) ? exercise.images_url : JSON.parse(exercise.images_url || '[]');
   this.muscle_diagram_url= exercise.muscle_diagram_url;
 };
-
 /**
  * Create a new exercise in the database
  * @param {Object} newExercise - The exercise object to be created

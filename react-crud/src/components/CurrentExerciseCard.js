@@ -73,7 +73,70 @@ const CurrentExerciseCard = ({ exercise }) => {
             </Box>
           </Grid>
         </Grid>
+        {exercise.instructions && (
+          <Grid item xs={12}>
+            <Box sx={{borderRadius: '8px'}}>
+              <Typography variant="subtitle1">
+                <strong>Instructions:</strong>
+              </Typography>
+              <Typography variant="body1">{exercise.instructions}</Typography>
+            </Box>
+          </Grid>
+        )}
+
+        {exercise.muscle_diagram_url && (
+          <Grid item xs={12} sm={6}>
+            <Box>
+              <Typography variant="subtitle1">
+                <strong>Muscle Diagram:</strong>
+              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <img 
+                  src={exercise.muscle_diagram_url} 
+                  alt="Muscle diagram" 
+                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+                />
+              </Box>
+            </Box>
+          </Grid>
+        )}
+
+        {exercise.images_url && exercise.images_url.length > 0 && (
+          <Grid item xs={12} sm={6}>
+            <Box>
+              <Typography variant="subtitle1">
+                <strong>Exercise Images:</strong>
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              {(() => {
+                try {
+                  const images = Array.isArray(exercise.images_url) 
+                    ? exercise.images_url 
+                    : JSON.parse(exercise.images_url || '[]');
+                  
+                  return images.map((url, index) => (
+                    <img 
+                      key={index}
+                      src={url} 
+                      alt={`Exercise ${index + 1}`} 
+                      style={{ 
+                        maxWidth: '200px', 
+                        height: 'auto', 
+                        borderRadius: '8px'
+                      }}
+                    />
+                  ));
+                } catch (error) {
+                  console.error('Error parsing images_url:', error);
+                  return null;
+                }
+              })()}
+              </Box>
+            </Box>
+          </Grid>
+        )}
       </CardContent>
+      
     </Card>
   );
 };
@@ -88,6 +151,9 @@ CurrentExerciseCard.propTypes = {
     equipment: PropTypes.string,
     level: PropTypes.string,
     rating: PropTypes.number,
+    instructions: PropTypes.string,
+    images_url: PropTypes.arrayOf(PropTypes.string),
+    muscle_diagram_url: PropTypes.string,
   }),
 };
 
