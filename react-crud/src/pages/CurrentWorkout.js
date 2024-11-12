@@ -58,6 +58,44 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   };
   
   useEffect(() => {
+    // Load saved workout state
+    const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+    
+    if (savedWorkoutState) {
+      // Restore the workout data
+      if (savedWorkoutState.workout) {
+        setAsWorkout(savedWorkoutState.workout);
+      }
+      
+      // Restore the sets data
+      if (savedWorkoutState.sets) {
+        setSets(savedWorkoutState.sets);
+      }
+      
+      // Restore workout started state
+      if (savedWorkoutState.isStarted) {
+        setIsWorkoutStarted(true);
+      }
+      
+      // Restore start time if it exists
+      if (savedWorkoutState.startTime) {
+        const startTime = new Date(savedWorkoutState.startTime);
+        setStartTime(startTime);
+        
+        // Calculate elapsed time
+        const now = new Date();
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        setElapsedTime(elapsedSeconds);
+        
+        // Restart timer if workout was in progress
+        if (savedWorkoutState.isStarted) {
+          const timerInterval = setInterval(() => {
+            setElapsedTime(prev => prev + 1);
+          }, 1000);
+          setTimer(timerInterval);
+        }
+      }
+    }
     // Load generated workouts
     const savedGeneratedWorkouts = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_WORKOUTS));
     if (savedGeneratedWorkouts) {
@@ -69,22 +107,37 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     if (savedSelectedDays) {
       setSelectedDays(savedSelectedDays);
     }
-
-    // Load sets
-    const savedSets = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_SETS));
-    if (savedSets) {
-      setSets(savedSets);
+  
+    // Load current workout state
+    if (savedWorkoutState) {
+      setSets(savedWorkoutState.sets);
+      setIsWorkoutStarted(savedWorkoutState.isStarted);
+      if (savedWorkoutState.startTime) {
+        const startTime = new Date(savedWorkoutState.startTime);
+        setStartTime(startTime);
+        // Calculate elapsed time
+        const now = new Date();
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        setElapsedTime(elapsedSeconds);
+        
+        // Restart timer if workout was in progress
+        if (savedWorkoutState.isStarted) {
+          const timerInterval = setInterval(() => {
+            setElapsedTime(prev => prev + 1);
+          }, 1000);
+          setTimer(timerInterval);
+        }
+      }
     }
-  }, []);
-
-  // Cleanup timer when component unmounts
-  useEffect(() => {
+  
+    // Cleanup timer when component unmounts
     return () => {
       if (timer) {
         clearInterval(timer);
       }
     };
-  }, [timer]);
+  }, []);
+  
   
   const handleDayChange = (day) => {
     const newSelectedDays = {
@@ -101,6 +154,15 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     const now = new Date(); // Get current date and time
     setStartTime(now);
     
+    // Save the current workout state
+    const workoutState = {
+      workout: currentWorkout,
+      sets: sets,
+      startTime: now,
+      isStarted: true
+    };
+    
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
     
     // Start the timer
     const timerInterval = setInterval(() => {
@@ -147,7 +209,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     const newSets = { ...sets };
     newSets[exerciseId][setIndex][field] = value;
     setSets(newSets);
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_SETS, newSets);
+    
+    // Update the workout state in localStorage
+    const workoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+    if (workoutState) {
+      workoutState.sets = newSets;
+      saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+    }
   };
   
   const setAsWorkout = (workout) => {
@@ -159,13 +227,24 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   
 
   const handleSetCompletion = (exerciseId, index, isCompleted) => {
-    setSets(prevSets => ({
-      ...prevSets,
-      [exerciseId]: prevSets[exerciseId].map((set, i) =>
-        i === index ? { ...set, isCompleted } : set
-      )
-    }));
-  }; 
+    setSets(prevSets => {
+      const newSets = {
+        ...prevSets,
+        [exerciseId]: prevSets[exerciseId].map((set, i) =>
+          i === index ? { ...set, isCompleted } : set
+        )
+      };
+      
+      // Update the workout state in localStorage
+      const workoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+      if (workoutState) {
+        workoutState.sets = newSets;
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+      }
+      
+      return newSets;
+    });
+  };
 
   
 
