@@ -43,7 +43,7 @@ class App extends Component {
     if (user) {
       this.setState({
         currentUser: user,
-
+        token: user.accessToken
       });
     }
   }

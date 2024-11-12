@@ -150,7 +150,7 @@ CurrentExerciseCard.propTypes = {
     main_muscle: PropTypes.string,
     equipment: PropTypes.string,
     level: PropTypes.string,
-    rating: PropTypes.number,
+    rating: PropTypes.string,
     instructions: PropTypes.string,
     images_url: PropTypes.arrayOf(PropTypes.string),
     muscle_diagram_url: PropTypes.string,
