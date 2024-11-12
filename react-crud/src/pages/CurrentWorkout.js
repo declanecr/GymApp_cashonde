@@ -38,7 +38,8 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   const STORAGE_KEYS = {
     GENERATED_WORKOUTS: 'generatedWorkouts',
     CURRENT_WORKOUT: 'currentWorkout',
-    CURRENT_SETS: 'currentSets'
+    CURRENT_SETS: 'currentSets',
+    SELECTED_DAYS: 'selectedDays'
   };
   
   const saveToLocalStorage = (key, data) => {
@@ -63,6 +64,12 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       setGeneratedWorkout(savedGeneratedWorkouts);
     }
   
+    // Load selected days
+    const savedSelectedDays = JSON.parse(localStorage.getItem(STORAGE_KEYS.SELECTED_DAYS));
+    if (savedSelectedDays) {
+      setSelectedDays(savedSelectedDays);
+    }
+
     // Load sets
     const savedSets = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_SETS));
     if (savedSets) {
@@ -80,11 +87,14 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   }, [timer]);
   
   const handleDayChange = (day) => {
-    setSelectedDays(prevDays => ({
-      ...prevDays,
-      [day]: !prevDays[day]
-    }));
+    const newSelectedDays = {
+      ...selectedDays,
+      [day]: !selectedDays[day]
+    };
+    setSelectedDays(newSelectedDays);
+    saveToLocalStorage(STORAGE_KEYS.SELECTED_DAYS, newSelectedDays);
   };
+  
   
   const handleStartWorkout = () => {
     setIsWorkoutStarted(true);
@@ -175,7 +185,9 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
         setSets({});
       }
       setGeneratedWorkout(generatedWorkout);
+      // Save both generated workouts and selected days
       saveToLocalStorage(STORAGE_KEYS.GENERATED_WORKOUTS, generatedWorkout);
+      saveToLocalStorage(STORAGE_KEYS.SELECTED_DAYS, selectedDays);
     } catch (error) {
       console.error('Error generating workout:', error);
     }
