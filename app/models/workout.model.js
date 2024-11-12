@@ -13,6 +13,8 @@ const Workout = function(workout) {
   this.user_id = workout.user_id;
   this.name = workout.name;
   this.date = workout.date;
+  this.start_time = workout.start_time;
+  this.end_time = workout.end_time;
 };
 
 // Create a new Workout
@@ -102,8 +104,8 @@ Workout.getAll = (result) => {
 // Update a Workout by ID
 Workout.updateById = (id, workout, result) => {
   sql.query(
-    "UPDATE workouts SET name = ?, date = ?, exercises = ? WHERE id = ?",
-    [workout.name, workout.date, JSON.stringify(workout.exercises), id],
+    "UPDATE workouts SET name = ?, date = ?, start_time = ?, end_time = ? WHERE id = ?",
+    [workout.name, workout.date, workout.start_time, workout.end_time, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -186,6 +188,8 @@ Workout.getSets = (userId, id, result) => {
     });
 };
 
+
+
 /**
  * Generates workouts based on the number of days
  * Creates workout based on number of days
@@ -204,6 +208,8 @@ Workout.generateWorkout = (numDays, result) => {
     const workout = {
       name: `${type} - ${new Date().toLocaleString()}`,
       date: new Date(),
+      start_time: null, // Sets start time to current timestamp
+      end_time: null, // This can be set when the workout is completed
       exercises: [],
     };
   
@@ -291,6 +297,50 @@ Workout.generateWorkout = (numDays, result) => {
       result({ kind: "invalid_input" }, null);
       break;
   }
+};
+
+Workout.updateEndTime = (id, result) => {
+  sql.query(
+    "UPDATE workouts SET end_time = CURRENT_TIMESTAMP WHERE id = ?",
+    [id],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+      
+      if (res.affectedRows == 0) {
+        result({ kind: "not_found" }, null);
+        return;
+      }
+      
+      console.log("updated workout end time for id: ", id);
+      result(null, { id: id, end_time: new Date() });
+    }
+  );
+};
+
+Workout.beginStartTime = (id, result) => {
+  sql.query(
+    "UPDATE workouts SET start_time = CURRENT_TIMESTAMP WHERE id = ?",
+    [id],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+
+      if (res.affectedRows == 0) {
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      console.log("updated workout start time for id: ", id);
+      result(null, { id: id, start_time: new Date() });
+    }
+  );
 };
 
 export default Workout;

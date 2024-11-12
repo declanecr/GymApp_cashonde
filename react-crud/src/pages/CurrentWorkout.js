@@ -9,13 +9,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Card, CardActions, CardContent, Checkbox, Container, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CurrentExerciseCard from '../components/CurrentExerciseCard';
 import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
 import WorkoutDataService from '../services/WorkoutDataService';
 
 const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
+  const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
   const [sets, setSets] = useState({});
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
   const [selectedDays, setSelectedDays] = useState({
@@ -28,7 +29,44 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     Sunday: false
   });
   const [selectedExercise, setSelectedExercise]=useState(null);
+
+  // Add these new state variables
+  const [startTime, setStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timer, setTimer] = useState(null);
+
+  // Cleanup timer when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [timer]);
   
+  const handleStartWorkout = () => {
+    setIsWorkoutStarted(true);
+    const now = new Date(); // Get current date and time
+    setStartTime(now);
+    
+    
+    // Start the timer
+    const timerInterval = setInterval(() => {
+      setElapsedTime(prev => prev + 1);
+    }, 1000);
+    
+    setTimer(timerInterval);
+  };
+
+  // Function to format elapsed time
+  const formatElapsedTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+  };
+
   const handleExerciseSelection = (exercise) => {
     const updatedExercise = {
       ...exercise,
@@ -82,10 +120,11 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     const workoutData = {
       name: `Workout ${currentDate}`,
       date: currentDate,
-      user_id: sessionStorage.getItem('user_id')
+      user_id: sessionStorage.getItem('user_id'),
+      start_time: startTime,
+      end_time: new Date()
     };
     console.log("workoutData: ", workoutData);
-
     try {
       const response = await WorkoutDataService.createWorkout(workoutData);
       console.log("Created workout:", response);
@@ -98,14 +137,14 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       }));
 
       console.log("Updated sets with workoutId:", updatedSets);
+      setIsWorkoutStarted(false); // Reset workout started state
       return updatedSets;
     } catch (error) {
       console.error('Error creating workout:', error);
       return [];
     }
   };
-
-  const handleDayChange = (day) => {
+    const handleDayChange = (day) => {
     setSelectedDays(prevDays => ({
       ...prevDays,
       [day]: !prevDays[day]
@@ -214,29 +253,43 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                     Your Workout
                   </Typography>
                   {currentWorkout.length > 0 ? (
-                    <SaveWorkoutButton 
-                      onClick={onSWBclick} 
-                      currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
-                        setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+                    <>
+                      {!isWorkoutStarted ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleStartWorkout}
+                          sx={{ mb: 2 }}
+                          fullWidth
+                        >
+                          Start Workout
+                        </Button>
+                      ) : (
+                        <SaveWorkoutButton 
+                          onClick={onSWBclick} 
+                          currentWorkout={Object.entries(sets).flatMap(([exerciseId, setList]) => 
+                            setList.map(set => ({ ...set, exerciseId: parseInt(exerciseId) }))
+                          )}
+                          deleteWorkout={deleteWorkout}
+                          startTime={startTime}
+                          endTime={new Date()} //Current time as end time
+                        />
                       )}
-                      removeFromWorkout={removeFromWorkout} 
-                      deleteWorkout={deleteWorkout}
-                    />
-                  ) : (
-                    <Typography variant="body1" color="textSecondary">
-                      No exercises added to the workout yet.
-                    </Typography>
-                  )}
-                  {currentWorkout.length > 0 && (
-                    <List>
-                      {currentWorkout.map((exercise) => (
-                        <ListItem key={exercise.id} divider onClick ={() => handleExerciseSelection(exercise)}>
-                          <ListItemText
-                            primary={exercise.name}
-                            secondary={`Main Muscle: ${exercise.main_muscle}`}
-                          />
-                          <Box>
-                            <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
+                      {isWorkoutStarted && (
+                      <div>
+                        <div>Start Time: {startTime.toLocaleTimeString()}</div>
+                        <div>Duration: {formatElapsedTime(elapsedTime)}</div>
+                      </div>
+                      )}
+                      <List>
+                        {currentWorkout.map((exercise) => (
+                          <ListItem key={exercise.id} divider onClick ={() => handleExerciseSelection(exercise)}>
+                            <ListItemText
+                              primary={exercise.name}
+                              secondary={`Main Muscle: ${exercise.main_muscle}`}
+                            />
+                            <Box>                            
+                              <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
                               Add Set
                             </Button>
                             <List>
@@ -282,11 +335,13 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                             ))}
                             </List>
                           </Box>
-                          <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}/>
+                          <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout} />
                         </ListItem>
                       ))}
                     </List>
-                  )}
+                    </>
+                    ) : null
+                  }
                   </Card>
               </Grid>
                 

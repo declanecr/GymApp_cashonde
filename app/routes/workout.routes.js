@@ -29,7 +29,11 @@ export default function (app) {
     // Gets Sets from a workout
     router.get('/:id/sets', workouts.getWorkoutSets);
 
-    
+    // Start a workout
+    router.put('/:id/start', workouts.startWorkout);
+
+    // End a workout
+    router.put('/:id/end', workouts.endWorkout);
 
     app.use('/api/workouts', router);
 }

@@ -28,6 +28,9 @@ export const create = (req, res) => {
     name: req.body.name,
     date: req.body.date, 
     user_id: req.body.user_id,
+    start_time: req.body.start_time,
+    end_time: req.body.end_time
+
   });
   console.log('workout: ',workout);
   // Save Workout in the database
@@ -188,6 +191,40 @@ export const generateWorkout = (req, res) => {
       // Send the array of exercises returned by Workout.generateWorkout
       res.send(data);
     }
+  });
+};
+
+export const startWorkout =(req, res) => {
+  const workoutId = req.params.id;
+  Workout.startWorkout(workoutId, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found Workout with id ${workoutId}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error starting Workout with id " + workoutId
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+export const endWorkout =(req, res) => {
+  const workoutId = req.params.id;
+  Workout.endWorkout(workoutId, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found Workout with id ${workoutId}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error ending Workout with id " + workoutId
+        });
+      }
+    } else res.send(data);
   });
 };
 

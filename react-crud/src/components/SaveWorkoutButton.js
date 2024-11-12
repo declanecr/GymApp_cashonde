@@ -5,19 +5,25 @@ import SetDataService from '../services/SetDataService';
 import WorkoutDataService from '../services/WorkoutDataService';
 import authService from '../services/auth.service';
 
-const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
+const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime}) => {
     const user =authService.getCurrentUser();
-    console.log('user: ', user);
-    console.log("currentWorkout: ",currentWorkout);
+    //console.log('user: ', user);
+    //console.log("currentWorkout: ",currentWorkout);
     const saveWorkout = async () => {
         console.log("saveWorkout function called");
         //good here
         if (currentWorkout && currentWorkout.length > 0) {
             try {
+                // Format the dates to match MySQL datetime format
+                const formatDateTime = (date) => {
+                    return date.toISOString().slice(0, 19).replace('T', ' ');
+                };
                 const workoutData = {
                     name: `Workout ${new Date().toISOString().split('T')[0]}`,
                     date: new Date().toISOString().split('T')[0],
-                    user_id: user.id
+                    user_id: user.id,
+                    start_time: formatDateTime(startTime),    // Format: 'YYYY-MM-DD HH:MM:SS'
+                end_time: formatDateTime(endTime || new Date())
                 };
                 const workoutResponse = await WorkoutDataService.createWorkout(workoutData);
                 const workoutId = workoutResponse.id;
@@ -72,7 +78,9 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout}) => {
 
 SaveWorkoutButton.propTypes = {
     deleteWorkout: PropTypes.func.isRequired,
-    currentWorkout: PropTypes.array.isRequired
+    currentWorkout: PropTypes.array.isRequired,
+    startTime: PropTypes.instanceOf(Date),
+    endTime: PropTypes.instanceOf(Date)
 };
 
 export default SaveWorkoutButton;

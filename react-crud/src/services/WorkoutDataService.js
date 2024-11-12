@@ -14,7 +14,7 @@ const WorkoutDataService = {
         console.log("createWorkout: ", workoutData);
         return http.post(`/workouts/`,workoutData)
         .then(response =>{
-            console.log("ExerciseDataService \nCreated workout:", response.data);
+            console.log("WorkoutDataService \nCreated workout:", response.data);
             return response.data;
         });
     },
@@ -129,6 +129,35 @@ const WorkoutDataService = {
                 } else {
                     throw new Error("Invalid response format");
                 }
+            });
+    },
+    /**
+     * Starts a workout by setting its start time
+     * Purpose: Record the start time of a workout
+     * Inputs: id - The ID of the workout to start
+     * Outputs: Promise resolving to the updated workout object
+     * API Call: PUT /workouts/:id/start
+     */
+    startWorkout: (id) => {
+        return http.put(`/workouts/${id}/start`)
+            .then(response => {
+                console.log("Started workout:", response.data);
+                return response.data;
+            });
+    },
+
+    /**
+     * Ends a workout by setting its end time
+     * Purpose: Record the end time of a workout
+     * Inputs: id - The ID of the workout to end
+     * Outputs: Promise resolving to the updated workout object
+     * API Call: PUT /workouts/:id/end
+     */
+    endWorkout: (id) => {
+        return http.put(`/workouts/${id}/end`)
+            .then(response => {
+                console.log("Ended workout:", response.data);
+                return response.data;
             });
     }
 };
