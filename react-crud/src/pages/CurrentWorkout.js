@@ -73,7 +73,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     // Load current workout state
     const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
     console.log('savedWorkoutState: ',savedWorkoutState);
-    setAsWorkout(savedWorkoutState);
+    setAsWorkout(savedWorkoutState.workout);
 
     if (savedWorkoutState) {
       setSets(savedWorkoutState.sets);
@@ -185,10 +185,10 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   };
   
   const setAsWorkout = (workout) => {
+    if (!workout) return;
     deleteWorkout();
     setSets({});
-    workout.workout.forEach(exercise => addToWorkout(exercise));
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workout);
+    workout.forEach(exercise => addToWorkout(exercise));
   };
   
 
