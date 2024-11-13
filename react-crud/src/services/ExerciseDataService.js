@@ -56,6 +56,18 @@ const ExerciseDataService = {
     return http.get("/exercises/level");
   },
 
+
+  /**
+   * Fetches all unique difficulty types
+   * Purpose: Retrieve list of types for filtering
+   * Inputs: None
+   * Outputs: Promise resolving to an array of type names
+   * API Call: GET /exercises/types
+   */
+  getTypes() {
+    return http.get("/exercises/types");
+  },
+
   /**
    * Fetches a single exercise by ID
    * Purpose: Retrieve details of a specific exercise

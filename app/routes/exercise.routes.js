@@ -20,6 +20,7 @@ export default function(app) {
     router.get("/main_muscle", exercises.getMuscleGroups);
     router.get("/equipment", exercises.getEquipment);
     router.get("/level", exercises.getLevels);
+    router.get("/types", exercises.getTypes);
 
     // Retrieve a single Exercise by id
     router.get("/:id", exercises.findOne);

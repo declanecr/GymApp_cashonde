@@ -339,6 +339,32 @@ export const getLevels = (req, res) => {
   });
 };
 
+/**
+ * Get unique types
+ * 
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @purpose Fetch all unique difficulty types from the exercises
+ * @input None
+ * @output JSON response with array of unique types or error message
+ * @sends Array of unique types to the client
+ */
+export const getTypes = (req, res) => {
+  // Retrieve unique types from the database
+  Exercise.getUniqueTypes((err, data) => {
+    if (err)
+      // Send error response if retrieval fails
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving types."
+      });
+    else 
+      // Send retrieved types data if successful
+      res.send(data);
+  });
+};
+
+
+
 export const getWorkouts = (req,res)=>{
   Exercise.getWorkouts(req.params.id, (err, data) => {
     if (err) {

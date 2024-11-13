@@ -280,6 +280,29 @@ Exercise.getUniqueLevels = result => {
 };
 
 /**
+ * Get unitypes
+ * @param {Function} result - Callback function
+ * @purpose Retrieve all unique difficulty types from the exercises table
+ * @input Callback function
+ * @output Array of unique types or error
+ * @sends SQL query to select distinct types
+ */
+Exercise.getUniqueTypes = result => {
+  // Execute SQL query to get distinct types
+  sql.query("SELECT DISTINCT type FROM exercises", (err, res) => {
+    if (err) {
+      // Log and return error if query fails
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    // Log and return array of unique types
+    //console.log("types found: ", res.map(row => row.type));
+    result(null, res.map(row => row.type));
+  });
+};
+
+/**
  * Get workouts associated with an exercise
  * @param {number} id - The ID of the exercise
  * @param {Function} result - Callback function

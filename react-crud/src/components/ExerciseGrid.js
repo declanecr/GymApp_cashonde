@@ -51,6 +51,12 @@ const ExerciseGrid = ({ handleRowClick }) => {
       );
     }
 
+    if (filters.types && filters.types.length > 0) {
+      filteredExercises = filteredExercises.filter(exercise =>
+        filters.types.includes(exercise.type)
+      );
+    }
+
     console.log(filteredExercises);
     setExercises(filteredExercises);
   };
@@ -62,29 +68,28 @@ const ExerciseGrid = ({ handleRowClick }) => {
   const columns = [
     { field: 'name', headerName: 'Name', width: 240 },
     { field: 'main_muscle', headerName: 'Main Muscle', width: 120 },
-    { field: 'equipment', headerName: 'Equipment', width: 120 },
-    { field: 'level', headerName: 'Level', width: 120 },
-    { field: 'rating', headerName: 'Rating', type: 'number', width: 100 },
+    { field: 'rating', headerName: 'Rating', width: 120 },
   ];
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
+    <Container  sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'row' }}>
       <ExerciseFilters onFiltersChange={handleFiltersChange} />
+        <Container sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="h5" gutterBottom>
+            Exercise List
+          </Typography>
 
-      <Typography variant="h5" gutterBottom>
-        Exercise List
-      </Typography>
-
-      <Box sx={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={exercises}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableRowSelectionOnClick
-          onRowClick={handleRowClick}
-        />
-      </Box>
+          <Box sx={{ height: 400, width: 480 }}>
+            <DataGrid
+              rows={exercises}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableRowSelectionOnClick
+              onRowClick={handleRowClick}
+            />
+          </Box>
+        </Container>
     </Container>
   );
 };

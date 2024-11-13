@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Divider, FormControlLabel, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
@@ -7,14 +7,17 @@ const ExerciseFilters = ({ onFiltersChange }) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [levels, setLevels] = useState([]);
+  const [types, setTypes] = useState([]);
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [selectedEquipment, setSelectedEquipment] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState([]);
 
   useEffect(() => {
     retrieveMuscleGroups();
     retrieveEquipment();
     retrieveLevels();
+    retrieveTypes();
   }, []);
 
   const retrieveMuscleGroups = () => {
@@ -47,6 +50,16 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       });
   };
 
+  const retrieveTypes =() => {
+    ExerciseDataService.getTypes()
+      .then(response => {
+        setTypes(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const handleCheckboxChange = (category, value) => {
     const updateSelected = (selectedArray, setSelectedArray) => {
       if (selectedArray.includes(value)) {
@@ -66,6 +79,9 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       case 'level':
         updateSelected(selectedLevels, setSelectedLevels);
         break;
+      case 'type':
+        updateSelected(selectedTypes, setSelectedTypes);
+        break;
       default:
         break;
     }
@@ -76,6 +92,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       muscles: selectedMuscles,
       equipment: selectedEquipment,
       levels: selectedLevels,
+      types: selectedTypes,
     };
     onFiltersChange(filters);
   };
@@ -85,15 +102,32 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', 
-        justifyContent: 'center', 
+        alignItems: 'left', 
+        justifyContent: 'left', 
         mt: 4,
+        mb: 2,
+        width: '100%',
+        maxWidth: '180px',
       }}
     >
-      <Box sx={{ display: 'flex', gap: 1, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
-        
+      <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', maxWidth: '180px', width: '100%' }}>
+        {/* Apply Filters Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFilterChange}
+          sx={{ alignSelf: 'flex-start', mt: 2 }}
+        >
+          Apply Filters
+        </Button>
+        <Divider sx={{
+          my: 1,
+          width: '100%',
+          border: '1px solid',
+          borderColor: 'divider',
+        }} />
         {/* Muscle Group Checkboxes */}
-        <Box>
+        <Box sx={{minWidth:'180px'}}>
           <Typography variant="h6">Muscle Group</Typography>
           {muscleGroups.map((muscle, index) => (
             <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
@@ -115,9 +149,14 @@ const ExerciseFilters = ({ onFiltersChange }) => {
             </Box>
           ))}
         </Box>
-
+        <Divider sx={{ 
+          my: 1,
+          width: '100%',
+          border: '1px solid',
+          borderColor: 'divider',
+        }} />
         {/* Equipment Checkboxes */}
-        <Box sx={{minWidth:'135px'}}>
+        <Box sx={{minWidth:'180px'}}>
           <Typography variant="h6">Equipment</Typography>
           {equipment.map((item, index) => (
             <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
@@ -138,9 +177,14 @@ const ExerciseFilters = ({ onFiltersChange }) => {
             </Box>
           ))}
         </Box>
-
+        <Divider sx={{ 
+          my: 1,
+          width: '100%',
+          border: '1px solid',
+          borderColor: 'divider',
+        }} />
         {/* Level Checkboxes */}
-        <Box>
+        <Box sx={{minWidth:'180px'}}>
           <Typography variant="h6">Level</Typography>
           {levels.map((level, index) => (
           <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
@@ -162,23 +206,45 @@ const ExerciseFilters = ({ onFiltersChange }) => {
           </Box>
           ))}
         </Box>
+        <Divider sx={{
+          my: 1,
+          width: '100%',
+          border: '1px solid',
+          borderColor: 'divider',
+        }} />
+        {/* Type Checkboxes */}
+        <Box sx={{minWidth:'1180x'}}> 
+          <Typography variant="h6">Type</Typography>
+          {types.map((type, index) => (
+            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+              <FormControlLabel
+                key={index}
+                control={
+                  <Checkbox
+                    size='small'
+                    checked={selectedTypes.includes(type)}
+                    onChange={() => handleCheckboxChange('type', type)}
+                  />
+                }
+                label={type}
+                sx={{
+                  '& .MuiFormControlLabel-label': {
+                    typography:'body2', // Adjust font size here
+                  }}}
+              />
+            </Box>
+          ))}
+        </Box>
       </Box>
-
-      {/* Apply Filters Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleFilterChange}
-        sx={{ alignSelf: 'flex-start', mt: 2 }}
-      >
-        Apply Filters
-      </Button>
+        
+      
     </Box>
   );
 };
 
 ExerciseFilters.propTypes = {
   onFiltersChange: PropTypes.func.isRequired,
+  
 };
 
 export default ExerciseFilters;
