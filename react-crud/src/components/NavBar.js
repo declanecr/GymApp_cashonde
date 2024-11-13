@@ -7,7 +7,6 @@
  */
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { AppBar, Autocomplete, Button, Container, IconButton, InputAdornment, Menu, MenuItem, TextField, Toolbar, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
@@ -65,15 +64,7 @@ const NavBar = ({logOut}) => {
       <AppBar position="static">
         <Container maxWidth="lg">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
+            
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Gym App
             </Typography>

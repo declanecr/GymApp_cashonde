@@ -41,7 +41,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
 
 
   const resetToDefaultFilters = () => {
-    /*
+    /* //marks the default filters as checked when page loads
     setSelectedMuscles(defaultFilters.muscles);
     setSelectedEquipment(defaultFilters.equipment);
     setSelectedLevels(defaultFilters.levels);
