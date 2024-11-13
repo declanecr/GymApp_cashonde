@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -75,10 +75,8 @@ const ExerciseGrid = ({ handleRowClick }) => {
     <Container  sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'row' }}>
       <ExerciseFilters onFiltersChange={handleFiltersChange} />
         <Container sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="h5" gutterBottom>
-            Exercise List
-          </Typography>
-
+          
+          {/* Exercise grid */}
           <Box sx={{ height: 400, width: 480 }}>
             <DataGrid
               rows={exercises}

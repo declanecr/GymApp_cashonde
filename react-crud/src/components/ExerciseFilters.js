@@ -15,7 +15,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
   const defaultFilters = {
     muscles: [],
     equipment: ['Body Only', 'Dumbbell', 'Cable', 'Barbell', 'Machine'],
-    levels: ['Beginner'],
+    levels: [],
     types: ['Strength', 'Powerlifting', 'Bodyweight']
   };  
   useEffect(() => {
@@ -37,14 +37,16 @@ const ExerciseFilters = ({ onFiltersChange }) => {
     return () => {
       window.removeEventListener('load', resetToDefaultFilters);
     };
-  }, []);
+  }, [onFiltersChange]);
 
 
   const resetToDefaultFilters = () => {
+    /*
     setSelectedMuscles(defaultFilters.muscles);
     setSelectedEquipment(defaultFilters.equipment);
     setSelectedLevels(defaultFilters.levels);
     setSelectedTypes(defaultFilters.types);
+    */
     
     // Trigger filter change to update the main view
     const filters = {
@@ -55,6 +57,8 @@ const ExerciseFilters = ({ onFiltersChange }) => {
     };
     onFiltersChange(filters);
   };
+
+
   const retrieveMuscleGroups = () => {
     ExerciseDataService.getMuscleGroups()
       .then(response => {
