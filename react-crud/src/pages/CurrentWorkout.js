@@ -30,6 +30,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   });
   const [selectedExercise, setSelectedExercise]=useState(null);
 
+
   // Add these new state variables
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -277,15 +278,57 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                           <Typography variant="h6" gutterBottom>
                             {Object.keys(selectedDays).filter(day => selectedDays[day])[dayIndex]}
                           </Typography>
-                          <List>
+                          <List sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            
+                          }}>
                             {dayWorkout.map((exercise) => (
-                              <ListItem key={exercise.id}>
-                                <ListItemText
-                                  primary={exercise.name}
-                                  secondary={`Main Muscle: ${exercise.main_muscle}`}
-                                />
-                              </ListItem>
-                            ))}
+                              <Box key={exercise.id}
+                                sx={{
+                                  maxHeight: '60px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  width: '100%',
+                                  mb: 1,
+                                }}>
+                                <Box sx={{ width:'100px', height:'60px'}}>
+                                  {(() => {
+                                    try {
+                                      const images = Array.isArray(exercise.images_url) 
+                                        ? exercise.images_url 
+                                        : JSON.parse(exercise.images_url || '[]');
+                                      
+                                      if (images.length > 0) {
+                                        return (
+                                          <img 
+                                            src={images[0]}
+                                            alt="Exercise"
+                                            style={{ 
+                                              maxWidth: '100%',
+                                              maxHeight: '100%',                         
+                                              height: 'auto', 
+                                              borderRadius: '8px'
+                                            }}
+                                          />
+                                        );
+                                      }
+                                      return null;
+                                    } catch (error) {
+                                      console.error('Error parsing images_url:', error);
+                                      return null;
+                                    }
+                                  })()}     
+                                </Box>                           
+                                  <ListItem key={exercise.id}>
+                                    <ListItemText
+                                      primary={exercise.name}
+                                      secondary={exercise.main_muscle}
+                                    />
+                                  </ListItem>
+                              </Box>
+                              ))}
                           </List>
                         </CardContent>
                         <CardActions>
