@@ -12,7 +12,12 @@ const ExerciseFilters = ({ onFiltersChange }) => {
   const [selectedEquipment, setSelectedEquipment] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
-
+  const defaultFilters = {
+    muscles: [],
+    equipment: ['Body Only', 'Dumbbell', 'Cable', 'Barbell', 'Machine'],
+    levels: ['Beginner'],
+    types: ['Strength', 'Powerlifting', 'Bodyweight']
+  };  
   useEffect(() => {
     retrieveMuscleGroups();
     retrieveEquipment();
@@ -20,6 +25,36 @@ const ExerciseFilters = ({ onFiltersChange }) => {
     retrieveTypes();
   }, []);
 
+  // Add event listener for page reload
+  useEffect(() => {
+    // Reset filters when component mounts
+    resetToDefaultFilters();
+
+    // Add event listener for page reload
+    window.addEventListener('load', resetToDefaultFilters);
+
+    // Cleanup listener when component unmounts
+    return () => {
+      window.removeEventListener('load', resetToDefaultFilters);
+    };
+  }, []);
+
+
+  const resetToDefaultFilters = () => {
+    setSelectedMuscles(defaultFilters.muscles);
+    setSelectedEquipment(defaultFilters.equipment);
+    setSelectedLevels(defaultFilters.levels);
+    setSelectedTypes(defaultFilters.types);
+    
+    // Trigger filter change to update the main view
+    const filters = {
+      muscles: defaultFilters.muscles,
+      equipment: defaultFilters.equipment,
+      levels: defaultFilters.levels,
+      types: defaultFilters.types,
+    };
+    onFiltersChange(filters);
+  };
   const retrieveMuscleGroups = () => {
     ExerciseDataService.getMuscleGroups()
       .then(response => {
@@ -136,7 +171,9 @@ const ExerciseFilters = ({ onFiltersChange }) => {
                 control={
                   <Checkbox
                     size='small'
-                    checked={selectedMuscles.includes(muscle)}
+                    checked={
+                      selectedMuscles.includes(muscle)
+                    }
                     onChange={() => handleCheckboxChange('muscle', muscle)}
                   />
                 }
