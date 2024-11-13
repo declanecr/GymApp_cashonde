@@ -426,60 +426,100 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                         )}
                         <List>
                             {currentWorkout.map((exercise) => (
-                              <ListItem key={exercise.id} divider onClick ={() => handleExerciseSelection(exercise)}>
-                                <ListItemText
-                                  primary={exercise.name}
-                                  secondary={`Main Muscle: ${exercise.main_muscle}`}
-                                />
-                                <Box>                            
-                                  <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
-                                  Add Set
-                                  </Button>
-                                  <List>
-                                    {(sets[exercise.id] || []).map((set, setIndex) => (
-                                      <ListItem 
-                                        key={`${exercise.id}-${setIndex}`}
-                                        sx={{ 
-                                          display: 'flex', 
-                                          alignItems: 'center', 
-                                          mt: 2,
-                                          backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
-                                          padding: '5px',
-                                          borderRadius: '4px',
-                                        }}
-                                      > 
-                                        <TextField
-                                          label="Weight"
-                                          type="number"
-                                          value={set.weight}
-                                          onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
-                                          sx={{ mr: 2 }}
-                                        />
-                                        <TextField
-                                          label="Reps"
-                                          type="number"
-                                          value={set.reps}
-                                          onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
-                                          sx={{ mr: 2 }}
-                                        />
-                                        <Checkbox
-                                          checked={set.isCompleted}
-                                          onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
-                                          sx={{
-                                            '&.Mui-checked': {
-                                              color: 'green',
-                                            },
-                                          }}
-                                        />
-                                        <IconButton onClick={() => handleRemoveSet(exercise.id, setIndex)} aria-label="delete">
-                                          <DeleteIcon />
-                                        </IconButton>
-                                      </ListItem>
-                                    ))}
-                                  </List>
+                              <Box key={exercise.id}
+                              sx={{
+                                maxHeight: '60px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                                mb: 1,
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => setSelectedExercise(exercise)}>
+                                <Box sx={{ width:'100px', height:'60px'}}>
+                                  {(() => {
+                                    try {
+                                      const images = Array.isArray(exercise.images_url) 
+                                        ? exercise.images_url 
+                                        : JSON.parse(exercise.images_url || '[]');
+                                      
+                                      if (images.length > 0) {
+                                        return (
+                                          <img 
+                                            src={images[0]}
+                                            alt="Exercise"
+                                            style={{ 
+                                              maxWidth: '100%',
+                                              maxHeight: '100%',                         
+                                              height: 'auto', 
+                                              borderRadius: '8px'
+                                            }}
+                                          />
+                                        );
+                                      }
+                                      return null;
+                                    } catch (error) {
+                                      console.error('Error parsing images_url:', error);
+                                      return null;
+                                    }
+                                  })()}     
                                 </Box>
-                                <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout} />
-                              </ListItem>
+                                <ListItem key={exercise.id} divider onClick ={() => handleExerciseSelection(exercise)}>
+                                  <ListItemText
+                                    primary={exercise.name}
+                                    secondary={`Main Muscle: ${exercise.main_muscle}`}
+                                  />
+                                  <Box>                            
+                                    <Button onClick={() => handleAddSet(exercise.id)} variant="contained" color="primary">
+                                    Add Set
+                                    </Button>
+                                    <List>
+                                      {(sets[exercise.id] || []).map((set, setIndex) => (
+                                        <ListItem 
+                                          key={`${exercise.id}-${setIndex}`}
+                                          sx={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            mt: 2,
+                                            backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
+                                            padding: '5px',
+                                            borderRadius: '4px',
+                                          }}
+                                        > 
+                                          <TextField
+                                            label="Weight"
+                                            type="number"
+                                            value={set.weight}
+                                            onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
+                                            sx={{ mr: 2 }}
+                                          />
+                                          <TextField
+                                            label="Reps"
+                                            type="number"
+                                            value={set.reps}
+                                            onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
+                                            sx={{ mr: 2 }}
+                                          />
+                                          <Checkbox
+                                            checked={set.isCompleted}
+                                            onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
+                                            sx={{
+                                              '&.Mui-checked': {
+                                                color: 'green',
+                                              },
+                                            }}
+                                          />
+                                          <IconButton onClick={() => handleRemoveSet(exercise.id, setIndex)} aria-label="delete">
+                                            <DeleteIcon />
+                                          </IconButton>
+                                        </ListItem>
+                                      ))}
+                                    </List>
+                                  </Box>
+                                  <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout} />
+                                </ListItem>
+                                </Box>
                           ))}
                         </List>
                       </Grid>
