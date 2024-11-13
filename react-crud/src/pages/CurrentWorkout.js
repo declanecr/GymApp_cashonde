@@ -58,44 +58,6 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   };
   
   useEffect(() => {
-    // Load saved workout state
-    const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
-    
-    if (savedWorkoutState) {
-      // Restore the workout data
-      if (savedWorkoutState.workout) {
-        setAsWorkout(savedWorkoutState.workout);
-      }
-      
-      // Restore the sets data
-      if (savedWorkoutState.sets) {
-        setSets(savedWorkoutState.sets);
-      }
-      
-      // Restore workout started state
-      if (savedWorkoutState.isStarted) {
-        setIsWorkoutStarted(true);
-      }
-      
-      // Restore start time if it exists
-      if (savedWorkoutState.startTime) {
-        const startTime = new Date(savedWorkoutState.startTime);
-        setStartTime(startTime);
-        
-        // Calculate elapsed time
-        const now = new Date();
-        const elapsedSeconds = Math.floor((now - startTime) / 1000);
-        setElapsedTime(elapsedSeconds);
-        
-        // Restart timer if workout was in progress
-        if (savedWorkoutState.isStarted) {
-          const timerInterval = setInterval(() => {
-            setElapsedTime(prev => prev + 1);
-          }, 1000);
-          setTimer(timerInterval);
-        }
-      }
-    }
     // Load generated workouts
     const savedGeneratedWorkouts = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_WORKOUTS));
     if (savedGeneratedWorkouts) {
@@ -109,6 +71,10 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   
     // Load current workout state
+    const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+    console.log('savedWorkoutState: ',savedWorkoutState);
+    setAsWorkout(savedWorkoutState);
+
     if (savedWorkoutState) {
       setSets(savedWorkoutState.sets);
       setIsWorkoutStarted(savedWorkoutState.isStarted);
@@ -221,7 +187,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   const setAsWorkout = (workout) => {
     deleteWorkout();
     setSets({});
-    workout.forEach(exercise => addToWorkout(exercise));
+    workout.workout.forEach(exercise => addToWorkout(exercise));
     saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workout);
   };
   
