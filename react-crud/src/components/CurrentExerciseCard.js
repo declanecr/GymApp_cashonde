@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
 
 const CurrentExerciseCard = ({ exercise }) => {
   if (!exercise) {
@@ -19,7 +19,68 @@ const CurrentExerciseCard = ({ exercise }) => {
         <Typography variant="h3" align="center" color="primary" gutterBottom sx={{ fontFamily: 'Consolas, monospace' }}>
           {exercise.name}
         </Typography>
-
+        {exercise.images_url && exercise.images_url.length > 0 && (
+          <Grid item xs={12} sm={6}>
+            <Box>
+              <Typography variant="subtitle1">
+                <strong>Exercise Images:</strong>
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              {(() => {
+                try {
+                  const images = Array.isArray(exercise.images_url) 
+                    ? exercise.images_url 
+                    : JSON.parse(exercise.images_url || '[]');
+                  
+                  return images.map((url, index) => (
+                    <img 
+                      key={index}
+                      src={url} 
+                      alt={`Exercise ${index + 1}`} 
+                      style={{ 
+                        maxWidth: '100%',                         
+                        height: 'auto', 
+                        borderRadius: '8px'
+                      }}
+                    />
+                  ));
+                } catch (error) {
+                  console.error('Error parsing images_url:', error);
+                  return null;
+                }
+              })()}
+              </Box>
+            </Box>
+          </Grid>
+        )}
+        {exercise.muscle_diagram_url && (
+          <Grid item xs={12} sm={6}>
+            <Box>
+            <Typography variant="subtitle1">
+                <strong>Muscle Diagram:</strong>
+              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <img 
+                  src={exercise.muscle_diagram_url} 
+                  alt="Muscle diagram" 
+                  style={{ 
+                    maxWidth: '100%', 
+                    height: 'auto', 
+                    borderRadius: '8px' }}
+                />
+                <Typography variant="h6" align="center" sx={{display: 'block', mt: 1}}>
+                  {exercise.main_muscle}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+        )}
+        <Divider sx={{ 
+          my: 3,
+          width: '100%',
+          border: '1px solid',
+          borderColor: 'divider',
+        }} />
         <Grid container spacing={2}>
           {exercise.description && exercise.description !== 'n/a' && (
             <Grid item xs={12}>
@@ -31,6 +92,7 @@ const CurrentExerciseCard = ({ exercise }) => {
               </Box>
             </Grid>
           )}
+
 
           <Grid item xs={12} sm={6}>
             <Box>
@@ -79,62 +141,22 @@ const CurrentExerciseCard = ({ exercise }) => {
               <Typography variant="subtitle1">
                 <strong>Instructions:</strong>
               </Typography>
-              <Typography variant="body1">{exercise.instructions}</Typography>
+              <List>
+                {exercise.instructions.split(/\d+\.\s/).filter(Boolean).map((instruction, index) => (
+                  <ListItem key={index}>
+                    <ListItemText>
+                      {index + 1}. {instruction.trim()}
+                    </ListItemText>
+                  </ListItem>
+                ))}
+              </List>
             </Box>
           </Grid>
         )}
 
-        {exercise.muscle_diagram_url && (
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Muscle Diagram:</strong>
-              </Typography>
-              <Box sx={{ mt: 1 }}>
-                <img 
-                  src={exercise.muscle_diagram_url} 
-                  alt="Muscle diagram" 
-                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-                />
-              </Box>
-            </Box>
-          </Grid>
-        )}
+        
 
-        {exercise.images_url && exercise.images_url.length > 0 && (
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Exercise Images:</strong>
-              </Typography>
-              <Box sx={{ mt: 1, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              {(() => {
-                try {
-                  const images = Array.isArray(exercise.images_url) 
-                    ? exercise.images_url 
-                    : JSON.parse(exercise.images_url || '[]');
-                  
-                  return images.map((url, index) => (
-                    <img 
-                      key={index}
-                      src={url} 
-                      alt={`Exercise ${index + 1}`} 
-                      style={{ 
-                        maxWidth: '200px', 
-                        height: 'auto', 
-                        borderRadius: '8px'
-                      }}
-                    />
-                  ));
-                } catch (error) {
-                  console.error('Error parsing images_url:', error);
-                  return null;
-                }
-              })()}
-              </Box>
-            </Box>
-          </Grid>
-        )}
+        
       </CardContent>
       
     </Card>
