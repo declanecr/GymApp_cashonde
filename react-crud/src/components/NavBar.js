@@ -105,7 +105,6 @@ const NavBar = ({logOut}) => {
             {currentUser ? (
               <>
                 <Button color="inherit" component={Link} to="/exercises">Exercises</Button>
-                <Button color="inherit" component={Link} to="/add">Add Exercise</Button>
                 <Button color="inherit" component={Link} to="/current-workout">Workouts</Button>
                 <div>
                   <IconButton

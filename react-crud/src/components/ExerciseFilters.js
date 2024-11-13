@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
@@ -7,9 +7,9 @@ const ExerciseFilters = ({ onFiltersChange }) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [levels, setLevels] = useState([]);
-  const [selectedMuscle, setSelectedMuscle] = useState('');
-  const [selectedEquipment, setSelectedEquipment] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState('');
+  const [selectedMuscles, setSelectedMuscles] = useState([]);
+  const [selectedEquipment, setSelectedEquipment] = useState([]);
+  const [selectedLevels, setSelectedLevels] = useState([]);
 
   useEffect(() => {
     retrieveMuscleGroups();
@@ -47,11 +47,35 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       });
   };
 
+  const handleCheckboxChange = (category, value) => {
+    const updateSelected = (selectedArray, setSelectedArray) => {
+      if (selectedArray.includes(value)) {
+        setSelectedArray(selectedArray.filter(item => item !== value));
+      } else {
+        setSelectedArray([...selectedArray, value]);
+      }
+    };
+
+    switch (category) {
+      case 'muscle':
+        updateSelected(selectedMuscles, setSelectedMuscles);
+        break;
+      case 'equipment':
+        updateSelected(selectedEquipment, setSelectedEquipment);
+        break;
+      case 'level':
+        updateSelected(selectedLevels, setSelectedLevels);
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleFilterChange = () => {
     const filters = {
-      muscle: selectedMuscle,
+      muscles: selectedMuscles,
       equipment: selectedEquipment,
-      level: selectedLevel,
+      levels: selectedLevels,
     };
     onFiltersChange(filters);
   };
@@ -66,82 +90,69 @@ const ExerciseFilters = ({ onFiltersChange }) => {
         mt: 4,
       }}
     >
-
-
       <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
-        {/* Muscle Group Filter */}
-        <FormControl fullWidth>
-          <InputLabel id="muscle-group-label">Muscle Group</InputLabel>
-          <Select
-            labelId="muscle-group-label"
-            id="muscle-group-select"
-            value={selectedMuscle}
-            label="Muscle Group"
-            onChange={(e) => setSelectedMuscle(e.target.value)}
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {muscleGroups.map((muscle, index) => (
-              <MenuItem key={index} value={muscle}>
-                {muscle}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        
+        {/* Muscle Group Checkboxes */}
+        <Box>
+          <Typography variant="h6">Muscle Group</Typography>
+          {muscleGroups.map((muscle, index) => (
+            <FormControlLabel
+              key={index}
+              control={
+                <Checkbox
+                  checked={selectedMuscles.includes(muscle)}
+                  onChange={() => handleCheckboxChange('muscle', muscle)}
+                />
+              }
+              label={muscle}
+            />
+          ))}
+        </Box>
 
-        {/* Equipment Filter */}
-        <FormControl fullWidth>
-          <InputLabel id="equipment-label">Equipment</InputLabel>
-          <Select
-            labelId="equipment-label"
-            id="equipment-select"
-            value={selectedEquipment}
-            label="Equipment"
-            onChange={(e) => setSelectedEquipment(e.target.value)}
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {equipment.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {/* Equipment Checkboxes */}
+        <Box>
+          <Typography variant="h6">Equipment</Typography>
+          {equipment.map((item, index) => (
+            <FormControlLabel
+              key={index}
+              control={
+                <Checkbox
+                  checked={selectedEquipment.includes(item)}
+                  onChange={() => handleCheckboxChange('equipment', item)}
+                />
+              }
+              label={item}
+            />
+          ))}
+        </Box>
 
-        {/* Level Filter */}
-        <FormControl fullWidth>
-          <InputLabel id="level-label">Level</InputLabel>
-          <Select
-            labelId="level-label"
-            id="level-select"
-            value={selectedLevel}
-            label="Level"
-            onChange={(e) => setSelectedLevel(e.target.value)}
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {levels.map((level, index) => (
-              <MenuItem key={index} value={level}>
-                {level}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Apply Filters Button */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleFilterChange}
-          sx={{ alignSelf: 'flex-start', minWidth: '120px' }}          
-        >
-          Apply Filters
-        </Button>
+        {/* Level Checkboxes */}
+        <Box>
+          <Typography variant="h6">Level</Typography>
+          {levels.map((level, index) => (
+            <FormControlLabel
+              key={index}
+              control={
+                <Checkbox
+                  checked={selectedLevels.includes(level)}
+                  onChange={() => handleCheckboxChange('level', level)}
+                />
+              }
+              label={level}
+            />
+          ))}
+        </Box>
       </Box>
+
+      {/* Apply Filters Button */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleFilterChange}
+        sx={{ alignSelf: 'flex-start', mt: 2 }}
+      >
+        Apply Filters
+      </Button>
     </Box>
   );
 };

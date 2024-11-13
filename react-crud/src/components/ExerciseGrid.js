@@ -32,22 +32,22 @@ const ExerciseGrid = ({ handleRowClick }) => {
 
   const filterExercises = () => {
     let filteredExercises = allExercises;
-
-    if (filters.muscle) {
+  
+    if (filters.muscles && filters.muscles.length > 0) {
       filteredExercises = filteredExercises.filter(exercise =>
-        exercise.main_muscle === filters.muscle
+        filters.muscles.includes(exercise.main_muscle)
       );
     }
-
-    if (filters.equipment) {
+  
+    if (filters.equipment && filters.equipment.length > 0) {
       filteredExercises = filteredExercises.filter(exercise =>
-        exercise.equipment === filters.equipment
+        filters.equipment.includes(exercise.equipment)
       );
     }
-
-    if (filters.level) {
+  
+    if (filters.levels && filters.levels.length > 0) {
       filteredExercises = filteredExercises.filter(exercise =>
-        exercise.level === filters.level
+        filters.levels.includes(exercise.level)
       );
     }
 
