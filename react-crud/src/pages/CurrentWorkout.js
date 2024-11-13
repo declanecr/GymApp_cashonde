@@ -73,9 +73,9 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     // Load current workout state
     const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
     console.log('savedWorkoutState: ',savedWorkoutState);
-    setAsWorkout(savedWorkoutState.workout);
-
+    
     if (savedWorkoutState) {
+      setAsWorkout(savedWorkoutState.workout);
       setSets(savedWorkoutState.sets);
       setIsWorkoutStarted(savedWorkoutState.isStarted);
       if (savedWorkoutState.startTime) {
