@@ -90,39 +90,52 @@ const ExerciseFilters = ({ onFiltersChange }) => {
         mt: 4,
       }}
     >
-      <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
+      <Box sx={{ display: 'flex', gap: 1, flexDirection: 'row', maxWidth: '100%', width: '100%' }}>
         
         {/* Muscle Group Checkboxes */}
         <Box>
           <Typography variant="h6">Muscle Group</Typography>
           {muscleGroups.map((muscle, index) => (
-            <FormControlLabel
-              key={index}
-              control={
-                <Checkbox
-                  checked={selectedMuscles.includes(muscle)}
-                  onChange={() => handleCheckboxChange('muscle', muscle)}
-                />
-              }
-              label={muscle}
-            />
+            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+              <FormControlLabel
+                key={index}
+                control={
+                  <Checkbox
+                    size='small'
+                    checked={selectedMuscles.includes(muscle)}
+                    onChange={() => handleCheckboxChange('muscle', muscle)}
+                  />
+                }
+                label={muscle}
+                sx={{
+                  '& .MuiFormControlLabel-label': {
+                    typography:'body2', // Adjust font size here
+                  }}}
+              />
+            </Box>
           ))}
         </Box>
 
         {/* Equipment Checkboxes */}
-        <Box>
+        <Box sx={{minWidth:'135px'}}>
           <Typography variant="h6">Equipment</Typography>
           {equipment.map((item, index) => (
-            <FormControlLabel
-              key={index}
-              control={
-                <Checkbox
-                  checked={selectedEquipment.includes(item)}
-                  onChange={() => handleCheckboxChange('equipment', item)}
-                />
-              }
-              label={item}
-            />
+            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size='small'
+                    checked={selectedEquipment.includes(item)}
+                    onChange={() => handleCheckboxChange('equipment', item)}
+                  />
+                }
+                label={item}
+                sx={{
+                  '& .MuiFormControlLabel-label': {
+                    typography:'body2', // Adjust font size here
+                  }}}
+              />
+            </Box>
           ))}
         </Box>
 
@@ -130,16 +143,23 @@ const ExerciseFilters = ({ onFiltersChange }) => {
         <Box>
           <Typography variant="h6">Level</Typography>
           {levels.map((level, index) => (
+          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
             <FormControlLabel
               key={index}
               control={
                 <Checkbox
+                  size='small'
                   checked={selectedLevels.includes(level)}
                   onChange={() => handleCheckboxChange('level', level)}
                 />
               }
               label={level}
+              sx={{
+              '& .MuiFormControlLabel-label': {
+                typography:'body2', // Adjust font size here
+              }}}
             />
+          </Box>
           ))}
         </Box>
       </Box>
