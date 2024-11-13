@@ -5,7 +5,7 @@ import SetDataService from '../services/SetDataService';
 import WorkoutDataService from '../services/WorkoutDataService';
 import authService from '../services/auth.service';
 
-const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime, clearLocalStorage}) => {
+const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime, clearLocalStorage, onSaveComplete}) => {
     const user =authService.getCurrentUser();
     //console.log('user: ', user);
     //console.log("currentWorkout: ",currentWorkout);
@@ -44,6 +44,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime, 
                 console.log('All sets saved successfully');
                 deleteWorkout();
                 clearLocalStorage();
+                onSaveComplete();
             } catch (error) {
                 console.error('Error saving workout:', error);
             }
@@ -75,6 +76,7 @@ const SaveWorkoutButton = ({ currentWorkout, deleteWorkout, startTime, endTime, 
 SaveWorkoutButton.propTypes = {
     deleteWorkout: PropTypes.func.isRequired,
     clearLocalStorage: PropTypes.func.isRequired,
+    onSaveComplete: PropTypes.func.isRequired,
     currentWorkout: PropTypes.array.isRequired,
     startTime: PropTypes.instanceOf(Date),
     endTime: PropTypes.instanceOf(Date)

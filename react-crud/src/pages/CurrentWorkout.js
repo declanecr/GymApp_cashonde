@@ -56,8 +56,43 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   const clearCurrentWorkoutState = () => {
     clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
     clearFromLocalStorage(STORAGE_KEYS.CURRENT_SETS);
+    
   };
   
+  const handleWorkoutComplete = async () => {
+    try {
+      // Save workout logic here
+      
+      // Reset timer and workout state
+      resetTimer();
+      clearCurrentWorkoutState();
+      setSets({});
+      deleteWorkout();
+      
+      // Clear the workout state from localStorage
+      const workoutState = {
+        workout: [],
+        sets: {},
+        startTime: null,
+        isStarted: false
+      };
+      saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+    } catch (error) {
+      console.error('Error completing workout:', error);
+    }
+  };
+  
+
+  const resetTimer = () => {
+    if (timer) {
+      clearInterval(timer);
+    }
+    setTimer(null);
+    setStartTime(null);
+    setElapsedTime(0);
+    setIsWorkoutStarted(false);
+  };
+
   useEffect(() => {
     // Load generated workouts
     const savedGeneratedWorkouts = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_WORKOUTS));
@@ -378,6 +413,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                             )}
                             deleteWorkout={deleteWorkout}
                             clearLocalStorage={clearCurrentWorkoutState}
+                            onSaveComplete={handleWorkoutComplete}
                             startTime={startTime}
                             endTime={new Date()} //Current time as end time
                           />
