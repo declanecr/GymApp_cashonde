@@ -1,10 +1,13 @@
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Box, Card, CardContent, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Card, CardContent, Divider, List, ListItem, ListItemText, Modal, Typography } from '@mui/material';
 
 const CurrentExerciseCard = ({ exercise }) => {
+  // State to control the Modal visibility and store selected image
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   if (!exercise) {
     return (
       <Typography variant="h6" align="center" color="textSecondary">
@@ -12,6 +15,18 @@ const CurrentExerciseCard = ({ exercise }) => {
       </Typography>
     );
   }
+
+  // Function to open the modal with the selected image
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setOpenModal(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedImage(null);
+  };
 
   return (
     <Card elevation={4}  sx={{ borderRadius: '10px', overflow: 'hidden', backgroundColor: '#f5f5f5', mt: 2, maxWidth: 750 }}>
@@ -42,6 +57,8 @@ const CurrentExerciseCard = ({ exercise }) => {
                         height: 'auto', 
                         borderRadius: '8px'
                       }}
+                      onClick={() => handleImageClick(url)} // Open modal on click
+
                     />
                   ));
                 } catch (error) {
@@ -60,13 +77,17 @@ const CurrentExerciseCard = ({ exercise }) => {
                 <strong>Muscle Diagram:</strong>
               </Typography>
               <Box sx={{ mt: 1 }}>
+                
                 <img 
                   src={exercise.muscle_diagram_url} 
                   alt="Muscle diagram" 
                   style={{ 
                     maxWidth: '100%', 
                     height: 'auto', 
-                    borderRadius: '8px' }}
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+
                 />
                 <Typography variant="h6" align="center" sx={{display: 'block', mt: 1}}>
                   {exercise.main_muscle}
@@ -158,7 +179,40 @@ const CurrentExerciseCard = ({ exercise }) => {
 
         
       </CardContent>
-      
+      {/* Modal to display the full-screen image */}
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '90vw',
+            height: '90vh',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '8px'
+          }}
+        >
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Full-Screen Exercise"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                height: 'auto',
+                width: 'auto',
+                borderRadius: '8px'
+              }}
+            />
+          )}
+        </Box>
+      </Modal>
     </Card>
   );
 };

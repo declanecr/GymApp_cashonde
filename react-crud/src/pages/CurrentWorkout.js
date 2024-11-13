@@ -31,6 +31,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   const [selectedExercise, setSelectedExercise]=useState(null);
 
 
+
   // Add these new state variables
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -274,6 +275,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     }
   };
 
+   
 
   return (
     <Container maxWidth={false} >
@@ -394,7 +396,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
                     <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
                       Your Workout
                     </Typography>
-                    {currentWorkout.length > 0 ? (//TODO make into grid for better viewing 
+                    {currentWorkout.length > 0 ? (
                       <Grid>
                         {!isWorkoutStarted ? (
                           <Button
@@ -534,6 +536,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
               </Grid>
           </Grid>
       </Box>
+      
     </Container>
   );
 };
