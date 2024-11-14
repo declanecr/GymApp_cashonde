@@ -52,13 +52,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the React build folder
-app.use(express.static(path.join(__dirname, 'react-crud/build')));
-
-// Handle React routing, return all requests to React app
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'react-crud/build', 'index.html'));
-});
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
@@ -68,6 +61,14 @@ workoutRoutes(app);
 usersRoutes(app);
 authRoutes(app);
 testRoutes(app);
+
+// Serve static files from the React build folder
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Handle React routing, return all requests to React app
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 // Set up server to listen on specified port
 const PORT = process.env.PORT || 3000;
