@@ -1,7 +1,8 @@
 // auth.service.js
 import axios from "axios";
+import config from "../config";
 
-const API_URL = "http://localhost:3000/api/auth/";
+const API_URL = config.API_URL//"http://localhost:3000/api/auth/";
 const FAILED_ATTEMPTS_LIMIT = 5;
 
 class AuthService {
