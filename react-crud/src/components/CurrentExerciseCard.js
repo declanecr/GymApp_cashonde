@@ -102,11 +102,17 @@ const CurrentExerciseCard = ({ exercise }) => {
           border: '1px solid',
           borderColor: 'divider',
         }} />
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
+          {/* Description Section */}
           {exercise.description && exercise.description !== 'n/a' && (
             <Grid item xs={12}>
-              <Box sx={{borderRadius: '8px'}}>
-                <Typography variant="subtitle1">
+              <Box sx={{
+                borderRadius: '8px',
+                p: 2,
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <Typography variant="subtitle1" sx={{mb: 1}}>
                   <strong>Description:</strong>
                 </Typography>
                 <Typography variant="body1">{exercise.description}</Typography>
@@ -114,70 +120,84 @@ const CurrentExerciseCard = ({ exercise }) => {
             </Grid>
           )}
 
-
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Type:</strong>
-              </Typography>
-              <Typography variant="body1">{exercise.type}</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Main Muscle:</strong>
-              </Typography>
-              <Typography variant="body1">{exercise.main_muscle}</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Equipment:</strong>
-              </Typography>
-              <Typography variant="body1">{exercise.equipment}</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Level:</strong>
-              </Typography>
-              <Typography variant="body1">{exercise.level}</Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="subtitle1">
-                <strong>Rating:</strong>
-              </Typography>
-              <Typography variant="body1">{exercise.rating}</Typography>
-            </Box>
-          </Grid>
-        </Grid>
-        {exercise.instructions && (
+          {/* Exercise Details Section */}
           <Grid item xs={12}>
-            <Box sx={{borderRadius: '8px'}}>
-              <Typography variant="subtitle1">
-                <strong>Instructions:</strong>
-              </Typography>
-              <List>
-                {exercise.instructions.split(/\d+\.\s/).filter(Boolean).map((instruction, index) => (
-                  <ListItem key={index}>
-                    <ListItemText>
-                      {index + 1}. {instruction.trim()}
-                    </ListItemText>
-                  </ListItem>
-                ))}
-              </List>
+            <Box sx={{
+              borderRadius: '8px',
+              p: 2,
+              backgroundColor: 'rgba(255, 255, 255, 0.7)', 
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{mb: 2}}>
+                    <Typography variant="subtitle1" sx={{mb: 0.5}}>
+                      <strong>Type:</strong>
+                    </Typography>
+                    <Typography variant="body1">{exercise.type}</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{mb: 2}}>
+                    <Typography variant="subtitle1" sx={{mb: 0.5}}>
+                      <strong>Main Muscle:</strong>
+                    </Typography>
+                    <Typography variant="body1">{exercise.main_muscle}</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{mb: 2}}>
+                    <Typography variant="subtitle1" sx={{mb: 0.5}}>
+                      <strong>Equipment:</strong>
+                    </Typography>
+                    <Typography variant="body1">{exercise.equipment}</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{mb: 2}}>
+                    <Typography variant="subtitle1" sx={{mb: 0.5}}>
+                      <strong>Level:</strong>
+                    </Typography>
+                    <Typography variant="body1">{exercise.level}</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{mb: 0.5}}>
+                      <strong>Rating:</strong>
+                    </Typography>
+                    <Typography variant="body1">{exercise.rating}</Typography>
+                  </Box>
+                </Grid>
+              </Grid>
             </Box>
           </Grid>
-        )}
 
-        
-
-        
+          {/* Instructions Section */}
+          {exercise.instructions && (
+            <Grid item xs={12}>
+              <Box sx={{
+                borderRadius: '8px',
+                p: 2,
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <Typography variant="subtitle1" sx={{mb: 1}}>
+                  <strong>Instructions:</strong>
+                </Typography>
+                <List sx={{pl: 2}}>
+                  {exercise.instructions.split(/\d+\.\s/).filter(Boolean).map((instruction, index) => (
+                    <ListItem key={index} sx={{pl: 0}}>
+                      <ListItemText>
+                        {index + 1}. {instruction.trim()}
+                      </ListItemText>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
       </CardContent>
       {/* Modal to display the full-screen image */}
       <Modal open={openModal} onClose={handleCloseModal}>
