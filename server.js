@@ -19,7 +19,7 @@ const app = express();
 
 // Configure CORS options
 const corsOptions = {
-  origin: "http://localhost:3001"
+  origin: "https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com/"
 };
 
 // Apply CORS middleware
