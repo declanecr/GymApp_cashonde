@@ -25,16 +25,22 @@ const app = express();
 
 // Configure CORS options
 const corsOptions = {
-  origin: [
-    "http://localhost:3001",
-    "https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com/"]
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com']
+    : ['http://localhost:3001', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept']
 };
-
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Add CSP headers middleware
+// Update CSP headers as well
 app.use((req, res, next) => {
+  const connectSrc = process.env.NODE_ENV === 'production'
+    ? "'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com"
+    : "'self' http://localhost:3000 http://localhost:3001";
+
   res.setHeader(
     'Content-Security-Policy',
     "default-src 'self'; " +
@@ -42,7 +48,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline'; " +
     "img-src 'self' data: https: http:; " +
     "font-src 'self' data: https:; " +
-    "connect-src 'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com http://localhost:3000"
+    `connect-src ${connectSrc}`
   );
   next();
 });
