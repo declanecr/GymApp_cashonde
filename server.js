@@ -42,7 +42,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline'; " +
     "img-src 'self' data: https: http:; " +
     "font-src 'self' data: https:; " +
-    "connect-src 'self'"
+    "connect-src 'self'https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com"
   );
   next();
 });
