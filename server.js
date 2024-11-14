@@ -7,6 +7,8 @@
 
 import cors from "cors";
 import express from "express";
+import path, { dirname } from 'path'; // Add this import at the top
+import { fileURLToPath } from 'url';
 import authRoutes from "./app/routes/auth.routes.js";
 import exerciseRoutes from "./app/routes/exercise.routes.js";
 import homeRoutes from "./app/routes/home.routes.js";
@@ -14,6 +16,10 @@ import setRoutes from "./app/routes/set.routes.js";
 import testRoutes from "./app/routes/test.routes.js";
 import usersRoutes from "./app/routes/users.routes.js";
 import workoutRoutes from "./app/routes/workout.routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 const app = express();
 
@@ -31,6 +37,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from the React build folder
+app.use(express.static(path.join(__dirname, 'react-crud/build')));
+
+// Handle React routing, return all requests to React app
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'react-crud/build', 'index.html'));
+});
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
