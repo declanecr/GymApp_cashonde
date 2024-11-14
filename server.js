@@ -19,7 +19,9 @@ const app = express();
 
 // Configure CORS options
 const corsOptions = {
-  origin: "https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com/"
+  origin: [
+    "http://localhost:3001",
+    "https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com/"]
 };
 
 // Apply CORS middleware
@@ -29,16 +31,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/**
- * Root Route Handler
- * 
- * Purpose: Provide a simple welcome message for the root URL
- * Input: HTTP GET request to "/"
- * Output: JSON response with a welcome message
- */
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Declan application." });
-});
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
