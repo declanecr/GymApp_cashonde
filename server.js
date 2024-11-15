@@ -39,7 +39,7 @@ app.use(cors(corsOptions));
 app.use((req, res, next) => {
   const connectSrc = process.env.NODE_ENV === 'production'
     ? "'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com"
-    : "'self' http://localhost:3000 http://localhost:3001";
+    : "'self' http://localhost:3000 http://localhost:3001 http://localhost:3000/api";
 
   res.setHeader(
     'Content-Security-Policy',
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline'; " +
     "img-src 'self' data: https: http:; " +
     "font-src 'self' data: https:; " +
-    `connect-src ${connectSrc}`
+    `connect-src ${connectSrc}` // TODO FIX 'connect-src 'self'' directive  could be involved with auth service or config as well
   );
   next();
 });
