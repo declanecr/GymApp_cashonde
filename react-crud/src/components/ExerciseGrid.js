@@ -59,7 +59,7 @@ const ExerciseGrid = ({ handleRowClick }) => {
       );
     }
 
-    console.log(filteredExercises);
+    //console.log(filteredExercises);
     setExercises(filteredExercises);
   };
 
