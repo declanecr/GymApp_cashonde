@@ -26,12 +26,27 @@ const app = express();
 // Configure CORS options
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com']
-    : true, //hopefullt this will allow all origins in development
+    ? [
+        'https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com',
+        // Add any other production domains you need
+      ]
+    : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  exposedHeaders: ['Access-Control-Allow-Origin'],
+  optionsSuccessStatus: 200
 };
+
+//Debug steps for production
+app.use((req, res, next) => {
+  console.log('Origin:', req.headers.origin);
+  console.log('Method:', req.method);
+  next();
+});
+
+
+
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
