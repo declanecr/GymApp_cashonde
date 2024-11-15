@@ -30,7 +30,7 @@ const corsOptions = {
         'https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com',
         // Add any other production domains you need
       ]
-    : true,
+    : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
