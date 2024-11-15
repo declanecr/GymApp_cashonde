@@ -38,8 +38,8 @@ app.use(cors(corsOptions));
 // Update CSP headers as well
 app.use((req, res, next) => {
   const connectSrc = process.env.NODE_ENV === 'production'
-    ? "'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com"
-    : "'self' http://localhost:3000 http://localhost:3001 http://localhost:3000/api/exercises";
+    ? "'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com http://localhost:3000"
+    : "'self' http://localhost:3000 http://localhost:3001";
 
   res.setHeader(
     'Content-Security-Policy',
