@@ -63,7 +63,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline'; " +
     "img-src 'self' data: https: http:; " +
     "font-src 'self' data: https:; " +
-    `connect-src ${connectSrc}` // TODO FIX 'connect-src 'self'' directive  could be involved with auth service or config as well
+    `connect-src ${connectSrc}` 
   );
   next();
 });
