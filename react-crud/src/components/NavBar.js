@@ -40,6 +40,7 @@ const NavBar = ({logOut}) => {
   useEffect(() => {
     ExerciseDataService.getAll()
       .then(response => {
+        console.log('API Response:', response);
         setExercises(response.data.map(exercise => ({ id: exercise.id, name: exercise.name })));
       })
       .catch(error => console.error('Error fetching exercises:', error));
