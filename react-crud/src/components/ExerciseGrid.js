@@ -26,7 +26,9 @@ const ExerciseGrid = ({ handleRowClick }) => {
         setExercises(response.data);
       })
       .catch(e => {
-        //console.log(e);
+        if (e instanceof Error) {
+          console.log(e);
+        }
       });
   };
 
