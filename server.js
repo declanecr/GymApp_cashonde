@@ -27,7 +27,7 @@ const app = express();
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? ['https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com']
-    : ['http://localhost:3001', 'http://localhost:3000'],
+    : true, //hopefullt this will allow all origins in development
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept']
@@ -35,7 +35,7 @@ const corsOptions = {
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Update CSP headers as well
+// CSP headers as well
 app.use((req, res, next) => {
   const connectSrc = process.env.NODE_ENV === 'production'
     ? "'self' https://node-express-react-mysql-test-ca3b344e37df.herokuapp.com http://localhost:3000"
@@ -58,6 +58,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from the React build folder
+app.use(express.static(path.join(__dirname, 'build')));
 
 // Apply routes defined in exercise.routes.js
 exerciseRoutes(app);
@@ -68,8 +70,6 @@ usersRoutes(app);
 authRoutes(app);
 testRoutes(app);
 
-// Serve static files from the React build folder
-app.use(express.static(path.join(__dirname, 'build')));
 
 // Handle React routing, return all requests to React app
 app.get('/*', (req, res) => {
