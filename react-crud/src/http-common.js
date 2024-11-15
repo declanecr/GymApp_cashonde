@@ -10,7 +10,7 @@ import axios from 'axios';
 
 const instance = axios.create({
   // Use environment variable with fallback for development
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:3000/api",
+  baseURL: process.env.REACT_APP_PROD_API_URL || "http://localhost:3000/api",
   headers: {
     "Content-type": "application/json"
   },
