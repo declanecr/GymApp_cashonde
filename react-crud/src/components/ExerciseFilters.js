@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Divider, FormControlLabel, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ExerciseDataService from "../services/ExerciseDataService.js";
 
 const ExerciseFilters = ({ onFiltersChange }) => {
@@ -18,7 +18,10 @@ const ExerciseFilters = ({ onFiltersChange }) => {
     levels: [],
     types: ['Strength', 'Powerlifting', 'Bodyweight']
   };  
+
+  //TODO fix the useEffect functions so that it doesn't constantly reload the page
   useEffect(() => {
+    console.log('Filters useEffect triggered');
     retrieveMuscleGroups();
     retrieveEquipment();
     retrieveLevels();
@@ -27,6 +30,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
 
   // Add event listener for page reload
   useEffect(() => {
+    console.log('Mounting useEffect');
     // Reset filters when component mounts
     resetToDefaultFilters();
 
@@ -37,10 +41,10 @@ const ExerciseFilters = ({ onFiltersChange }) => {
     return () => {
       window.removeEventListener('load', resetToDefaultFilters);
     };
-  }, [onFiltersChange]);
+  }, []);
 
 
-  const resetToDefaultFilters = () => {
+  const resetToDefaultFilters = useCallback(() => {
     /* //marks the default filters as checked when page loads
     setSelectedMuscles(defaultFilters.muscles);
     setSelectedEquipment(defaultFilters.equipment);
@@ -56,7 +60,7 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       types: defaultFilters.types,
     };
     onFiltersChange(filters);
-  };
+  }, [onFiltersChange]);
 
 
   const retrieveMuscleGroups = () => {
