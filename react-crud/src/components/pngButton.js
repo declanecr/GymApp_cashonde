@@ -23,8 +23,7 @@ const PngButton =()=>{
                         alt="Button Image"
                         style={{
                         width: '100px', // Adjust size as needed
-                        height: 'auto',
-                        borderRadius: '8px', // Optional styling
+                        height: 'auto'
                         }}
                     />
             </button>
