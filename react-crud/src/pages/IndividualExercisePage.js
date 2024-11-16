@@ -45,14 +45,70 @@ const IndividualExercisePage = ({addToWorkout}) => {
   }
 
   return (
-    <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
-      <Card>
-        <CardContent>
-          <CurrentExerciseCard exercise={exercise} />
+    <Box 
+      sx={{ 
+        width: 'fit-content',
+        margin: 'auto',
+        mt: { 
+          xs: 2,
+          sm: 4
+        }
+      }}
+    >
+      <Card
+        sx={{
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <CardContent
+          sx={{
+            padding: {
+              xs: 2,
+              sm: 3
+            },
+            '&:last-child': {
+              paddingBottom: {
+                xs: 2,
+                sm: 3
+              }
+            }
+          }}
+        >
+          <CurrentExerciseCard 
+            exercise={exercise}
+          />
           
-          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                <ViewSetsButton exercise={exercise} />
-                <AddToWorkoutButton exercise={exercise}  onAddToWorkout={addToWorkout}/>
+          <Box 
+            sx={{ 
+              mt: 2,
+              display: 'flex',
+              gap: { 
+                xs: 1,
+                sm: 2
+              },
+              flexDirection: {
+                xs: 'column',
+                sm: 'row'
+              },
+              alignItems: 'stretch'
+            }}
+          >
+            <ViewSetsButton 
+              exercise={exercise}
+              sx={{
+                flexGrow: 1,
+                minHeight: 48
+              }}
+            />
+            <AddToWorkoutButton 
+              exercise={exercise}
+              onAddToWorkout={addToWorkout}
+              sx={{
+                flexGrow: 1,
+                minHeight: 48
+              }}
+            />
           </Box>
         </CardContent>
       </Card>

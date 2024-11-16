@@ -67,29 +67,85 @@ const ExerciseGrid = ({ handleRowClick }) => {
     setFilters(newFilters);
   };
 
+    
+    
   const columns = [
-    { field: 'name', headerName: 'Name', width: 240 },
-    { field: 'main_muscle', headerName: 'Main Muscle', width: 120 },
-    { field: 'rating', headerName: 'Rating', width: 120 },
+    { 
+      field: 'name', 
+      headerName: 'Name',
+      flex: 2, // Proportional width
+      minWidth: 200,
+      renderCell: (params) => (
+        <div style={{ 
+          whiteSpace: 'normal',
+          wordWrap: 'break-word',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          {params.value}
+        </div>
+      )
+    },
+    { 
+      field: 'main_muscle', 
+      headerName: 'Main Muscle',
+      flex: 1,
+      minWidth: 120
+    },
+    { 
+      field: 'rating', 
+      headerName: 'Rating',
+      flex: 1,
+      minWidth: 100
+    },
   ];
 
   return (
-    <Container  sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'row' }}>
-      <ExerciseFilters onFiltersChange={handleFiltersChange} />
-        <Container sx={{ textAlign: 'center', mt: 4, display: 'flex', flexDirection: 'column' }}>
-          
-          {/* Exercise grid */}
-          <Box sx={{ height: 400, width: 480 }}>
-            <DataGrid
-              rows={exercises}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableRowSelectionOnClick
-              onRowClick={handleRowClick}
-            />
-          </Box>
-        </Container>
+    <Container 
+      maxWidth="xl"
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 2,
+        p: 2,
+        height: '100%'
+      }}
+    >
+      <Box sx={{ 
+        width: { xs: '100%', md: '250px' },
+        flexShrink: 0
+      }}>
+        <ExerciseFilters onFiltersChange={handleFiltersChange} />
+      </Box>
+
+      <Box sx={{
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        height: { xs: 'calc(100vh - 200px)', md: 'calc(100vh - 100px)' },
+        minHeight: 400,
+        width: '100%'
+      }}>
+        <DataGrid
+          rows={exercises}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5, 10, 25]}
+          disableRowSelectionOnClick
+          onRowClick={handleRowClick}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              padding: '8px 16px',
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            }
+          }}
+        />
+      </Box>
     </Container>
   );
 };
@@ -99,3 +155,4 @@ ExerciseGrid.propTypes = {
 };
 
 export default ExerciseGrid;
+    

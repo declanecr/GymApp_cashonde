@@ -145,15 +145,17 @@ const ExerciseFilters = ({ onFiltersChange }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'left', 
-        justifyContent: 'left', 
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        width: { xs: '100%', sm: '80%', md: '60%', lg: '40%' },
+        maxWidth: '600px',
+        mx: 'auto',
         mt: 4,
         mb: 2,
-        width: '100%',
-        maxWidth: '180px',
+        p: 2,
       }}
     >
-      <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', maxWidth: '180px', width: '100%' }}>
+      <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', width: '100%' }}>
         {/* Apply Filters Button */}
         <Button
           variant="contained"
@@ -169,42 +171,58 @@ const ExerciseFilters = ({ onFiltersChange }) => {
           border: '1px solid',
           borderColor: 'divider',
         }} />
+        
         {/* Muscle Group Checkboxes */}
-        <Box sx={{minWidth:'180px'}}>
+        <Box sx={{ minWidth: 'fit-content' }}>
           <Typography variant="h6">Muscle Group</Typography>
           {muscleGroups.map((muscle, index) => (
-            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+            <Box 
+              key={index} 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                height: '25px',
+                whiteSpace: 'nowrap'
+              }}
+            >
               <FormControlLabel
-                key={index}
                 control={
                   <Checkbox
                     size='small'
-                    checked={
-                      selectedMuscles.includes(muscle)
-                    }
+                    sx={{
+                      transform: { xs: 'scale(0.9)', md: 'scale(1.1)' },
+                    }}
+                    checked={selectedMuscles.includes(muscle)}
                     onChange={() => handleCheckboxChange('muscle', muscle)}
                   />
                 }
                 label={muscle}
                 sx={{
+                  whiteSpace: 'nowrap',
                   '& .MuiFormControlLabel-label': {
-                    typography:'body2', // Adjust font size here
-                  }}}
+                    fontSize: { xs: '0.75rem', sm: '1rem' },
+                  }
+                }}
               />
             </Box>
           ))}
         </Box>
-        <Divider sx={{ 
-          my: 1,
-          width: '100%',
-          border: '1px solid',
-          borderColor: 'divider',
-        }} />
+    
+        <Divider sx={{ my: 1, width: '100%', border: '1px solid', borderColor: 'divider' }} />
+        
         {/* Equipment Checkboxes */}
-        <Box sx={{minWidth:'180px'}}>
+        <Box sx={{ minWidth: 'fit-content' }}>
           <Typography variant="h6">Equipment</Typography>
           {equipment.map((item, index) => (
-            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+            <Box 
+              key={index} 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                height: '25px',
+                whiteSpace: 'nowrap'
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -215,55 +233,67 @@ const ExerciseFilters = ({ onFiltersChange }) => {
                 }
                 label={item}
                 sx={{
+                  whiteSpace: 'nowrap',
                   '& .MuiFormControlLabel-label': {
-                    typography:'body2', // Adjust font size here
-                  }}}
+                    fontSize: { xs: '0.75rem', sm: '1rem' },
+                  }
+                }}
               />
             </Box>
           ))}
         </Box>
-        <Divider sx={{ 
-          my: 1,
-          width: '100%',
-          border: '1px solid',
-          borderColor: 'divider',
-        }} />
+    
+        <Divider sx={{ my: 1, width: '100%', border: '1px solid', borderColor: 'divider' }} />
+        
         {/* Level Checkboxes */}
-        <Box sx={{minWidth:'180px'}}>
+        <Box sx={{ minWidth: 'fit-content' }}>
           <Typography variant="h6">Level</Typography>
           {levels.map((level, index) => (
-          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
-            <FormControlLabel
-              key={index}
-              control={
-                <Checkbox
-                  size='small'
-                  checked={selectedLevels.includes(level)}
-                  onChange={() => handleCheckboxChange('level', level)}
-                />
-              }
-              label={level}
-              sx={{
-              '& .MuiFormControlLabel-label': {
-                typography:'body2', // Adjust font size here
-              }}}
-            />
-          </Box>
+            <Box 
+              key={index} 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                height: '25px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size='small'
+                    checked={selectedLevels.includes(level)}
+                    onChange={() => handleCheckboxChange('level', level)}
+                  />
+                }
+                label={level}
+                sx={{
+                  whiteSpace: 'nowrap',
+                  '& .MuiFormControlLabel-label': {
+                    fontSize: { xs: '0.75rem', sm: '1rem' },
+                  }
+                }}
+              />
+            </Box>
           ))}
         </Box>
-        <Divider sx={{
-          my: 1,
-          width: '100%',
-          border: '1px solid',
-          borderColor: 'divider',
-        }} />
+    
+        <Divider sx={{ my: 1, width: '100%', border: '1px solid', borderColor: 'divider' }} />
+        
         {/* Type Checkboxes */}
-        <Box sx={{minWidth:'1180x'}}> 
+        <Box sx={{ minWidth: 'fit-content' }}>
           <Typography variant="h6">Type</Typography>
           {types.map((type, index) => (
-            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', height: '25px'}}>
+            <Box 
+              key={index} 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                height: '25px',
+                whiteSpace: 'nowrap'
+              }}
+            >
               <FormControlLabel
-                key={index}
                 control={
                   <Checkbox
                     size='small'
@@ -273,17 +303,18 @@ const ExerciseFilters = ({ onFiltersChange }) => {
                 }
                 label={type}
                 sx={{
+                  whiteSpace: 'nowrap',
                   '& .MuiFormControlLabel-label': {
-                    typography:'body2', // Adjust font size here
-                  }}}
+                    fontSize: { xs: '0.75rem', sm: '1rem' },
+                  }
+                }}
               />
             </Box>
           ))}
         </Box>
       </Box>
-        
-      
     </Box>
+    
   );
 };
 

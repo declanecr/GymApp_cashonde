@@ -60,6 +60,8 @@ const NavBar = ({logOut}) => {
     }
   };
 
+  const [searchValue, setSearchValue] = useState(null);
+
   return (
     <>
       <AppBar position="static">
@@ -73,6 +75,7 @@ const NavBar = ({logOut}) => {
               <Autocomplete
                 freeSolo
                 options={exercises}
+                value={searchValue}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
                   <TextField
@@ -88,7 +91,10 @@ const NavBar = ({logOut}) => {
                     }}
                   />
                 )}
-                onChange={handleExerciseSelect}
+                onChange={(event, newValue) => {
+                  setSearchValue(null);
+                  handleExerciseSelect(event, newValue);
+                }}
                 sx={{ width: 300 }}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 getOptionKey={(option)=>option.id}
