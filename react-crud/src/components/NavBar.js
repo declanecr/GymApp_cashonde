@@ -64,6 +64,7 @@ const NavBar = ({logOut}) => {
 
   return (
     <>
+    <Container maxWidth={false}>
       <AppBar position="static">
         <Container maxWidth="lg">
           <Toolbar>
@@ -148,6 +149,7 @@ const NavBar = ({logOut}) => {
           </Toolbar>
         </Container>
       </AppBar>
+      </Container>
     </>
   );
 };

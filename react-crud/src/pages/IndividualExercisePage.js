@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CircularProgress, Typography } from '@mui/material';
+import { Box, Card, CardContent, CircularProgress, Container, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -45,74 +45,20 @@ const IndividualExercisePage = ({addToWorkout}) => {
   }
 
   return (
-    <Box 
-      sx={{ 
-        width: 'fit-content',
-        margin: 'auto',
-        mt: { 
-          xs: 2,
-          sm: 4
-        }
-      }}
-    >
-      <Card
-        sx={{
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <CardContent
-          sx={{
-            padding: {
-              xs: 2,
-              sm: 3
-            },
-            '&:last-child': {
-              paddingBottom: {
-                xs: 2,
-                sm: 3
-              }
-            }
-          }}
-        >
-          <CurrentExerciseCard 
-            exercise={exercise}
-          />
+    <Container maxWidth={false}>
+    
+      <Card>
+        <CardContent>
+          <CurrentExerciseCard exercise={exercise} />
           
-          <Box 
-            sx={{ 
-              mt: 2,
-              display: 'flex',
-              gap: { 
-                xs: 1,
-                sm: 2
-              },
-              flexDirection: {
-                xs: 'column',
-                sm: 'row'
-              },
-              alignItems: 'stretch'
-            }}
-          >
-            <ViewSetsButton 
-              exercise={exercise}
-              sx={{
-                flexGrow: 1,
-                minHeight: 48
-              }}
-            />
-            <AddToWorkoutButton 
-              exercise={exercise}
-              onAddToWorkout={addToWorkout}
-              sx={{
-                flexGrow: 1,
-                minHeight: 48
-              }}
-            />
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                <ViewSetsButton exercise={exercise} />
+                <AddToWorkoutButton exercise={exercise}  onAddToWorkout={addToWorkout}/>
           </Box>
         </CardContent>
       </Card>
-    </Box>
+   
+    </Container>
   );
 };
 

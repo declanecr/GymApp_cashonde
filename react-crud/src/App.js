@@ -24,6 +24,8 @@ import IndividualExercisePage from './pages/IndividualExercisePage';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
 
+import { CssBaseline } from '@mui/material';
+
 //class App extends Component 
 class App extends Component {
   constructor(props) {
@@ -87,6 +89,7 @@ class App extends Component {
   
     return (
       <>
+      <CssBaseline />
         {/* Conditionally render NavBar only if the user is logged in */}
         {token && (
           <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -94,7 +97,6 @@ class App extends Component {
           </nav>
         )}
         
-        <div className="container mt-3">
           <Routes>
             <Route path="/" element={<Login setToken={this.setToken} />} />
             {/* Make Login and Signup available regardless of token */}
@@ -114,7 +116,6 @@ class App extends Component {
               </>
             )}
           </Routes>
-        </div>
       </>
     );
   }

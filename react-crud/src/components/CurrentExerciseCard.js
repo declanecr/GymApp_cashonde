@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Box, Card, CardContent, Divider, List, ListItem, ListItemText, Modal, Typography } from '@mui/material';
+import { Box, Card, CardContent, Container, Divider, List, ListItem, ListItemText, Modal, Typography } from '@mui/material';
 
 const CurrentExerciseCard = ({ exercise }) => {
   // State to control the Modal visibility and store selected image
@@ -29,6 +29,7 @@ const CurrentExerciseCard = ({ exercise }) => {
   };
 
   return (
+    <Container maxWidth={false}>
     <Card elevation={4} 
     sx={{ 
       borderRadius: '10px', 
@@ -273,6 +274,7 @@ const CurrentExerciseCard = ({ exercise }) => {
         </Box>
       </Modal>
     </Card>
+    </Container>
   );
 };
 

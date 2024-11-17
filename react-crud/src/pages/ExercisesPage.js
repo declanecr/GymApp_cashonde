@@ -21,7 +21,7 @@ const ExercisePage = ({ addToWorkout }) => {
     
 
     return (
-        <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 2 }}>
+        <Container maxWidth="false" sx={{ textAlign: 'center', mt: 2 }}>
             <PngButton />
             <Typography variant="h3" component="h1" gutterBottom>
                 Exercises
