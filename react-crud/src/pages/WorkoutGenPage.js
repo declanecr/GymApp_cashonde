@@ -14,8 +14,6 @@ import CurrentWorkoutDisplay from '../components/CurrentWorkoutDisplay';
 import WorkoutDataService from '../services/WorkoutDataService';
 
 const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
-  const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
-  const [sets, setSets] = useState({});
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
   const [selectedDays, setSelectedDays] = useState({
     Monday: false,
@@ -30,10 +28,7 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
 
 
 
-  // Add these new state variables
-  const [startTime, setStartTime] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [timer, setTimer] = useState(null);
+
 
   const STORAGE_KEYS = {
     GENERATED_WORKOUTS: 'generatedWorkouts',
@@ -48,49 +43,12 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   
   
 
-  const clearFromLocalStorage = (key) => {
-    localStorage.removeItem(key);
-  };
   
-  const clearCurrentWorkoutState = () => {
-    clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
-    clearFromLocalStorage(STORAGE_KEYS.CURRENT_SETS);
-    
-  };
   
-  const handleWorkoutComplete = async () => {
-    try {
-      // Save workout logic here
-      
-      // Reset timer and workout state
-      resetTimer();
-      clearCurrentWorkoutState();
-      setSets({});
-      deleteWorkout();
-      
-      // Clear the workout state from localStorage
-      const workoutState = {
-        workout: [],
-        sets: {},
-        startTime: null,
-        isStarted: false
-      };
-      saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
-    } catch (error) {
-      console.error('Error completing workout:', error);
-    }
-  };
+  
   
 
-  const resetTimer = () => {
-    if (timer) {
-      clearInterval(timer);
-    }
-    setTimer(null);
-    setStartTime(null);
-    setElapsedTime(0);
-    setIsWorkoutStarted(false);
-  };
+  
 
   useEffect(() => {
     // Load generated workouts
@@ -105,38 +63,7 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       setSelectedDays(savedSelectedDays);
     }
   
-    // Load current workout state
-    const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
-    console.log('savedWorkoutState: ',savedWorkoutState);
     
-    if (savedWorkoutState) {
-      setAsWorkout(savedWorkoutState.workout);
-      setSets(savedWorkoutState.sets);
-      setIsWorkoutStarted(savedWorkoutState.isStarted);
-      if (savedWorkoutState.startTime) {
-        const startTime = new Date(savedWorkoutState.startTime);
-        setStartTime(startTime);
-        // Calculate elapsed time
-        const now = new Date();
-        const elapsedSeconds = Math.floor((now - startTime) / 1000);
-        setElapsedTime(elapsedSeconds);
-        
-        // Restart timer if workout was in progress
-        if (savedWorkoutState.isStarted) {
-          const timerInterval = setInterval(() => {
-            setElapsedTime(prev => prev + 1);
-          }, 1000);
-          setTimer(timerInterval);
-        }
-      }
-    }
-  
-    // Cleanup timer when component unmounts
-    return () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-    };
   }, []);
   
   
@@ -150,69 +77,11 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   };
   
   
-  const handleStartWorkout = () => {
-    setIsWorkoutStarted(true);
-    const now = new Date(); // Get current date and time
-    setStartTime(now);
-    
-    // Save the current workout state
-    const workoutState = {
-      workout: currentWorkout,
-      sets: sets,
-      startTime: now,
-      isStarted: true
-    };
-    
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
-    
-    // Start the timer
-    const timerInterval = setInterval(() => {
-      setElapsedTime(prev => prev + 1);
-    }, 1000);
-    
-    setTimer(timerInterval);
-  };
-
-  // Function to format elapsed time
-  const formatElapsedTime = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
-  };
-
-  const handleExerciseSelection = (exercise) => {
-    const updatedExercise = {
-      ...exercise,
-      rating: Number(exercise.rating)
-    };
-    setSelectedExercise(updatedExercise);
-  };
-
-  
-
-  const handleAddSet = (exerciseId) => {
-    const newSets = {
-      ...sets,
-      [exerciseId]: [...(sets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
-    };
-    setSets(newSets);
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_SETS, newSets);
-  };
-  
-  
   const setAsWorkout = (workout) => {
     if (!workout) return;
     deleteWorkout();
-    setSets({});
     workout.forEach(exercise => addToWorkout(exercise));
   };
-  
-
-  
-
-  
 
   const handleGenerateWorkout = async () => {
     const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
@@ -227,7 +96,6 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       console.log('generatedWorkout: ', generatedWorkout);
       if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
         deleteWorkout();
-        setSets({});
       }
       setGeneratedWorkout(generatedWorkout);
       // Save both generated workouts and selected days
@@ -360,19 +228,10 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   <Grid item xs={12} md={8}>
   <CurrentWorkoutDisplay
     currentWorkout={currentWorkout}
-    isWorkoutStarted={isWorkoutStarted}
-    handleStartWorkout={handleStartWorkout}
-    sets={sets}
     deleteWorkout={deleteWorkout}
-    clearCurrentWorkoutState={clearCurrentWorkoutState}
-    handleWorkoutComplete={handleWorkoutComplete}
-    startTime={startTime}
-    elapsedTime={elapsedTime}
-    handleExerciseSelection={handleExerciseSelection}
-    handleAddSet={handleAddSet}
     removeFromWorkout={removeFromWorkout}
     setSelectedExercise={setSelectedExercise}
-    formatElapsedTime={formatElapsedTime}
+    addToWorkout={addToWorkout}
   />
 </Grid>
 </Card>                  </Grid>

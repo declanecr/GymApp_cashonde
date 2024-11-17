@@ -1,9 +1,12 @@
-// src/components/CurrentWorkoutDisplay.js
+// src/components/CurrentWorkoutSection.js
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
     Box,
     Button,
     Card,
+    Checkbox,
     Grid,
+    IconButton,
     List,
     ListItem,
     ListItemText,
@@ -11,27 +14,192 @@ import {
     Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import RemoveExerciseButton from './RemoveExerciseButton';
 import SaveWorkoutButton from './SaveWorkoutButton';
 
-const CurrentWorkoutDisplay = ({
-  currentWorkout,
-  isWorkoutStarted,
-  handleStartWorkout,
-  sets,
-  deleteWorkout,
-  clearCurrentWorkoutState,
-  handleWorkoutComplete,
-  startTime,
-  elapsedTime,
-  handleExerciseSelection,
-  handleAddSet,
-  removeFromWorkout,
-  setSelectedExercise,
-  formatElapsedTime
-}) => {
 
+const CurrentWorkoutDisplay = ({
+    currentWorkout,
+    deleteWorkout,
+    removeFromWorkout,
+    setSelectedExercise,
+    addToWorkout
+    }) => {
+    const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
+    const [sets, setSets] = useState({});
+    
+    
+    
+    // Add these new state variables
+    const [startTime, setStartTime] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [timer, setTimer] = useState(null);
+    
+    useEffect(()=>{
+        // Load current workout state
+        const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+        console.log('savedWorkoutState: ',savedWorkoutState);
+        
+        if (savedWorkoutState) {
+        setAsWorkout(savedWorkoutState.workout);
+        setSets(savedWorkoutState.sets);
+        setIsWorkoutStarted(savedWorkoutState.isStarted);
+        if (savedWorkoutState.startTime) {
+            const startTime = new Date(savedWorkoutState.startTime);
+            setStartTime(startTime);
+            // Calculate elapsed time
+            const now = new Date();
+            const elapsedSeconds = Math.floor((now - startTime) / 1000);
+            setElapsedTime(elapsedSeconds);
+            
+            // Restart timer if workout was in progress
+            if (savedWorkoutState.isStarted) {
+            const timerInterval = setInterval(() => {
+                setElapsedTime(prev => prev + 1);
+            }, 1000);
+            setTimer(timerInterval);
+            }
+        }
+        }
+    
+        // Cleanup timer when component unmounts
+        return () => {
+        if (timer) {
+            clearInterval(timer);
+        }
+        };
+    })
+
+    const STORAGE_KEYS = {
+        GENERATED_WORKOUTS: 'generatedWorkouts',
+        CURRENT_WORKOUT: 'currentWorkout',
+        CURRENT_SETS: 'currentSets',
+        SELECTED_DAYS: 'selectedDays'
+    };
+    
+    const saveToLocalStorage = (key, data) => {
+        localStorage.setItem(key, JSON.stringify(data));
+    };
+    
+    
+    
+    const clearFromLocalStorage = (key) => {
+        localStorage.removeItem(key);
+    };
+    
+    const clearCurrentWorkoutState = () => {
+        clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+        clearFromLocalStorage(STORAGE_KEYS.CURRENT_SETS);
+        
+    };
+
+    const handleWorkoutComplete = async () => {
+        try {
+          // Save workout logic here
+          
+          // Reset timer and workout state
+          resetTimer();
+          clearCurrentWorkoutState();
+          setSets({});
+          deleteWorkout();
+          
+          // Clear the workout state from localStorage
+          const workoutState = {
+            workout: [],
+            sets: {},
+            startTime: null,
+            isStarted: false
+          };
+          saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+        } catch (error) {
+          console.error('Error completing workout:', error);
+        }
+      };
+      const resetTimer = () => {
+        if (timer) {
+          clearInterval(timer);
+        }
+        setTimer(null);
+        setStartTime(null);
+        setElapsedTime(0);
+        setIsWorkoutStarted(false);
+      };
+      const setAsWorkout = (workout) => {
+        if (!workout) return;
+        deleteWorkout();
+        setSets({});
+        workout.forEach(exercise => addToWorkout(exercise));
+      };
+
+      const handleStartWorkout = () => {
+        setIsWorkoutStarted(true);
+        const now = new Date(); // Get current date and time
+        setStartTime(now);
+        
+        // Save the current workout state
+        const workoutState = {
+          workout: currentWorkout,
+          sets: sets,
+          startTime: now,
+          isStarted: true
+        };
+        
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+        
+        // Start the timer
+        const timerInterval = setInterval(() => {
+          setElapsedTime(prev => prev + 1);
+        }, 1000);
+        
+        setTimer(timerInterval);
+      };
+
+      // Function to format elapsed time
+    const formatElapsedTime = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+    };
+
+    const handleExerciseSelection = (exercise) => {
+        const updatedExercise = {
+        ...exercise,
+        rating: Number(exercise.rating)
+        };
+        setSelectedExercise(updatedExercise);
+    };
+
+    const handleRemoveSet = (exerciseId, index) => {
+        setSets(prevSets => ({
+        ...prevSets,
+        [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleAddSet = (exerciseId) => {
+        const newSets = {
+        ...sets,
+        [exerciseId]: [...(sets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
+        };
+        setSets(newSets);
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_SETS, newSets);
+    };
+    
+    const handleSetChange = (exerciseId, setIndex, field, value) => {
+        const newSets = { ...sets };
+        newSets[exerciseId][setIndex][field] = value;
+        setSets(newSets);
+        
+        // Update the workout state in localStorage
+        const workoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+        if (workoutState) {
+        workoutState.sets = newSets;
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+        }
+    };
     const handleSetCompletion = (exerciseId, index, isCompleted) => {
         setSets(prevSets => {
           const newSets = {
@@ -51,24 +219,8 @@ const CurrentWorkoutDisplay = ({
           return newSets;
         });
       };
-      const handleRemoveSet = (exerciseId, index) => {
-        setSets(prevSets => ({
-          ...prevSets,
-          [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
-        }));
-      };
-      const handleSetChange = (exerciseId, setIndex, field, value) => {
-        const newSets = { ...sets };
-        newSets[exerciseId][setIndex][field] = value;
-        setSets(newSets);
-        
-        // Update the workout state in localStorage
-        const workoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
-        if (workoutState) {
-          workoutState.sets = newSets;
-          saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
-        }
-      };
+    
+
   return (
     <Card sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -181,25 +333,55 @@ const CurrentWorkoutDisplay = ({
                             </Box>
 
                             <List>
-                              {(sets[exercise.id] || []).map((set, setIndex) => (
-                                <ListItem 
-                                  key={`${exercise.id}-${setIndex}`}
-                                  sx={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center',
-                                    backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
-                                    borderRadius: '4px',
-                                    mb: 1,
-                                    p: 1
-                                  }}
-                                > 
-                                  <TextField
-                                    label="Weight"
-                                    type="number"
-                                    size="small"
-                                  />
-                                </ListItem>
-                              ))}
+                            {(sets[exercise.id] || []).map((set, setIndex) => (
+                            <ListItem 
+                              key={`${exercise.id}-${setIndex}`}
+                              sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center',
+                                backgroundColor: set.isCompleted ? '#e8f5e9' : 'transparent',
+                                borderRadius: '4px',
+                                mb: 1,
+                                p: 1
+                              }}
+                            > 
+                              <TextField
+                                label="Weight"
+                                type="number"
+                                size="small"
+                                value={set.weight}
+                                onChange={(e) => handleSetChange(exercise.id, setIndex, 'weight', e.target.value)}
+                                sx={{ mr: 2, width: '100px' }}
+                              />
+                              <TextField
+                                label="Reps"
+                                type="number"
+                                size="small"
+                                value={set.reps}
+                                onChange={(e) => handleSetChange(exercise.id, setIndex, 'reps', e.target.value)}
+                                sx={{ mr: 2, width: '100px' }}
+                              />
+                              <Checkbox
+                                checked={set.isCompleted}
+                                onChange={(e) => handleSetCompletion(exercise.id, setIndex, e.target.checked)}
+                                sx={{
+                                  '&.Mui-checked': {
+                                    color: 'green',
+                                  },
+                                }}
+                              />
+                              <IconButton 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveSet(exercise.id, setIndex);
+                                }} 
+                                aria-label="delete"
+                                size="small"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItem>
+                          ))}
                             </List>
                           </Box>
                         </ListItem>
@@ -220,37 +402,19 @@ const CurrentWorkoutDisplay = ({
 
 CurrentWorkoutDisplay.propTypes = {
     currentWorkout: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        main_muscle: PropTypes.string.isRequired,
-        images_url: PropTypes.oneOfType([
-          PropTypes.string,
-          PropTypes.arrayOf(PropTypes.string)
-        ])
-      })
-    ).isRequired,
-    isWorkoutStarted: PropTypes.bool.isRequired,
-    handleStartWorkout: PropTypes.func.isRequired,
-    sets: PropTypes.objectOf(
-      PropTypes.arrayOf(
         PropTypes.shape({
-          isCompleted: PropTypes.bool,
-          weight: PropTypes.number,
-          reps: PropTypes.number
+            id: PropTypes.number,
+            images_url: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.arrayOf(PropTypes.string)
+            ]),
+            // Add other specific properties your exercise objects have
         })
-      )
     ).isRequired,
     deleteWorkout: PropTypes.func.isRequired,
-    clearCurrentWorkoutState: PropTypes.func.isRequired,
-    handleWorkoutComplete: PropTypes.func.isRequired,
-    startTime: PropTypes.instanceOf(Date).isRequired,
-    elapsedTime: PropTypes.number.isRequired,
-    handleExerciseSelection: PropTypes.func.isRequired,
-    handleAddSet: PropTypes.func.isRequired,
     removeFromWorkout: PropTypes.func.isRequired,
-    setSelectedExercise: PropTypes.func.isRequired,
-    formatElapsedTime: PropTypes.func.isRequired
-  };
-  
-  export default CurrentWorkoutDisplay;
+    addToWorkout: PropTypes.func.isRequired,
+    setSelectedExercise: PropTypes.func.isRequired
+};
+
+export default CurrentWorkoutDisplay;
