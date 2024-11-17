@@ -15,7 +15,7 @@ import RemoveExerciseButton from '../components/RemoveExerciseButton';
 import SaveWorkoutButton from '../components/SaveWorkoutButton';
 import WorkoutDataService from '../services/WorkoutDataService';
 
-const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
+const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
   const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
   const [sets, setSets] = useState({});
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
@@ -573,7 +573,7 @@ const CurrentWorkout = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   );
 };
 
-CurrentWorkout.propTypes = {
+WorkoutGenPage.propTypes = {
   currentWorkout: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -586,4 +586,4 @@ CurrentWorkout.propTypes = {
   addToWorkout: PropTypes.func.isRequired
 };
 
-export default CurrentWorkout;
+export default WorkoutGenPage;
