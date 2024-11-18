@@ -11,6 +11,7 @@ import { grey } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import * as React from 'react';
+import CurrentWorkoutDisplay from './CurrentWorkoutDisplay';
 
 const drawerBleeding = 56;
 
@@ -43,11 +44,11 @@ const Puller = styled('div')(({ theme }) => ({
 }));
 
 // These props are used in the commented out CurrentWorkoutDisplay component
-const CurrentWorkoutDrawer = (  /*{  
-    currentWorkout,
+const CurrentWorkoutDrawer = (  {  
+    
     deleteWorkout, 
     removeFromWorkout,
-    addToWorkout }*/) => {
+    addToWorkout }) => {
   const [open, setOpen] = React.useState(false);
   // eslint-disable-next-line no-unused-vars
   const  [selectedExercise, setSelectedExercise]=useState(null);
@@ -55,45 +56,32 @@ const CurrentWorkoutDrawer = (  /*{
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+  const getCurrentWorkout = () => {
+      const STORAGE_KEYS = {
+          CURRENT_WORKOUT: 'currentWorkout'
+      };
+      console.log('Getting workout from storage');
+      try {
+          const savedWorkout = localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT);
+          if (!savedWorkout) return null;
+  
+          const parsedWorkout = JSON.parse(savedWorkout);
+          console.log('parsedWorkout: ', parsedWorkout);
+          return {
+              workout: parsedWorkout.workout || [],
+              sets: parsedWorkout.sets || {},
+              startTime: parsedWorkout.startTime ? new Date(parsedWorkout.startTime) : null,
+              isStarted: parsedWorkout.isStarted || false
+          };
+      } catch (error) {
+          console.error('Error getting workout from storage:', error);
+          return null;
+      }
+  };
+  
 
 
 
-  /*
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-  */
 
   return (
     <Root>
@@ -131,14 +119,14 @@ const CurrentWorkoutDrawer = (  /*{
             left: 0,
           }}
         >
-            {/* TODO add currentWorkoutDisplay 
+            {// TODO add currentWorkoutDisplay 
             <CurrentWorkoutDisplay 
-              currentWorkout={currentWorkout}
+              currentWorkout={getCurrentWorkout()}
               deleteWorkout={deleteWorkout}
               removeFromWorkout={removeFromWorkout}
               addToWorkout={addToWorkout}
               setSelectedExercise={setSelectedExercise}
-            />*/}
+            />}
             <Puller />
           <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
         </StyledBox>
@@ -153,14 +141,12 @@ const CurrentWorkoutDrawer = (  /*{
 CurrentWorkoutDrawer.propTypes = {
   currentWorkout: PropTypes.arrayOf(
     PropTypes.shape({
-        id: PropTypes.number,
-        images_url: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.arrayOf(PropTypes.string)
-        ]),
-        // Add other specific properties your exercise objects have
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      main_muscle: PropTypes.string.isRequired
     })
-).isRequired,  deleteWorkout: PropTypes.func.isRequired,
+  ).isRequired, 
+  deleteWorkout: PropTypes.func.isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
   addToWorkout: PropTypes.func.isRequired,
 };

@@ -39,14 +39,33 @@ class App extends Component {
     };
   }
 
+  STORAGE_KEYS = {
+    CURRENT_WORKOUT: 'currentWorkout',
+    CURRENT_SETS: 'currentSets',
+  };
+
+  // Local storage utility methods
+  saveToLocalStorage = (key, data) => {
+    localStorage.setItem(key, JSON.stringify(data));
+  };
+
+  clearFromLocalStorage = (key) => {
+    localStorage.removeItem(key);
+  };
+
   componentDidMount() {
     const user = authService.getCurrentUser();
-    console.log('componentDidMount user: ', user);
     if (user) {
       this.setState({
         currentUser: user,
-        token: user.accessToken
+        token: user.accessToken,
       });
+    }
+
+    // Load current workout from localStorage
+    const savedWorkout = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.CURRENT_WORKOUT));
+    if (savedWorkout) {
+      this.setState({ currentWorkout: savedWorkout });
     }
   }
 
@@ -67,21 +86,33 @@ class App extends Component {
   };
 
   addToWorkout = (exercise) => {
-    this.setState((prevState) => ({
-      currentWorkout: [...prevState.currentWorkout, exercise]
-    }));
+    this.setState(
+      (prevState) => ({
+        currentWorkout: [...prevState.currentWorkout, exercise],
+      }),
+      () => {
+        this.saveToLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
+      }
+    );
   };
 
   removeFromWorkout = (exerciseToRemove) => {
-    this.setState((prevState) => ({
-      currentWorkout: prevState.currentWorkout.filter(
-        exercise => exercise.id !== exerciseToRemove.id
-      )
-    }));
+    this.setState(
+      (prevState) => ({
+        currentWorkout: prevState.currentWorkout.filter(
+          (exercise) => exercise.id !== exerciseToRemove.id
+        ),
+      }),
+      () => {
+        this.saveToLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
+      }
+    );
   };
 
   deleteWorkout = () => {
-    this.setState({ currentWorkout: [] });
+    this.setState({ currentWorkout: [] }, () => {
+      this.clearFromLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT);
+    });
   };
   render() {
     // eslint-disable-next-line
@@ -99,7 +130,7 @@ class App extends Component {
             {/* Add WorkoutDrawer here, it will be present on all authenticated pages */}
             {currentWorkout.length > 0 && (
               <CurrentWorkoutDrawer 
-                currentWorkout={currentWorkout}
+                currentWorkout={JSON.parse(localStorage.getItem(this.STORAGE_KEYS.CURRENT_WORKOUT))}
                 removeFromWorkout={this.removeFromWorkout}
                 deleteWorkout={this.deleteWorkout}
                 addToWorkout={this.addToWorkout}

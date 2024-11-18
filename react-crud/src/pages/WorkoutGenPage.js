@@ -71,6 +71,7 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
   
   const setAsWorkout = (workout) => {
     if (!workout) return;
+    console.log('WGP workout: ', workout);
     deleteWorkout();
     workout.forEach(exercise => addToWorkout(exercise));
   };
