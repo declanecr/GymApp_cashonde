@@ -29,6 +29,7 @@ const CurrentWorkoutDisplay = ({
     const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
     const [sets, setSets] = useState({});
     // TODO fix add set
+
     
     
     // Add these new state variables
@@ -36,40 +37,41 @@ const CurrentWorkoutDisplay = ({
     const [elapsedTime, setElapsedTime] = useState(0);
     const [timer, setTimer] = useState(null);
     
-    useEffect(()=>{
-        // Load current workout state
-        const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
-        console.log('savedWorkoutState: ',savedWorkoutState);
-        
-        if (savedWorkoutState) {
-          setAsWorkout(savedWorkoutState.workout);
-          setSets(savedWorkoutState.sets);
-          setIsWorkoutStarted(savedWorkoutState.isStarted);
-          if (savedWorkoutState.startTime) {
-              const startTime = new Date(savedWorkoutState.startTime);
-              setStartTime(startTime);
-              // Calculate elapsed time
-              const now = new Date();
-              const elapsedSeconds = Math.floor((now - startTime) / 1000);
-              setElapsedTime(elapsedSeconds);
-              
-              // Restart timer if workout was in progress
-              if (savedWorkoutState.isStarted) {
-              const timerInterval = setInterval(() => {
-                  setElapsedTime(prev => prev + 1);
-              }, 1000);
-              setTimer(timerInterval);
-              }
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+      if (hasLoaded) return;
+    
+      const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT));
+      if (savedWorkoutState) {
+        setAsWorkout(savedWorkoutState.workout);
+        setSets(savedWorkoutState.sets);
+        setIsWorkoutStarted(savedWorkoutState.isStarted);
+        if (savedWorkoutState.startTime) {
+          const startTime = new Date(savedWorkoutState.startTime);
+          setStartTime(startTime);
+    
+          // Calculate elapsed time
+          const now = new Date();
+          const elapsedSeconds = Math.floor((now - startTime) / 1000);
+          setElapsedTime(elapsedSeconds);
+    
+          if (savedWorkoutState.isStarted) {
+            const timerInterval = setInterval(() => {
+              setElapsedTime(prev => prev + 1);
+            }, 1000);
+            setTimer(timerInterval);
           }
         }
+      }
     
-        // Cleanup timer when component unmounts
-        return () => {
-        if (timer) {
-            clearInterval(timer);
-        }
-        };
-    })
+      setHasLoaded(true);
+    
+      // Cleanup
+      return () => {
+        if (timer) clearInterval(timer);
+      };
+    }, [hasLoaded, timer]); // Add dependencies to ensure proper interval cleanup.
 
     const STORAGE_KEYS = {
         GENERATED_WORKOUTS: 'generatedWorkouts',
