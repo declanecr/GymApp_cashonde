@@ -123,6 +123,7 @@ function CurrentWorkoutDrawer(props) {
             left: 0,
           }}
         >
+            {/* TODO add currentWorkoutDisplay */}
           <Puller />
           <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
         </StyledBox>

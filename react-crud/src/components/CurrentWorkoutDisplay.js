@@ -28,7 +28,7 @@ const CurrentWorkoutDisplay = ({
     }) => {
     const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
     const [sets, setSets] = useState({});
-    
+    // TODO fix add set
     
     
     // Add these new state variables
