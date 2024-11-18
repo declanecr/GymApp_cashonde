@@ -1,17 +1,17 @@
 // src/components/CurrentWorkoutSection.js
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
-    Box,
-    Button,
-    Card,
-    Checkbox,
-    Grid,
-    IconButton,
-    List,
-    ListItem,
-    ListItemText,
-    TextField,
-    Typography
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -42,25 +42,25 @@ const CurrentWorkoutDisplay = ({
         console.log('savedWorkoutState: ',savedWorkoutState);
         
         if (savedWorkoutState) {
-        setAsWorkout(savedWorkoutState.workout);
-        setSets(savedWorkoutState.sets);
-        setIsWorkoutStarted(savedWorkoutState.isStarted);
-        if (savedWorkoutState.startTime) {
-            const startTime = new Date(savedWorkoutState.startTime);
-            setStartTime(startTime);
-            // Calculate elapsed time
-            const now = new Date();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            setElapsedTime(elapsedSeconds);
-            
-            // Restart timer if workout was in progress
-            if (savedWorkoutState.isStarted) {
-            const timerInterval = setInterval(() => {
-                setElapsedTime(prev => prev + 1);
-            }, 1000);
-            setTimer(timerInterval);
-            }
-        }
+          setAsWorkout(savedWorkoutState.workout);
+          setSets(savedWorkoutState.sets);
+          setIsWorkoutStarted(savedWorkoutState.isStarted);
+          if (savedWorkoutState.startTime) {
+              const startTime = new Date(savedWorkoutState.startTime);
+              setStartTime(startTime);
+              // Calculate elapsed time
+              const now = new Date();
+              const elapsedSeconds = Math.floor((now - startTime) / 1000);
+              setElapsedTime(elapsedSeconds);
+              
+              // Restart timer if workout was in progress
+              if (savedWorkoutState.isStarted) {
+              const timerInterval = setInterval(() => {
+                  setElapsedTime(prev => prev + 1);
+              }, 1000);
+              setTimer(timerInterval);
+              }
+          }
         }
     
         // Cleanup timer when component unmounts
