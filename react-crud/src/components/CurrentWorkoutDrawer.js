@@ -1,4 +1,6 @@
 import { Global } from '@emotion/react';
+import { useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -40,17 +42,23 @@ const Puller = styled('div')(({ theme }) => ({
   }),
 }));
 
-function CurrentWorkoutDrawer(props) {
-  const { window } = props;
+// These props are used in the commented out CurrentWorkoutDisplay component
+const CurrentWorkoutDrawer = (  /*{  
+    currentWorkout,
+    deleteWorkout, 
+    removeFromWorkout,
+    addToWorkout }*/) => {
   const [open, setOpen] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const  [selectedExercise, setSelectedExercise]=useState(null);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-  // This is used only for the example
-  const container = window !== undefined ? () => window().document.body : undefined;
 
+
+  /*
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -85,6 +93,7 @@ function CurrentWorkoutDrawer(props) {
       </List>
     </Box>
   );
+  */
 
   return (
     <Root>
@@ -101,7 +110,6 @@ function CurrentWorkoutDrawer(props) {
         <Button onClick={toggleDrawer(true)}>Open</Button>
       </Box>
       <SwipeableDrawer
-        container={container}
         anchor="bottom"
         open={open}
         onClose={toggleDrawer(false)}
@@ -123,8 +131,15 @@ function CurrentWorkoutDrawer(props) {
             left: 0,
           }}
         >
-            {/* TODO add currentWorkoutDisplay */}
-          <Puller />
+            {/* TODO add currentWorkoutDisplay 
+            <CurrentWorkoutDisplay 
+              currentWorkout={currentWorkout}
+              deleteWorkout={deleteWorkout}
+              removeFromWorkout={removeFromWorkout}
+              addToWorkout={addToWorkout}
+              setSelectedExercise={setSelectedExercise}
+            />*/}
+            <Puller />
           <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
         </StyledBox>
         <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
@@ -136,11 +151,19 @@ function CurrentWorkoutDrawer(props) {
 }
 
 CurrentWorkoutDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
+  currentWorkout: PropTypes.arrayOf(
+    PropTypes.shape({
+        id: PropTypes.number,
+        images_url: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(PropTypes.string)
+        ]),
+        // Add other specific properties your exercise objects have
+    })
+).isRequired,  deleteWorkout: PropTypes.func.isRequired,
+  removeFromWorkout: PropTypes.func.isRequired,
+  addToWorkout: PropTypes.func.isRequired,
 };
+
 
 export default CurrentWorkoutDrawer;

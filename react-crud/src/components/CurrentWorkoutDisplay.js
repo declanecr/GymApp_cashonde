@@ -23,12 +23,11 @@ const CurrentWorkoutDisplay = ({
     currentWorkout,
     deleteWorkout,
     removeFromWorkout,
-    setSelectedExercise,
+    setSelectedExercise, //TODO create modal that pops up for exercises instead of separate page for them
     addToWorkout
     }) => {
     const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
     const [sets, setSets] = useState({});
-    // TODO fix add set
 
     
     
@@ -50,12 +49,12 @@ const CurrentWorkoutDisplay = ({
         if (savedWorkoutState.startTime) {
           const startTime = new Date(savedWorkoutState.startTime);
           setStartTime(startTime);
-    
+          
           // Calculate elapsed time
           const now = new Date();
           const elapsedSeconds = Math.floor((now - startTime) / 1000);
           setElapsedTime(elapsedSeconds);
-    
+          
           if (savedWorkoutState.isStarted) {
             const timerInterval = setInterval(() => {
               setElapsedTime(prev => prev + 1);
@@ -64,15 +63,23 @@ const CurrentWorkoutDisplay = ({
           }
         }
       }
-    
+      
       setHasLoaded(true);
-    
+      
       // Cleanup
       return () => {
         if (timer) clearInterval(timer);
       };
     }, [hasLoaded, timer]); // Add dependencies to ensure proper interval cleanup.
+    
+    const setAsWorkout = (workout) => {
+      if (!workout) return;
+      deleteWorkout();
+      setSets({});
+      workout.forEach(exercise => addToWorkout(exercise));
+    };
 
+    
     const STORAGE_KEYS = {
         GENERATED_WORKOUTS: 'generatedWorkouts',
         CURRENT_WORKOUT: 'currentWorkout',
@@ -126,12 +133,6 @@ const CurrentWorkoutDisplay = ({
         setStartTime(null);
         setElapsedTime(0);
         setIsWorkoutStarted(false);
-      };
-      const setAsWorkout = (workout) => {
-        if (!workout) return;
-        deleteWorkout();
-        setSets({});
-        workout.forEach(exercise => addToWorkout(exercise));
       };
 
       const handleStartWorkout = () => {

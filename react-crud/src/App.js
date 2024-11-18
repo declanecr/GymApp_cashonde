@@ -14,6 +14,8 @@ import authService from './services/auth.service';
 
 import Login from './components/login/Login';
 //import Login from './components/login.component';
+import { CssBaseline } from '@mui/material';
+import CurrentWorkoutDrawer from './components/CurrentWorkoutDrawer';
 import SignUp from './components/login/SignUp';
 import NavBar from './components/NavBar';
 import AddExercise from './pages/AddExercisePage';
@@ -23,8 +25,6 @@ import IndividualExercisePage from './pages/IndividualExercisePage';
 import SetsHistory from './pages/SetsHistory';
 import UserPage from './pages/UserPage';
 import WorkoutGenPage from './pages/WorkoutGenPage';
-
-import { CssBaseline } from '@mui/material';
 
 //class App extends Component 
 class App extends Component {
@@ -92,9 +92,20 @@ class App extends Component {
       <CssBaseline />
         {/* Conditionally render NavBar only if the user is logged in */}
         {token && (
-          <nav className="navbar navbar-expand navbar-dark bg-dark">
-            <NavBar logOut={this.logOut}/>
-          </nav>
+          <>
+            <nav className="navbar navbar-expand navbar-dark bg-dark">
+              <NavBar logOut={this.logOut}/>
+            </nav>
+            {/* Add WorkoutDrawer here, it will be present on all authenticated pages */}
+            {currentWorkout.length > 0 && (
+              <CurrentWorkoutDrawer 
+                currentWorkout={currentWorkout}
+                removeFromWorkout={this.removeFromWorkout}
+                deleteWorkout={this.deleteWorkout}
+                addToWorkout={this.addToWorkout}
+              />
+            )}
+          </>
         )}
         
           <Routes>

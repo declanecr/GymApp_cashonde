@@ -41,14 +41,6 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
     localStorage.setItem(key, JSON.stringify(data));
   };
   
-  
-
-  
-  
-  
-  
-
-  
 
   useEffect(() => {
     // Load generated workouts
