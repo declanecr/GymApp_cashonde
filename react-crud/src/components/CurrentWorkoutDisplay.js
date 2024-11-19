@@ -72,16 +72,17 @@ const CurrentWorkoutDisplay = ({
       let intervalId;
       if (isWorkoutStarted && startTime) {
         intervalId = setInterval(() => {
-          setElapsedTime(Date.now() - startTime.getTime());
+          const currentTime = Date.now();
+          setElapsedTime(currentTime - startTime.getTime());
         }, 1000);
       }
-      return () => clearInterval(intervalId);
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
     }, [isWorkoutStarted, startTime]);
-    
 
-    
-    
-    
     
     const handleStartWorkout = () => {
       const newStartTime = new Date();
@@ -98,10 +99,12 @@ const CurrentWorkoutDisplay = ({
     };
 
     // Function to format elapsed time
-    const formatElapsedTime = (totalSeconds) => {
+    const formatElapsedTime = (totalMilliseconds) => {
+      const totalSeconds = Math.floor(totalMilliseconds / 1000);
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
+      const seconds = Math.floor(totalSeconds % 60);
+      
       return `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
     };
 
