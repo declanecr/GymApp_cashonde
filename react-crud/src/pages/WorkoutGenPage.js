@@ -103,7 +103,13 @@ const WorkoutGenPage = ({
     <Container maxWidth={false} >
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
           <Grid container spacing={3} item xs={12} sx ={{minHeight: '100vh'}}>
-              <Grid item xs={12} md={8} sx={{maxWidth: 1100, alignItems: 'left'}}>
+            {/* GENERATED WORKOUT SECTION */}
+              <Grid item xs={12} md={8} sx={{
+                '@media (min-width: 900px)': {
+                  width: '45%',
+                  flexBasis: '45%',
+                  maxWidth: '45%'
+                }}}>
                 <Card>
                 <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
                   Choose which days to generate workouts for
@@ -130,6 +136,9 @@ const WorkoutGenPage = ({
                   Generated Workout
                 </Typography>
                 <Grid container spacing={2}>
+                  {/* INDIVIDUAL WORKOUTS DISPLAY 
+                  // TODO - each workout should an even width of its container
+                  */} 
                   {generatedWorkout.map((dayWorkout, dayIndex) => (
                     <Grid item xs={12} sm={6} md={6} key={dayIndex}>
                       <Card sx={{ mb: 3 }}>
@@ -208,26 +217,41 @@ const WorkoutGenPage = ({
                 </Grid>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={8}>
-                <Grid item xs={12} md ={8}>
-                  <Card sx={{ p: 3 }}>
-  <Typography variant="h4" gutterBottom>
-    Current Workout
-  </Typography>
-  
 
-  <Grid item xs={12} md={8}>
-  <CurrentWorkoutDisplay
-    deleteWorkout={deleteWorkout}
-    removeFromWorkout={removeFromWorkout}
-    setSelectedExercise={setSelectedExercise}
-    //addToWorkout={addToWorkout}
-  />
-</Grid>
-</Card>                  </Grid>
+              {/* CURRENT WORKOUT SECTION */}
+              <Grid item xs={12} md={8} sx={{
+                '@media (min-width: 900px)': {
+                  width: '45%',
+                  flexBasis: '45%',
+                  maxWidth: '45%'
+                }
+              }}>
+                <Grid item xs={12} md ={8}>
+                    <Card sx={{ p: 3 }}>
+                    <Typography variant="h4" gutterBottom>
+                      Current Workout
+                    </Typography>
+                    
+
+                    <Grid item xs={12} md={8}>
+                      <CurrentWorkoutDisplay
+                        deleteWorkout={deleteWorkout}
+                        removeFromWorkout={removeFromWorkout}
+                        setSelectedExercise={setSelectedExercise}
+                        //addToWorkout={addToWorkout}
+                      />
+                    </Grid>
+                  </Card>                  
+                </Grid>
               </Grid>
                 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} sx={{ 
+                '@media (min-width: 900px)': {
+                  width: '25%',
+                  flexBasis: '25%',
+                  maxWidth: '25%'
+                }
+              }}>
                 <CurrentExerciseCard exercise={selectedExercise} 
                 onClose={() => setSelectedExercise(null)}
                 addToWorkout={addToWorkout}
