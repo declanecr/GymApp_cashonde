@@ -38,7 +38,6 @@ class App extends Component {
     super(props);
     this.logOut=this.logOut.bind(this)
     this.state = {
-      currentWorkout: [],
       token: null,
       currentUser: undefined,
     };
@@ -55,11 +54,7 @@ class App extends Component {
       });
     }
 
-    // Load current workout from localStorage using the service
-    const savedWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
-    if (savedWorkout) {
-      this.setState({ currentWorkout: savedWorkout });
-    }
+
   }
 
   logOut() {
@@ -77,37 +72,27 @@ class App extends Component {
   };
 
   addToWorkout = (exercise) => {
-    this.setState(
-      (prevState) => ({
-        currentWorkout: [...prevState.currentWorkout, exercise],
-      }),
-      () => {
-        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
-      }
-    );
+    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
+    const updatedWorkout = [...currentWorkout, exercise];
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, updatedWorkout);
   };
 
   removeFromWorkout = (exerciseToRemove) => {
-    this.setState(
-      (prevState) => ({
-        currentWorkout: prevState.currentWorkout.filter(
-          (exercise) => exercise.id !== exerciseToRemove.id
-        ),
-      }),
-      () => {
-        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
-      }
+    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
+    const updatedWorkout = currentWorkout.filter(
+      (exercise) => exercise.id !== exerciseToRemove.id
     );
+    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, updatedWorkout);
   };
 
   deleteWorkout = () => {
-    this.setState({ currentWorkout: [] }, () => {
-      clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
-    });
+    clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
   };
   render() {
     // eslint-disable-next-line
-    const { currentUser,  currentWorkout, token } = this.state;
+    const { currentUser,  token } = this.state;
+    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
+
   
     return (
       <>
@@ -121,7 +106,7 @@ class App extends Component {
             {/* Add WorkoutDrawer here, it will be present on all authenticated pages */}
             {currentWorkout.length > 0 && (
               <CurrentWorkoutDrawer 
-                currentWorkout={getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT)}
+                currentWorkout={currentWorkout}
                 removeFromWorkout={this.removeFromWorkout}
                 deleteWorkout={this.deleteWorkout}
                 addToWorkout={this.addToWorkout}
