@@ -12,8 +12,19 @@ import React, { useEffect, useState } from 'react';
 import CurrentExerciseCard from '../components/CurrentExerciseCard';
 import CurrentWorkoutDisplay from '../components/CurrentWorkoutDisplay';
 import WorkoutDataService from '../services/WorkoutDataService';
+import {
+  getGeneratedWorkouts,
+  getSelectedDays,
+  saveGeneratedWorkouts,
+  saveSelectedDays
+} from '../services/localStorageService';
 
-const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addToWorkout }) => {
+const WorkoutGenPage = ({ 
+  currentWorkout, 
+  removeFromWorkout, 
+  deleteWorkout, 
+  addToWorkout 
+}) => {
   const [generatedWorkout, setGeneratedWorkout] = useState([]);
   const [selectedDays, setSelectedDays] = useState({
     Monday: false,
@@ -30,43 +41,31 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
 
 
 
-  const STORAGE_KEYS = {
-    GENERATED_WORKOUTS: 'generatedWorkouts',
-    CURRENT_WORKOUT: 'currentWorkout',
-    CURRENT_SETS: 'currentSets',
-    SELECTED_DAYS: 'selectedDays'
-  };
-  
-  const saveToLocalStorage = (key, data) => {
-    localStorage.setItem(key, JSON.stringify(data));
-  };
-  
-
   useEffect(() => {
-    // Load generated workouts
-    const savedGeneratedWorkouts = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_WORKOUTS));
-    if (savedGeneratedWorkouts) {
-      setGeneratedWorkout(savedGeneratedWorkouts);
+    // Load generated workouts from localStorage
+    const savedWorkouts = getGeneratedWorkouts();
+    if (savedWorkouts) {
+      setGeneratedWorkout(savedWorkouts);
     }
-  
-    // Load selected days
-    const savedSelectedDays = JSON.parse(localStorage.getItem(STORAGE_KEYS.SELECTED_DAYS));
-    if (savedSelectedDays) {
-      setSelectedDays(savedSelectedDays);
+
+    // Load selected days from localStorage
+    const savedDays = getSelectedDays();
+    if (savedDays) {
+      setSelectedDays(savedDays);
     }
-  
-    
   }, []);
-  
-  
+
   const handleDayChange = (day) => {
     const newSelectedDays = {
       ...selectedDays,
       [day]: !selectedDays[day]
     };
     setSelectedDays(newSelectedDays);
-    saveToLocalStorage(STORAGE_KEYS.SELECTED_DAYS, newSelectedDays);
+    saveSelectedDays(newSelectedDays);
   };
+  
+  
+ 
   
   
   const setAsWorkout = (workout) => {
@@ -83,17 +82,14 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
       console.log("No days selected");
       return;
     }
-  
+
     try {
-      const generatedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
-      console.log('generatedWorkout: ', generatedWorkout);
-      if (currentWorkout.length > 0 || generatedWorkout.length > 0) {
+      const newGeneratedWorkout = await WorkoutDataService.generateWorkout(selectedDayCount);
+      if (currentWorkout.length > 0 || newGeneratedWorkout.length > 0) {
         deleteWorkout();
       }
-      setGeneratedWorkout(generatedWorkout);
-      // Save both generated workouts and selected days
-      saveToLocalStorage(STORAGE_KEYS.GENERATED_WORKOUTS, generatedWorkout);
-      saveToLocalStorage(STORAGE_KEYS.SELECTED_DAYS, selectedDays);
+      setGeneratedWorkout(newGeneratedWorkout);
+      saveGeneratedWorkouts(newGeneratedWorkout);
     } catch (error) {
       console.error('Error generating workout:', error);
     }
@@ -231,7 +227,10 @@ const WorkoutGenPage = ({ currentWorkout, removeFromWorkout, deleteWorkout, addT
               </Grid>
                 
               <Grid item xs={12} md={4}>
-                <CurrentExerciseCard exercise={selectedExercise} />
+                <CurrentExerciseCard exercise={selectedExercise} 
+                onClose={() => setSelectedExercise(null)}
+                addToWorkout={addToWorkout}
+                />
               </Grid>
           </Grid>
       </Box>

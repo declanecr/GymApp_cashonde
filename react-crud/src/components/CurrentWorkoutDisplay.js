@@ -1,3 +1,15 @@
+/*
+in WorkoutGenPage:
+<CurrentWorkoutDisplay
+    currentWorkout={currentWorkout}
+    deleteWorkout={deleteWorkout}
+    removeFromWorkout={removeFromWorkout}
+    setSelectedExercise={setSelectedExercise}
+    addToWorkout={addToWorkout}
+  />
+
+*/
+
 // src/components/CurrentWorkoutSection.js
 import DeleteIcon from '@mui/icons-material/Delete';
 import {

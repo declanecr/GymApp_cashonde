@@ -1,5 +1,5 @@
 import { Global } from '@emotion/react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,7 +9,11 @@ import Typography from '@mui/material/Typography';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import * as React from 'react';
+import {
+  STORAGE_KEYS,
+  getFromLocalStorage,
+  updateWorkoutState
+} from '../services/localStorageService';
 import CurrentWorkoutDisplay from './CurrentWorkoutDisplay';
 
 const drawerBleeding = 56;
@@ -44,39 +48,69 @@ const Puller = styled('div')(({ theme }) => ({
 
 // These props are used in the commented out CurrentWorkoutDisplay component
 const CurrentWorkoutDrawer = (  {  
-    
+    currentWorkout,
     deleteWorkout, 
     removeFromWorkout,
     addToWorkout }) => {
   const [open, setOpen] = React.useState(false);
   // eslint-disable-next-line no-unused-vars
   const  [selectedExercise, setSelectedExercise]=useState(null);
+  const [workoutState, setWorkoutState] =useState(null);
+
+  useEffect(() => {
+    // Load workout state from localStorage
+    const savedState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    if (savedState) {
+      setWorkoutState(savedState);
+    }
+  }, [currentWorkout]); // Re-run when currentWorkout changes
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
-  const getCurrentWorkout = () => {
-      const STORAGE_KEYS = {
-          CURRENT_WORKOUT: 'currentWorkout'
-      };
-      console.log('Getting workout from storage');
-      try {
-          const savedWorkout = localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT);
-          if (!savedWorkout) return null;
-  
-          const parsedWorkout = JSON.parse(savedWorkout);
-          console.log('parsedWorkout: ', parsedWorkout); //TODO WORKOUT STATE AND CURRENT WORKOUT DON'T ALIGN
-          return {
-              workout: parsedWorkout.workout || [],
-              sets: parsedWorkout.sets || {},
-              startTime: parsedWorkout.startTime ? new Date(parsedWorkout.startTime) : null,
-              isStarted: parsedWorkout.isStarted || false
-          };
-      } catch (error) {
-          console.error('Error getting workout from storage:', error);
-          return null;
-      }
+
+
+
+  const handleWorkoutUpdate = (updatedWorkout, updatedSets) => {
+    const currentState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || {};
+    const newState = {
+      workout: updatedWorkout,
+      sets: updatedSets,
+      startTime: currentState.startTime || new Date(),
+      isStarted: true
+    };
+    
+    updateWorkoutState(
+      newState.workout,
+      newState.sets,
+      newState.startTime,
+      newState.isStarted
+    );
+    setWorkoutState(newState);
   };
+
+  const handleDeleteWorkout = () => {
+    deleteWorkout();
+    setWorkoutState(null);
+    setOpen(false);
+  };
+
+  const handleRemoveExercise = (exercise) => {
+    removeFromWorkout(exercise);
+    if (workoutState) {
+      const updatedSets = { ...workoutState.sets };
+      delete updatedSets[exercise.id];
+      
+      const updatedWorkout = workoutState.workout.filter(ex => ex.id !== exercise.id);
+      handleWorkoutUpdate(updatedWorkout, updatedSets);
+    }
+  };
+
+  const getCurrentWorkout = () => {
+    return workoutState?.workout || [];
+  };
+
+  
   
 
 
@@ -119,16 +153,19 @@ const CurrentWorkoutDrawer = (  {
           }}
         >
             <Puller />
-          <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
+          <Typography sx={{ p: 2, color: 'text.secondary' }}>
+            {workoutState?.workout?.length || 0} Exercises
+          </Typography>
         </StyledBox>
         <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
             {// TODO add currentWorkoutDisplay 
             <CurrentWorkoutDisplay 
               currentWorkout={getCurrentWorkout()}
-              deleteWorkout={deleteWorkout}
-              removeFromWorkout={removeFromWorkout}
+              deleteWorkout={handleDeleteWorkout}
+              removeFromWorkout={handleRemoveExercise}
               addToWorkout={addToWorkout}
               setSelectedExercise={setSelectedExercise}
+              onWorkoutUpdate={handleWorkoutUpdate}
             />}
         </StyledBox>
       </SwipeableDrawer>
@@ -137,10 +174,14 @@ const CurrentWorkoutDrawer = (  {
 }
 
 CurrentWorkoutDrawer.propTypes = {
-  
+  currentWorkout: PropTypes.array.isRequired,
   deleteWorkout: PropTypes.func.isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
   addToWorkout: PropTypes.func.isRequired,
+};
+
+CurrentWorkoutDrawer.defaultProps = {
+  currentWorkout: []
 };
 
 

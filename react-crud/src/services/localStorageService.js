@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
 export const saveToLocalStorage = (key, data) => {
     try {
         localStorage.setItem(key, JSON.stringify(data));
+        console.log(`Saved to localStorage (${key}):`, data);
     } catch (error) {
         console.error(`Error saving to localStorage (${key}):`, error);
     }
@@ -22,6 +23,7 @@ export const saveToLocalStorage = (key, data) => {
 export const getFromLocalStorage = (key) => {
     try {
         const item = localStorage.getItem(key);
+        console.log(`Retrieved from localStorage (${key}):`, item);
         return item ? JSON.parse(item) : null;
     } catch (error) {
         console.error(`Error getting from localStorage (${key}):`, error);
