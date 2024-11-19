@@ -3,9 +3,7 @@
 // Storage keys as constants
 export const STORAGE_KEYS = {
     GENERATED_WORKOUTS: 'generatedWorkouts',
-    CURRENT_WORKOUT: 'currentWorkout',
     WORKOUT_STATE: 'workoutState',
-    CURRENT_SETS: 'currentSets',
     SELECTED_DAYS: 'selectedDays'
 };
 
@@ -40,12 +38,10 @@ export const clearFromLocalStorage = (key) => {
     }
 };
 
-// Clear all workout related data
+// Clear workout state
 export const clearWorkoutState = () => {
-    clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
-    clearFromLocalStorage(STORAGE_KEYS.CURRENT_SETS);
+    clearFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
 };
-
 // Update workout state
 export const updateWorkoutState = (workout, sets, startTime, isStarted) => {
     const workoutState = {
@@ -55,15 +51,15 @@ export const updateWorkoutState = (workout, sets, startTime, isStarted) => {
         isStarted
     };
     console.log('updateWorkoutState: ', workoutState);
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+    saveToLocalStorage(STORAGE_KEYS.WORKOUT_STATE, workoutState);
 };
 
-// Update sets for current workout
+// Update sets in workout state
 export const updateWorkoutSets = (sets) => {
-    const workoutState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    const workoutState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
     if (workoutState) {
         workoutState.sets = sets;
-        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
+        saveToLocalStorage(STORAGE_KEYS.WORKOUT_STATE, workoutState);
     }
 };
 
@@ -89,7 +85,7 @@ export const getSelectedDays = () => {
 
 // Check if there's an active workout
 export const isWorkoutActive = () => {
-    const workoutState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    const workoutState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
     return workoutState && workoutState.isStarted;
 };
 
