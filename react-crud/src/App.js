@@ -11,6 +11,12 @@ import { Route, Routes } from 'react-router-dom';
 
 import Profile from './components/profile.component';
 import authService from './services/auth.service';
+import {
+  STORAGE_KEYS,
+  clearFromLocalStorage,
+  getFromLocalStorage,
+  saveToLocalStorage
+} from './services/localStorageService';
 
 import Login from './components/login/Login';
 //import Login from './components/login.component';
@@ -35,24 +41,10 @@ class App extends Component {
       currentWorkout: [],
       token: null,
       currentUser: undefined,
-
     };
   }
 
-  STORAGE_KEYS = {
-    CURRENT_WORKOUT: 'currentWorkout',
-    CURRENT_SETS: 'currentSets',
-  };
 
-  // Local storage utility methods
-  saveToLocalStorage = (key, data) => {
-    //console.log("Saving to local storage:", key, data); //WORKING
-    localStorage.setItem(key, JSON.stringify(data));
-  };
-
-  clearFromLocalStorage = (key) => {
-    localStorage.removeItem(key);
-  };
 
   componentDidMount() {
     const user = authService.getCurrentUser();
@@ -63,8 +55,8 @@ class App extends Component {
       });
     }
 
-    // Load current workout from localStorage
-    const savedWorkout = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.CURRENT_WORKOUT));
+    // Load current workout from localStorage using the service
+    const savedWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
     if (savedWorkout) {
       this.setState({ currentWorkout: savedWorkout });
     }
@@ -76,9 +68,7 @@ class App extends Component {
       showModeratorBoard: false,
       token: null,
       currentUser: undefined
-
     });
-    
   }
 
   // Methods to update state
@@ -92,7 +82,7 @@ class App extends Component {
         currentWorkout: [...prevState.currentWorkout, exercise],
       }),
       () => {
-        this.saveToLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
       }
     );
   };
@@ -105,14 +95,14 @@ class App extends Component {
         ),
       }),
       () => {
-        this.saveToLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
+        saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, this.state.currentWorkout);
       }
     );
   };
 
   deleteWorkout = () => {
     this.setState({ currentWorkout: [] }, () => {
-      this.clearFromLocalStorage(this.STORAGE_KEYS.CURRENT_WORKOUT);
+      clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
     });
   };
   render() {
@@ -131,7 +121,7 @@ class App extends Component {
             {/* Add WorkoutDrawer here, it will be present on all authenticated pages */}
             {currentWorkout.length > 0 && (
               <CurrentWorkoutDrawer 
-                currentWorkout={JSON.parse(localStorage.getItem(this.STORAGE_KEYS.CURRENT_WORKOUT))}
+                currentWorkout={getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT)}
                 removeFromWorkout={this.removeFromWorkout}
                 deleteWorkout={this.deleteWorkout}
                 addToWorkout={this.addToWorkout}
@@ -147,17 +137,33 @@ class App extends Component {
             <Route path="/signup" element={<SignUp setToken={this.setToken} />} />
             {/* Only allow profile and protected routes if logged in */}
             {token && (
-              <>
-                <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/exercises" element={<ExercisesList addToWorkout={this.addToWorkout} />} />
-                <Route path="/add" element={<AddExercise />} />
-                <Route path="/current-workout" element={<WorkoutGenPage currentWorkout={currentWorkout} removeFromWorkout={this.removeFromWorkout} deleteWorkout={this.deleteWorkout} addToWorkout={this.addToWorkout} />} />
-                <Route path="/exercises/:id" element={<IndividualExercisePage addToWorkout={this.addToWorkout} />} />
-                <Route path="/exercises/:id/sets" element={<SetsHistory />} />
-                <Route path="/users" element={<UserPage />} />
-              </>
-            )}
+            <>
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route 
+                path="/exercises" 
+                element={<ExercisesList addToWorkout={this.addToWorkout} />} 
+              />
+              <Route path="/add" element={<AddExercise />} />
+              <Route 
+                path="/current-workout" 
+                element={
+                  <WorkoutGenPage 
+                    currentWorkout={currentWorkout} 
+                    removeFromWorkout={this.removeFromWorkout}
+                    deleteWorkout={this.deleteWorkout}
+                    addToWorkout={this.addToWorkout}
+                  />
+                } 
+              />
+              <Route 
+                path="/exercises/:id" 
+                element={<IndividualExercisePage addToWorkout={this.addToWorkout} />} 
+              />
+              <Route path="/exercises/:id/sets" element={<SetsHistory />} />
+              <Route path="/users" element={<UserPage />} />
+            </>
+          )}
           </Routes>
       </>
     );
