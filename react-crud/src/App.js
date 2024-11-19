@@ -76,26 +76,30 @@ class App extends Component {
     this.setState({ token: newToken });
   };
 
+  //TODO - this isn't adding the exercises like it needs to
   addToWorkout = (exercise) => {
-    const { workoutState } = this.state;
-    const currentWorkout = workoutState?.workout || [];
-    const updatedWorkout = [...currentWorkout, exercise];
+    console.log('exercise:', exercise.id, ' ', exercise.name);
     
-    const newWorkoutState = {
-      workout: updatedWorkout,
-      sets: workoutState?.sets || {},
-      startTime: workoutState?.startTime || null,
-      isStarted: workoutState?.isStarted || false
-    };
-
-    updateWorkoutState(
-      newWorkoutState.workout,
-      newWorkoutState.sets,
-      newWorkoutState.startTime,
-      newWorkoutState.isStarted
-    );
-    
-    this.setState({ workoutState: newWorkoutState });
+    this.setState(prevState => {
+      const currentWorkout = prevState.workoutState?.workout || [];
+      const updatedWorkout = [...currentWorkout, exercise];
+      
+      const newWorkoutState = {
+        workout: updatedWorkout,
+        sets: prevState.workoutState?.sets || {},
+        startTime: prevState.workoutState?.startTime || null,
+        isStarted: prevState.workoutState?.isStarted || false
+      };
+  
+      updateWorkoutState(
+        newWorkoutState.workout,
+        newWorkoutState.sets,
+        newWorkoutState.startTime,
+        newWorkoutState.isStarted
+      );
+      
+      return { workoutState: newWorkoutState };
+    });
   };
 
   removeFromWorkout = (exerciseToRemove) => {
