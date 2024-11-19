@@ -13,9 +13,8 @@ import Profile from './components/profile.component';
 import authService from './services/auth.service';
 import {
   STORAGE_KEYS,
-  clearFromLocalStorage,
   getFromLocalStorage,
-  saveToLocalStorage
+  updateWorkoutState
 } from './services/localStorageService';
 
 import Login from './components/login/Login';
@@ -40,6 +39,7 @@ class App extends Component {
     this.state = {
       token: null,
       currentUser: undefined,
+      workoutState: null
     };
   }
 
@@ -54,7 +54,11 @@ class App extends Component {
       });
     }
 
-
+    // Load workout state from localStorage
+    const workoutState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
+    if (workoutState) {
+      this.setState({ workoutState });
+    }
   }
 
   logOut() {
@@ -62,7 +66,8 @@ class App extends Component {
     this.setState({
       showModeratorBoard: false,
       token: null,
-      currentUser: undefined
+      currentUser: undefined,
+      workoutState: null
     });
   }
 
@@ -72,26 +77,64 @@ class App extends Component {
   };
 
   addToWorkout = (exercise) => {
-    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
+    const { workoutState } = this.state;
+    const currentWorkout = workoutState?.workout || [];
     const updatedWorkout = [...currentWorkout, exercise];
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, updatedWorkout);
+    
+    const newWorkoutState = {
+      workout: updatedWorkout,
+      sets: workoutState?.sets || {},
+      startTime: workoutState?.startTime || null,
+      isStarted: workoutState?.isStarted || false
+    };
+
+    updateWorkoutState(
+      newWorkoutState.workout,
+      newWorkoutState.sets,
+      newWorkoutState.startTime,
+      newWorkoutState.isStarted
+    );
+    
+    this.setState({ workoutState: newWorkoutState });
   };
 
   removeFromWorkout = (exerciseToRemove) => {
-    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
-    const updatedWorkout = currentWorkout.filter(
+    const { workoutState } = this.state;
+    if (!workoutState) return;
+
+    const updatedWorkout = workoutState.workout.filter(
       (exercise) => exercise.id !== exerciseToRemove.id
     );
-    saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, updatedWorkout);
+
+    // Remove sets for the removed exercise
+    const updatedSets = { ...workoutState.sets };
+    delete updatedSets[exerciseToRemove.id];
+
+    const newWorkoutState = {
+      ...workoutState,
+      workout: updatedWorkout,
+      sets: updatedSets
+    };
+
+    updateWorkoutState(
+      newWorkoutState.workout,
+      newWorkoutState.sets,
+      newWorkoutState.startTime,
+      newWorkoutState.isStarted
+    );
+
+    this.setState({ workoutState: newWorkoutState });
   };
 
   deleteWorkout = () => {
-    clearFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    updateWorkoutState([], {}, null, false);
+    this.setState({ workoutState: null });
   };
+  
   render() {
     // eslint-disable-next-line
-    const { currentUser,  token } = this.state;
-    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || [];
+    const { currentUser, token, workoutState } = this.state;
+    const currentWorkout = workoutState?.workout || [];
 
   
     return (
