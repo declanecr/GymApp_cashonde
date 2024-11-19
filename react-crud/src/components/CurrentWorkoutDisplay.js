@@ -84,10 +84,10 @@ const CurrentWorkoutDisplay = ({
     
     
     const handleStartWorkout = () => {
-      //const newStartTime = new Date();
-      //setStartTime(newStartTime);
-      //setIsWorkoutStarted(true);
-      updateWorkoutState(currentWorkout)//, sets, newStartTime, true);
+      const newStartTime = new Date();
+      setStartTime(newStartTime);
+      setIsWorkoutStarted(true);
+      updateWorkoutState(currentWorkout, sets, newStartTime, true);
     };
   
     const handleWorkoutComplete = () => {
@@ -341,13 +341,7 @@ const CurrentWorkoutDisplay = ({
 };
 
 CurrentWorkoutDisplay.propTypes = {
-  currentWorkout: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      main_muscle: PropTypes.string.isRequired
-    })
-  ).isRequired,
+  currentWorkout: PropTypes.array.isRequired,
     deleteWorkout: PropTypes.func.isRequired,
     removeFromWorkout: PropTypes.func.isRequired,
     //addToWorkout: PropTypes.func.isRequired,
