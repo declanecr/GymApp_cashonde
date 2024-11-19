@@ -25,64 +25,57 @@ const CurrentWorkoutDisplay = ({
     removeFromWorkout,
     setSelectedExercise, //TODO create modal that pops up for exercises instead of separate page for them
     addToWorkout
-    }) => {
+  }) => {
     const [isWorkoutStarted, setIsWorkoutStarted]=useState(false);
     const [sets, setSets] = useState({});
-
-    
-    
-    // Add these new state variables
     const [startTime, setStartTime] = useState(null);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [timer, setTimer] = useState(null);
-    
     const [hasLoaded, setHasLoaded] = useState(false);
 
     useEffect(() => {
       console.log('useEffect: ', currentWorkout);
-      console.log('hasLoaded:',hasLoaded);
-      if (hasLoaded) return;
-    
-      const savedWorkoutState = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_WORKOUT)) || null;
-      if (savedWorkoutState) {
-        if (savedWorkoutState.workout) {
-          setAsWorkout(savedWorkoutState.workout);
-        }
-        if (savedWorkoutState.sets) {
-          setSets(savedWorkoutState.sets);
-        }
-        if (typeof savedWorkoutState.isStarted === 'boolean') {
-          setIsWorkoutStarted(savedWorkoutState.isStarted);
-        }
-        if (savedWorkoutState.startTime) {
-          const startTime = new Date(savedWorkoutState.startTime);
-          if (!isNaN(startTime.getTime())) {
-            setStartTime(startTime);
-            
-            // Calculate elapsed time
-            const now = new Date();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            if (!isNaN(elapsedSeconds) && elapsedSeconds >= 0) {
-              setElapsedTime(elapsedSeconds);
-            }
-            
-            if (savedWorkoutState.isStarted) {
-              const timerInterval = setInterval(() => {
-                setElapsedTime(prev => prev + 1);
-              }, 1000);
-              setTimer(timerInterval);
-            }
+      console.log('hasLoaded:', hasLoaded);
+      if (hasLoaded || !currentWorkout) return;
+  
+      // Initialize state from currentWorkout object
+      if (currentWorkout.workout) {
+          setAsWorkout(currentWorkout.workout);
+      }
+      if (currentWorkout.sets) {
+          setSets(currentWorkout.sets);
+      }
+      if (typeof currentWorkout.isStarted === 'boolean') {
+          setIsWorkoutStarted(currentWorkout.isStarted);
+      }
+      if (currentWorkout.startTime) {
+          const startTimeDate = new Date(currentWorkout.startTime);
+          if (!isNaN(startTimeDate.getTime())) {
+              setStartTime(startTimeDate);
+              
+              // Calculate elapsed time
+              const now = new Date();
+              const elapsedSeconds = Math.floor((now - startTimeDate) / 1000);
+              if (!isNaN(elapsedSeconds) && elapsedSeconds >= 0) {
+                  setElapsedTime(elapsedSeconds);
+              }
+              
+              if (currentWorkout.isStarted) {
+                  const timerInterval = setInterval(() => {
+                      setElapsedTime(prev => prev + 1);
+                  }, 1000);
+                  setTimer(timerInterval);
+              }
           }
-        }
       }
       
       setHasLoaded(true);
       
       // Cleanup
       return () => {
-        if (timer) clearInterval(timer);
+          if (timer) clearInterval(timer);
       };
-    }, [hasLoaded, timer]); // Add dependencies to ensure proper interval cleanup.
+    } , [hasLoaded, timer, currentWorkout]);
     
     const setAsWorkout = (workout) => {
       console.log('setAsWorkout: ', workout);
@@ -96,6 +89,7 @@ const CurrentWorkoutDisplay = ({
     const STORAGE_KEYS = {
         GENERATED_WORKOUTS: 'generatedWorkouts',
         CURRENT_WORKOUT: 'currentWorkout',
+        WORKOUT_STATE: 'workoutState',
         CURRENT_SETS: 'currentSets',
         SELECTED_DAYS: 'selectedDays'
     };
