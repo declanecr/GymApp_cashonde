@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import Skeleton from '@mui/material/Skeleton';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
 import { grey } from '@mui/material/colors';
@@ -66,7 +65,7 @@ const CurrentWorkoutDrawer = (  {
           if (!savedWorkout) return null;
   
           const parsedWorkout = JSON.parse(savedWorkout);
-          console.log('parsedWorkout: ', parsedWorkout);
+          console.log('parsedWorkout: ', parsedWorkout); //TODO WORKOUT STATE AND CURRENT WORKOUT DON'T ALIGN
           return {
               workout: parsedWorkout.workout || [],
               sets: parsedWorkout.sets || {},
@@ -119,6 +118,10 @@ const CurrentWorkoutDrawer = (  {
             left: 0,
           }}
         >
+            <Puller />
+          <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
+        </StyledBox>
+        <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
             {// TODO add currentWorkoutDisplay 
             <CurrentWorkoutDisplay 
               currentWorkout={getCurrentWorkout()}
@@ -127,11 +130,6 @@ const CurrentWorkoutDrawer = (  {
               addToWorkout={addToWorkout}
               setSelectedExercise={setSelectedExercise}
             />}
-            <Puller />
-          <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
-        </StyledBox>
-        <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
-          <Skeleton variant="rectangular" height="100%" />
         </StyledBox>
       </SwipeableDrawer>
     </Root>
@@ -139,13 +137,7 @@ const CurrentWorkoutDrawer = (  {
 }
 
 CurrentWorkoutDrawer.propTypes = {
-  currentWorkout: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      main_muscle: PropTypes.string.isRequired
-    })
-  ).isRequired, 
+  
   deleteWorkout: PropTypes.func.isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
   addToWorkout: PropTypes.func.isRequired,

@@ -46,6 +46,7 @@ class App extends Component {
 
   // Local storage utility methods
   saveToLocalStorage = (key, data) => {
+    //console.log("Saving to local storage:", key, data); //WORKING
     localStorage.setItem(key, JSON.stringify(data));
   };
 
