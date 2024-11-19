@@ -54,6 +54,7 @@ export const updateWorkoutState = (workout, sets, startTime, isStarted) => {
         startTime,
         isStarted
     };
+    console.log('updateWorkoutState: ', workoutState);
     saveToLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT, workoutState);
 };
 

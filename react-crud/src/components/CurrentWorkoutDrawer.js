@@ -51,7 +51,9 @@ const CurrentWorkoutDrawer = (  {
     currentWorkout,
     deleteWorkout, 
     removeFromWorkout,
-    addToWorkout }) => {
+    
+    //addToWorkout 
+  }) => {
   const [open, setOpen] = React.useState(false);
   // eslint-disable-next-line no-unused-vars
   const  [selectedExercise, setSelectedExercise]=useState(null);
@@ -59,7 +61,8 @@ const CurrentWorkoutDrawer = (  {
 
   useEffect(() => {
     // Load workout state from localStorage
-    const savedState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
+    const savedState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
+    console.log("savedState", savedState);
     if (savedState) {
       setWorkoutState(savedState);
     }
@@ -72,7 +75,7 @@ const CurrentWorkoutDrawer = (  {
 
 
   const handleWorkoutUpdate = (updatedWorkout, updatedSets) => {
-    const currentState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT) || {};
+    const currentState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE) || {};
     const newState = {
       workout: updatedWorkout,
       sets: updatedSets,
@@ -158,15 +161,13 @@ const CurrentWorkoutDrawer = (  {
           </Typography>
         </StyledBox>
         <StyledBox sx={{ px: 2, pb: 2, height: '100%', overflow: 'auto' }}>
-            {// TODO add currentWorkoutDisplay 
             <CurrentWorkoutDisplay 
               currentWorkout={getCurrentWorkout()}
               deleteWorkout={handleDeleteWorkout}
               removeFromWorkout={handleRemoveExercise}
-              addToWorkout={addToWorkout}
+              //addToWorkout={addToWorkout}
               setSelectedExercise={setSelectedExercise}
-              onWorkoutUpdate={handleWorkoutUpdate}
-            />}
+            />
         </StyledBox>
       </SwipeableDrawer>
     </Root>
@@ -177,7 +178,7 @@ CurrentWorkoutDrawer.propTypes = {
   currentWorkout: PropTypes.array.isRequired,
   deleteWorkout: PropTypes.func.isRequired,
   removeFromWorkout: PropTypes.func.isRequired,
-  addToWorkout: PropTypes.func.isRequired,
+  //addToWorkout: PropTypes.func.isRequired,
 };
 
 CurrentWorkoutDrawer.defaultProps = {

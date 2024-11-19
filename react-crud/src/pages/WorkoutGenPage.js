@@ -220,7 +220,7 @@ const WorkoutGenPage = ({
     deleteWorkout={deleteWorkout}
     removeFromWorkout={removeFromWorkout}
     setSelectedExercise={setSelectedExercise}
-    addToWorkout={addToWorkout}
+    //addToWorkout={addToWorkout}
   />
 </Grid>
 </Card>                  </Grid>
