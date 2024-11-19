@@ -106,7 +106,6 @@ class App extends Component {
             {/* Add WorkoutDrawer here, it will be present on all authenticated pages */}
             {currentWorkout.length > 0 && (
               <CurrentWorkoutDrawer 
-                currentWorkout={currentWorkout}
                 removeFromWorkout={this.removeFromWorkout}
                 deleteWorkout={this.deleteWorkout}
                 addToWorkout={this.addToWorkout}

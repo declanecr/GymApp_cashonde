@@ -45,7 +45,6 @@ import RemoveExerciseButton from './RemoveExerciseButton';
 import SaveWorkoutButton from './SaveWorkoutButton';
 
 const CurrentWorkoutDisplay = ({
-    currentWorkout,
     deleteWorkout,
     removeFromWorkout,
     setSelectedExercise, //TODO create modal that pops up for exercises instead of separate page for them
@@ -55,111 +54,47 @@ const CurrentWorkoutDisplay = ({
     const [sets, setSets] = useState({});
     const [startTime, setStartTime] = useState(null);
     const [elapsedTime, setElapsedTime] = useState(0);
-    const [timer, setTimer] = useState(null);
-    const [hasLoaded, setHasLoaded] = useState(false);
+    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE)?.workout || [];
 
+
+     // Load workout state from localStorage on component mount
     useEffect(() => {
-      console.log('useEffect: ', currentWorkout);
-      console.log('hasLoaded:', hasLoaded);
-      if (hasLoaded || !currentWorkout) return;
-  
-      const savedState = getFromLocalStorage(STORAGE_KEYS.CURRENT_WORKOUT);
-      if (savedState) {
-        if (savedState.sets) {
-          setSets(savedState.sets);
-        }
-        if (typeof savedState.isStarted === 'boolean') {
-          setIsWorkoutStarted(savedState.isStarted);
-        }
-        if (savedState.startTime) {
-          const startTimeDate = new Date(savedState.startTime);
-          if (!isNaN(startTimeDate.getTime())) {
-            setStartTime(startTimeDate);
-            
-            const now = new Date();
-            const elapsedSeconds = Math.floor((now - startTimeDate) / 1000);
-            if (!isNaN(elapsedSeconds) && elapsedSeconds >= 0) {
-              setElapsedTime(elapsedSeconds);
-            }
-            
-            if (savedState.isStarted) {
-              const timerInterval = setInterval(() => {
-                setElapsedTime(prev => prev + 1);
-              }, 1000);
-              setTimer(timerInterval);
-            }
-          }
-        }
+      const workoutState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
+      if (workoutState) {
+        setSets(workoutState.sets || {});
+        setStartTime(workoutState.startTime ? new Date(workoutState.startTime) : null);
+        setIsWorkoutStarted(workoutState.isStarted || false);
       }
-      
-      setHasLoaded(true);
-      
-      // Cleanup
-      return () => {
-          if (timer) clearInterval(timer);
-      };
-    } , [hasLoaded, timer, currentWorkout]);
+    }, []);
+    
+    // Timer effect
+    useEffect(() => {
+      let intervalId;
+      if (isWorkoutStarted && startTime) {
+        intervalId = setInterval(() => {
+          setElapsedTime(Date.now() - startTime.getTime());
+        }, 1000);
+      }
+      return () => clearInterval(intervalId);
+    }, [isWorkoutStarted, startTime]);
     
 
-    const handleWorkoutComplete = async () => {
-      try {
-        resetTimer();
-        clearWorkoutState();
-        setSets({});
-        deleteWorkout();
-        
-        const workoutState = {
-          workout: [],
-          sets: {},
-          startTime: null,
-          isStarted: false
-        };
-        updateWorkoutState(
-          workoutState.workout,
-          workoutState.sets,
-          workoutState.startTime,
-          workoutState.isStarted
-        );
-      } catch (error) {
-        console.error('Error completing workout:', error);
-      }
-    };
-
-    const resetTimer = () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-      setTimer(null);
-      setStartTime(null);
-      setElapsedTime(0);
-      setIsWorkoutStarted(false);
-    };
-
-
+    
+    
+    
+    
     const handleStartWorkout = () => {
-      setIsWorkoutStarted(true);
-      const now = new Date();
-      setStartTime(now);
-      
-      const workoutState = {
-        workout: currentWorkout,
-        sets: sets,
-        startTime: now,
-        isStarted: true
-      };
-      
-      updateWorkoutState(
-        workoutState.workout,
-        workoutState.sets,
-        workoutState.startTime,
-        workoutState.isStarted
-      );
-      
-      const timerInterval = setInterval(() => {
-        setElapsedTime(prev => prev + 1);
-      }, 1000);
-      
-      setTimer(timerInterval);
+      //const newStartTime = new Date();
+      //setStartTime(newStartTime);
+      //setIsWorkoutStarted(true);
+      updateWorkoutState(currentWorkout)//, sets, newStartTime, true);
+    };
+  
+    const handleWorkoutComplete = () => {
+      setIsWorkoutStarted(false);
+      setStartTime(null);
+      setSets({});
+      setElapsedTime(0);
     };
 
     // Function to format elapsed time
@@ -177,17 +112,6 @@ const CurrentWorkoutDisplay = ({
       });
     };
 
-    const handleRemoveSet = (exerciseId, index) => {
-      setSets(prevSets => {
-        const newSets = {
-          ...prevSets,
-          [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
-        };
-        updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
-        return newSets;
-      });
-    };
-  
     const handleAddSet = (exerciseId) => {
       setSets(prevSets => {
         const newSets = {
@@ -199,10 +123,25 @@ const CurrentWorkoutDisplay = ({
       });
     };
   
-    const handleSetChange = (exerciseId, setIndex, field, value) => {
+    const handleRemoveSet = (exerciseId, index) => {
       setSets(prevSets => {
-        const newSets = { ...prevSets };
-        newSets[exerciseId][setIndex][field] = value;
+        const newSets = {
+          ...prevSets,
+          [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
+        };
+        updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
+        return newSets;
+      });
+    };
+  
+    const handleSetChange = (exerciseId, index, field, value) => {
+      setSets(prevSets => {
+        const newSets = {
+          ...prevSets,
+          [exerciseId]: prevSets[exerciseId].map((set, i) =>
+            i === index ? { ...set, [field]: value } : set
+          )
+        };
         updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
         return newSets;
       });

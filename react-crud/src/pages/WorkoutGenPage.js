@@ -13,14 +13,15 @@ import CurrentExerciseCard from '../components/CurrentExerciseCard';
 import CurrentWorkoutDisplay from '../components/CurrentWorkoutDisplay';
 import WorkoutDataService from '../services/WorkoutDataService';
 import {
+  STORAGE_KEYS,
+  getFromLocalStorage,
   getGeneratedWorkouts,
   getSelectedDays,
   saveGeneratedWorkouts,
   saveSelectedDays
 } from '../services/localStorageService';
 
-const WorkoutGenPage = ({ 
-  currentWorkout, 
+const WorkoutGenPage = ({  
   removeFromWorkout, 
   deleteWorkout, 
   addToWorkout 
@@ -77,6 +78,7 @@ const WorkoutGenPage = ({
 
   const handleGenerateWorkout = async () => {
     const selectedDayCount = Object.values(selectedDays).filter(Boolean).length;
+    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE)?.workout || [];
     
     if (selectedDayCount === 0) {
       console.log("No days selected");
@@ -216,7 +218,6 @@ const WorkoutGenPage = ({
 
   <Grid item xs={12} md={8}>
   <CurrentWorkoutDisplay
-    currentWorkout={currentWorkout}
     deleteWorkout={deleteWorkout}
     removeFromWorkout={removeFromWorkout}
     setSelectedExercise={setSelectedExercise}

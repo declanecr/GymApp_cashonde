@@ -48,7 +48,6 @@ const Puller = styled('div')(({ theme }) => ({
 
 // These props are used in the commented out CurrentWorkoutDisplay component
 const CurrentWorkoutDrawer = (  {  
-    currentWorkout,
     deleteWorkout, 
     removeFromWorkout,
     
@@ -66,7 +65,7 @@ const CurrentWorkoutDrawer = (  {
     if (savedState) {
       setWorkoutState(savedState);
     }
-  }, [currentWorkout]); // Re-run when currentWorkout changes
+  },[]); // Re-run when currentWorkout changes
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
