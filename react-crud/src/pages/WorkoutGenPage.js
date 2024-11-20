@@ -21,6 +21,7 @@ import {
   saveSelectedDays
 } from '../services/localStorageService';
 
+
 const WorkoutGenPage = ({  
   removeFromWorkout, 
   deleteWorkout, 
@@ -74,6 +75,8 @@ const WorkoutGenPage = ({
     console.log('WGP workout: ', workout);
     deleteWorkout();
     workout.forEach(exercise => addToWorkout(exercise));
+    // Notify other components
+    window.dispatchEvent(new Event('workoutStateChanged'));
   };
 
   const handleGenerateWorkout = async () => {
@@ -136,9 +139,7 @@ const WorkoutGenPage = ({
                   Generated Workout
                 </Typography>
                 <Grid container spacing={2}>
-                  {/* INDIVIDUAL WORKOUTS DISPLAY 
-                  // TODO - each workout should an even width of its container
-                  */} 
+                 
                   {generatedWorkout.map((dayWorkout, dayIndex) => (
                     <Grid item xs={12} sm={6} md={6} key={dayIndex}>
                       <Card sx={{ mb: 3 }}>

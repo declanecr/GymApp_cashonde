@@ -93,8 +93,7 @@ const CurrentWorkoutDrawer = (  {
 
   const updateDrawerContent = (newWorkoutState) => {
     setWorkoutState(newWorkoutState);
-    // If you want the drawer to open automatically when workout changes
-    setOpen(true);
+    
   };
   
 

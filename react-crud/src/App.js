@@ -98,6 +98,8 @@ class App extends Component {
         newWorkoutState.isStarted
       );
       
+      window.dispatchEvent(new Event('workoutStateChanged'));
+
       return { workoutState: newWorkoutState };
     });
   };

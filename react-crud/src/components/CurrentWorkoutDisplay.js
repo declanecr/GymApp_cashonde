@@ -86,6 +86,7 @@ const CurrentWorkoutDisplay = ({
 
     //listens for workout changes and updates to the component
     useEffect(() => {
+      console.log('heard workoutStateChanged');
       const handleWorkoutChange = () => {
         const savedState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
         if (savedState) {
@@ -216,6 +217,7 @@ const CurrentWorkoutDisplay = ({
     const handleWorkoutCancel = () => {
       // Clear the local storage
       clearWorkoutState();
+      deleteWorkout();
       
       // Reset all relevant state
       setSets({});
@@ -350,7 +352,7 @@ const CurrentWorkoutDisplay = ({
                                   >
                                     Add Set
                                   </Button>
-                                  <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout} />
+                                  <RemoveExerciseButton exercise={exercise} removeFromWorkout={removeFromWorkout}  />
                                 </Box>
                               </Box>
 
