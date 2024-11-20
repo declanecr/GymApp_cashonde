@@ -9,6 +9,7 @@ import {
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import SetsChart from '../components/SetsChart';
 import ExerciseDataService from "../services/ExerciseDataService";
 import SetDataService from '../services/SetDataService';
 import authService from '../services/auth.service';
@@ -90,6 +91,7 @@ function SetsHistory() {
 
   return (
     <Root>
+      <SetsChart workouts={workouts} exercise={exercise}/>
       <Title variant="h4">
         {exercise ? exercise.name : 'Loading...'} Sets History
       </Title>
