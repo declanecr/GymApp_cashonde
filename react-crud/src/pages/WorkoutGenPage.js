@@ -227,19 +227,13 @@ const WorkoutGenPage = ({
                 }
               }}>
                 <Grid item xs={12} md ={8}>
-                    <Typography variant="h4" gutterBottom>
-                      Current Workout
-                    </Typography>
-                    
 
-                    <Grid item xs={12} md={8}>
                       <CurrentWorkoutDisplay
                         deleteWorkout={deleteWorkout}
                         removeFromWorkout={removeFromWorkout}
                         setSelectedExercise={setSelectedExercise}
                         //addToWorkout={addToWorkout}
                       />
-                    </Grid>
                 </Grid>
               </Grid>
                 

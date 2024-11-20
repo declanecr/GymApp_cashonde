@@ -163,16 +163,25 @@ const CurrentWorkoutDisplay = ({
       });
     };
     
-
+    const handleWorkoutCancel = () => {
+      // Clear the local storage
+      clearWorkoutState();
+      
+      // Reset all relevant state
+      setSets({});
+      setStartTime(null);
+      setIsWorkoutStarted(false);
+      setElapsedTime(0);
+      setSelectedExercise(null);
+    };
+    
   return (
     <Card sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
         Current Workout
       </Typography>
 
-      <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
-        Your Workout
-      </Typography>
+
         {currentWorkout && currentWorkout.length > 0 ? (
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -197,15 +206,25 @@ const CurrentWorkoutDisplay = ({
                   startTime={startTime}
                   endTime={new Date()}
                 />
+                
               )}
             </Grid>
-
+              {/* TODO - the start time and  */}
             {isWorkoutStarted && (
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                   <Typography>Start Time: {startTime.toLocaleTimeString()}</Typography>
                   <Typography>Duration: {formatElapsedTime(elapsedTime)}</Typography>
+                  <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleWorkoutCancel}
+                  sx={{ mb: 2 }}
+                >
+                  Cancel Workout
+                </Button>
                 </Box>
+                
               </Grid>
             )}
 
