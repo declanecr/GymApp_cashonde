@@ -227,7 +227,6 @@ const WorkoutGenPage = ({
                 }
               }}>
                 <Grid item xs={12} md ={8}>
-                    <Card sx={{ p: 3 }}>
                     <Typography variant="h4" gutterBottom>
                       Current Workout
                     </Typography>
@@ -241,7 +240,6 @@ const WorkoutGenPage = ({
                         //addToWorkout={addToWorkout}
                       />
                     </Grid>
-                  </Card>                  
                 </Grid>
               </Grid>
                 
