@@ -65,11 +65,38 @@ const CurrentWorkoutDrawer = (  {
     if (savedState) {
       setWorkoutState(savedState);
     }
-  },[]); // Re-run when currentWorkout changes
+  },[]); 
+
+  useEffect(() => {
+    const handleWorkoutChange = () => {
+      const savedState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
+      if (savedState) {
+        updateDrawerContent(savedState);
+      }
+    };
+  
+    const unsubscribe = subscribeToWorkoutChanges(handleWorkoutChange);
+    return () => unsubscribe();
+  }, []);
+  
+
+
+  const subscribeToWorkoutChanges = (callback) => {
+    window.addEventListener('workoutStateChanged', callback);
+    return () => window.removeEventListener('workoutStateChanged', callback);
+  };
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+
+
+  const updateDrawerContent = (newWorkoutState) => {
+    setWorkoutState(newWorkoutState);
+    // If you want the drawer to open automatically when workout changes
+    setOpen(true);
+  };
+  
 
 
 
@@ -88,7 +115,7 @@ const CurrentWorkoutDrawer = (  {
       newState.startTime,
       newState.isStarted
     );
-    setWorkoutState(newState);
+    updateDrawerContent(newState);
   };
 
   const handleDeleteWorkout = () => {

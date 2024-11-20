@@ -54,7 +54,8 @@ const CurrentWorkoutDisplay = ({
     const [sets, setSets] = useState({});
     const [startTime, setStartTime] = useState(null);
     const [elapsedTime, setElapsedTime] = useState(0);
-    const currentWorkout = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE)?.workout || [];
+    const [currentWorkout, setCurrentWorkout] = useState([]);
+    //const currentWorkout = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE)?.workout || [];
 
 
      // Load workout state from localStorage on component mount
@@ -83,13 +84,58 @@ const CurrentWorkoutDisplay = ({
       };
     }, [isWorkoutStarted, startTime]);
 
+    //listens for workout changes and updates to the component
+    useEffect(() => {
+      const handleWorkoutChange = () => {
+        const savedState = getFromLocalStorage(STORAGE_KEYS.WORKOUT_STATE);
+        if (savedState) {
+          // Update all relevant states
+          setSets(savedState.sets || {});
+          setStartTime(savedState.startTime ? new Date(savedState.startTime) : null);
+          setIsWorkoutStarted(savedState.isStarted || false);
+          if (savedState.workout) {
+            setCurrentWorkout(savedState.workout);
+          }
+        }
+      };
     
-    const handleStartWorkout = () => {
-      const newStartTime = new Date();
-      setStartTime(newStartTime);
-      setIsWorkoutStarted(true);
-      updateWorkoutState(currentWorkout, sets, newStartTime, true);
+      const unsubscribe = subscribeToWorkoutChanges(handleWorkoutChange);
+      
+      // Initial load of saved state
+      handleWorkoutChange();
+      
+      return () => unsubscribe();
+    }, []);
+    
+
+    const subscribeToWorkoutChanges = (callback) => {
+      window.addEventListener('workoutStateChanged', callback);
+      return () => window.removeEventListener('workoutStateChanged', callback);
     };
+
+    // eslint-disable-next-line        
+    const handleExternalWorkoutUpdate = (updatedWorkout) => {
+      if (updatedWorkout) {
+        setCurrentWorkout(updatedWorkout);
+        // Reset sets for new exercises if needed
+        setSets(prevSets => {
+          const newSets = { ...prevSets };
+          updatedWorkout.forEach(exercise => {
+            if (!newSets[exercise.id]) {
+              newSets[exercise.id] = [];
+            }
+          });
+          return newSets;
+        });
+        updateWorkoutState(updatedWorkout, sets, startTime, isWorkoutStarted);
+        window.dispatchEvent(new Event('workoutStateChanged'));
+      }
+    };
+    
+    
+
+    
+    
   
     const handleWorkoutComplete = () => {
       setIsWorkoutStarted(false);
@@ -122,10 +168,11 @@ const CurrentWorkoutDisplay = ({
           [exerciseId]: [...(prevSets[exerciseId] || []), { weight: '', reps: '', isCompleted: false }]
         };
         updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
+        window.dispatchEvent(new Event('workoutStateChanged'));
         return newSets;
       });
     };
-  
+    
     const handleRemoveSet = (exerciseId, index) => {
       setSets(prevSets => {
         const newSets = {
@@ -133,10 +180,11 @@ const CurrentWorkoutDisplay = ({
           [exerciseId]: prevSets[exerciseId].filter((_, i) => i !== index)
         };
         updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
+        window.dispatchEvent(new Event('workoutStateChanged'));
         return newSets;
       });
     };
-  
+    
     const handleSetChange = (exerciseId, index, field, value) => {
       setSets(prevSets => {
         const newSets = {
@@ -146,10 +194,11 @@ const CurrentWorkoutDisplay = ({
           )
         };
         updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
+        window.dispatchEvent(new Event('workoutStateChanged'));
         return newSets;
       });
     };
-  
+    
     const handleSetCompletion = (exerciseId, index, isCompleted) => {
       setSets(prevSets => {
         const newSets = {
@@ -159,6 +208,7 @@ const CurrentWorkoutDisplay = ({
           )
         };
         updateWorkoutState(currentWorkout, newSets, startTime, isWorkoutStarted);
+        window.dispatchEvent(new Event('workoutStateChanged'));
         return newSets;
       });
     };
@@ -173,6 +223,17 @@ const CurrentWorkoutDisplay = ({
       setIsWorkoutStarted(false);
       setElapsedTime(0);
       setSelectedExercise(null);
+      
+      // Notify other components
+      window.dispatchEvent(new Event('workoutStateChanged'));
+    };
+    
+    const handleStartWorkout = () => {
+      const newStartTime = new Date();
+      setStartTime(newStartTime);
+      setIsWorkoutStarted(true);
+      updateWorkoutState(currentWorkout, sets, newStartTime, true);
+      window.dispatchEvent(new Event('workoutStateChanged'));
     };
     
   return (
@@ -209,7 +270,6 @@ const CurrentWorkoutDisplay = ({
                 
               )}
             </Grid>
-              {/* TODO - the start time and  */}
             {isWorkoutStarted && (
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
