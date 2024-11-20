@@ -57,7 +57,7 @@ function SetsChart({ workouts, exercise }) {
               Total Weight Progress (Weight × Reps)
             </Typography>
             <LineChart
-              height={300}
+              height={350}
               series={[
                 {
                   data: prepareChartData().map(item => item.totalWeight),
@@ -76,9 +76,13 @@ function SetsChart({ workouts, exercise }) {
               margin={{ left: 50, right: 20, top: 20, bottom: 35 }}
               slotProps={{
                 legend: {
-                  direction: 'row',
-                  position: { vertical: 'top', horizontal: 'middle' },
-                  padding: 20,
+                    direction: 'column',
+                    position: { vertical: 'top', horizontal: 'right' },
+                    padding: 0,
+                    itemMarkWidth: 10, // Makes the legend mark smaller
+                    itemMarkHeight: 10, // Makes the legend mark smaller
+                    labelStyle: { fontSize: '0.8rem' },
+                    
                 },
               }}
             />

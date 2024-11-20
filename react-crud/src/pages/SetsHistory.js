@@ -16,7 +16,7 @@ import authService from '../services/auth.service';
 
 const Root = styled('div')(({ theme }) => ({
   padding: theme.spacing(2),
-  maxWidth: '250px',
+  maxWidth: '500px',
   margin: '0 auto'
 }));
 
