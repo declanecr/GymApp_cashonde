@@ -1,14 +1,9 @@
 import {
   Card,
   CardContent,
+  Divider,
   Grid2,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  List, ListItem, ListItemText,
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -19,8 +14,8 @@ import SetDataService from '../services/SetDataService';
 import authService from '../services/auth.service';
 
 const Root = styled('div')(({ theme }) => ({
-  padding: theme.spacing(3),
-  maxWidth: '500px',
+  padding: theme.spacing(2),
+  maxWidth: '250px',
   margin: '0 auto'
 }));
 
@@ -28,16 +23,35 @@ const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  marginBottom: theme.spacing(2)
+  marginBottom: theme.spacing(1),
+  backgroundColor: '#f5f5f5'
 }));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  padding: theme.spacing(1), // Reduces default padding
+  '&:last-child': {
+    paddingBottom: theme.spacing(1) // Reduces bottom padding
+  }
+}));
+
+// Add these styled components at the top with your other styled components
+const StyledList = styled(List)  ({
+  padding: 0, // Removes padding from List
+  margin: 0
+});
+
+const StyledListItemText = styled(ListItemText)({
+  margin: 0, // Removes margin from ListItemText
+  '& .MuiListItemText-primary': {
+    fontSize: '0.9rem' // Optional: adjust text size if needed
+  }
+});
+
 
 const Title = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2)
 }));
 
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  marginTop: theme.spacing(2)
-}));
 
 function SetsHistory() {
   const [workouts, setWorkouts] = useState({});
@@ -79,40 +93,51 @@ function SetsHistory() {
       <Title variant="h4">
         {exercise ? exercise.name : 'Loading...'} Sets History
       </Title>
-      <Grid2 container spacing={3}>
-        {Object.entries(workouts).map(([workoutId, sets]) => (
-          <Grid2 item xs={12} key={workoutId}>
+        {Object.entries(workouts).map(([workoutId, sets], index) => (
+          <Grid2 item xs={12} key={workoutId} >
             <StyledCard>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Workout {workoutId}
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  {new Date(sets[0].date).toLocaleDateString()}
-                </Typography>                
-                <StyledTableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Weight</TableCell>
-                        <TableCell>Reps</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
+              <StyledCardContent>
+                <Grid2 container justifyContent="space-between" alignItems="center">
+                  <Typography variant="subtitle1" gutterBottom sx={{mb:0.5}}>
+                    Workout {index + 1}
+                  </Typography>
+                  <Typography variant="subtitle2" gutterBottom sx={{mb:0.5}}>
+                    {new Date(sets[0].date).toLocaleDateString()}
+                  </Typography>
+                </Grid2>
+
+                <Divider sx={{ my: 1 }} />
+                
+                <Grid2 container spacing={1} alignContent={'center'} justifyContent={'center'}>
+                  <Grid2 item xs={6}>
+                    <Typography variant="subtitle2" fontWeight="bold" >
+                      Weight
+                    </Typography>
+                    <StyledList>
                       {sets.map(set => (
-                        <TableRow key={set.id}>
-                          <TableCell>{set.weight}</TableCell>
-                          <TableCell>{set.reps}</TableCell>
-                        </TableRow>
+                        <ListItem key={set.id}  dense disablePadding>
+                          <StyledListItemText primary={set.weight} />
+                        </ListItem>
                       ))}
-                    </TableBody>
-                  </Table>
-                </StyledTableContainer>
-              </CardContent>
+                    </StyledList>
+                  </Grid2>
+                  <Grid2 item xs={6}>
+                    <Typography variant="subtitle2" fontWeight="bold">
+                      Reps
+                    </Typography>
+                    <StyledList>
+                      {sets.map(set => (
+                        <ListItem key={set.id} dense disablePadding>
+                          <StyledListItemText primary={set.reps} />
+                        </ListItem>
+                      ))}
+                    </StyledList>
+                  </Grid2>
+                </Grid2>
+              </StyledCardContent>
             </StyledCard>
           </Grid2>
         ))}
-      </Grid2>
     </Root>
   );
 }
