@@ -25,7 +25,7 @@ import {
   Button,
   Card,
   Checkbox,
-  Grid,
+  Grid2,
   IconButton,
   List,
   ListItem,
@@ -246,8 +246,8 @@ const CurrentWorkoutDisplay = ({
 
 
         {currentWorkout && currentWorkout.length > 0 ? (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Grid2 container spacing={2}>
+            <Grid2 item xs={12}>
               {!isWorkoutStarted ? (
                 <Button
                   variant="contained"
@@ -271,9 +271,9 @@ const CurrentWorkoutDisplay = ({
                 />
                 
               )}
-            </Grid>
+            </Grid2>
             {isWorkoutStarted && (
-              <Grid item xs={12}>
+              <Grid2 item xs={12}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                   <Typography>Start Time: {startTime.toLocaleTimeString()}</Typography>
                   <Typography>Duration: {formatElapsedTime(elapsedTime)}</Typography>
@@ -287,10 +287,10 @@ const CurrentWorkoutDisplay = ({
                 </Button>
                 </Box>
                 
-              </Grid>
+              </Grid2>
             )}
 
-            <Grid item xs={12}>
+            <Grid2 item xs={12}>
               <List sx={{ width: '100%' }}>
                 {currentWorkout.map((exercise) => (
                   <Box 
@@ -415,8 +415,8 @@ const CurrentWorkoutDisplay = ({
                   </Box>
                 ))}
               </List>
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         ) : (
           <Typography variant="body1">No exercises added to your workout yet.</Typography>
         )}
