@@ -8,6 +8,7 @@
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.4",
     "@mui/styled-engine": "^6.1.4",
+    "@mui/x-charts": "^7.22.2",
     "@mui/x-data-grid": "^7.22.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -32,7 +33,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-
   },
   "eslintConfig": {
     "extends": [
